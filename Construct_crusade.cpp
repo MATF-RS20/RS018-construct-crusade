@@ -2,91 +2,18 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include "PlayerClass.hpp"
+#include "EnemyClass.hpp"
 
 using namespace sf;
-double VEL = 1;
 double window_height = 600;
 double window_width = 1200;
-
-class GameObject{
-public:
-    GameObject(double x_pos, double y_pos) : x_pos_(x_pos), y_pos_(y_pos)
-    {}
-
-protected:
-    //default player position
-    double x_pos_;
-    double y_pos_;
-};
-
-class PlatformClass : public GameObject{
-public:
-    PlatformClass(Sprite sprite, double x_pos, double y_pos) : GameObject(x_pos, y_pos), sprite_(sprite)
-    {
-        sprite_.setPosition(GameObject::x_pos_, GameObject::y_pos_);
-        scale_ = 2.7777778;
-        sprite_.setScale(scale_*2, scale_);
-    }
-
-    float scale_;
-    Sprite sprite_;
-};
-
-
-//the constructs class
-class PlayerClass : public GameObject{
-public:
-
-    PlayerClass(Sprite sprite, double x_pos, double y_pos) : GameObject(x_pos, y_pos), sprite_(sprite){
-        sprite_.setPosition(GameObject::x_pos_, GameObject::y_pos_);
-        scale_ = 4;
-        sprite_.setScale(scale_, scale_);
-    }
-
-    //gain velocity if a button is pressed
-    void update(bool player_up,bool player_down,bool player_right,bool player_left){
-        if(player_up){
-            y_vel_ = -VEL;
-        }
-        if(player_down){
-            y_vel_ = VEL;
-        }
-        if(!player_up && !player_down){
-            y_vel_ = 0;
-        }
-        if(player_left){
-            x_vel_ = -VEL;
-        }
-        if(player_right){
-            x_vel_ = VEL;
-        }
-        if(!player_left && !player_right){
-            x_vel_ = 0;
-        }
-    }
-    //check if you are intersecting with a platform - update position if you are and then move
-    void collision(std::vector<PlatformClass>& platforms){
-        for(PlatformClass const& plat : platforms){
-            if(plat.sprite_.getGlobalBounds().intersects(sprite_.getGlobalBounds())){
-                sprite_.setPosition(sprite_.getPosition().x, plat.sprite_.getGlobalBounds().top - sprite_.getGlobalBounds().height);
-            }
-
-            }
-            //move the sprite
-            sprite_.move(Vector2f(x_vel_, y_vel_));
-    }
-
-
-    Sprite sprite_;
-    double scale_;
-    double x_vel_;
-    double y_vel_;
-};
+Clock bigTime;
 
 int main(){
 
-    // Create the main window
-    sf::RenderWindow window(sf::VideoMode(window_width, window_height), "SFML window");
+    //create the main window
+    sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Construct Crusade!");
 
     //define a view
     sf::View view(sf::FloatRect(0.0, 0.0, window_width, window_height));
@@ -95,65 +22,76 @@ int main(){
     window.setView(view);
 
     //the construct - our protagonist
-    Texture constructTex;
-    constructTex.loadFromFile("assets/images/walkingAnimation10.png");
-    Sprite constructSprite(constructTex);
-    constructSprite.setTextureRect(IntRect(125, 50, 25, 25));
+    Texture construct_tex;
+    construct_tex.loadFromFile("assets/images/roboto_walk_idle_jump_2.png");
+    Sprite construct_sprite(construct_tex);
+    construct_sprite.setTextureRect(IntRect(131, 50, 11, 25));
+    construct_sprite.getTextureRect();
     bool player_right, player_left, player_up, player_down;
 
-    PlayerClass player(constructSprite, 0, 0);
+    //plasma sprite
+    Sprite plasma_booster_sprite(construct_tex);
+
+    PlayerClass player(plasma_booster_sprite, construct_sprite, 0, 400);
 
     //background element
     Texture background;
-    background.loadFromFile("assets/images/background.png");
+    background.loadFromFile("assets/images/sky.png");
+
+    Texture background_2;
+    background_2.loadFromFile("assets/images/skyReverse.png");
 
     Sprite backgroundSprite(background);
     backgroundSprite.getTextureRect();
-    backgroundSprite.scale(window_width/backgroundSprite.getLocalBounds().width, window_height/backgroundSprite.getLocalBounds().height);
+    backgroundSprite.scale(1, window_height/backgroundSprite.getLocalBounds().height);
 
-    //make a vector that contains rectangle information that corelates to picture frames we want to animate
-    std::vector<IntRect> rectangles;
-    rectangles.push_back(IntRect(125, 50, 25, 25));
-    rectangles.push_back(IntRect(150, 50, 25, 25));
-    rectangles.push_back(IntRect(175, 50, 25, 25));
-    rectangles.push_back(IntRect(200, 50, 25, 25));
-    rectangles.push_back(IntRect(225, 50, 25, 25));
-    rectangles.push_back(IntRect(250, 50, 25, 25));
-    int rectangles_index = 0;
-    int time;
-    //delt_time - duration of a frame
-    int delta_time = 200;
-    //helps us determin if our frame should be changed - it marks the time when a frame is first used
-    int current_frame_time = 0;
+    Sprite backgroundSprite_2(background_2);
+    backgroundSprite_2.getTextureRect();
+    backgroundSprite_2.scale(1, window_height/backgroundSprite.getLocalBounds().height);
 
     //platform initialization
     std::vector<PlatformClass> platforms;
     Texture platformTex;
     platformTex.loadFromFile("assets/images/tileset.png");
-
     Sprite platformSprite(platformTex);
-    platformSprite.setTextureRect(IntRect(14, 14, 18, 17));
+    platformSprite.setTextureRect(IntRect(16, 16, 16, 16));
 
-    PlatformClass platform_1(platformSprite, 200, 500);
+    Sprite platformSprite_middle(platformTex);
+    platformSprite_middle.setTextureRect(IntRect(48, 16, 16, 16));
 
-    platforms.push_back(platform_1);
+    Sprite platformSprite_left(platformTex);
+    platformSprite_left.setTextureRect(IntRect(240, 224, 16, 16));
 
-    Sprite platformSprite_2(platformTex);
-    platformSprite_2.setTextureRect(IntRect(14, 14, 18, 17));
+    Sprite platformSprite_right(platformTex);
+    platformSprite_right.setTextureRect(IntRect(304, 224, 16, 16));
 
-    PlatformClass platform_2(platformSprite_2, 300, 500);
+    //generate platforms
+    for(int j = 0; j < 10; j++){
 
-    platforms.push_back(platform_2);
+        platforms.push_back(PlatformClass(platformSprite_left, j*850, 500 - (j % 2)*50));
 
-    Sprite platformSprite_3(platformTex);
-    platformSprite_3.setTextureRect(IntRect(14, 14, 18, 17));
+        for(int i = 1; i < 11; i++){
+            platforms.push_back(PlatformClass(platformSprite_middle, 50*i + j*850, 500 - (j % 2)*50));
+        }
+        platforms.push_back(PlatformClass(platformSprite_right, 550 + j*850, 500 - (j % 2)*50));
+    }
 
-    PlatformClass platform_3(platformSprite_3, 400, 500);
+    Texture imp;
+    imp.loadFromFile("assets/images/imp.png");
 
-    platforms.push_back(platform_3);
+    Sprite impSprite(imp);
+    Sprite fireballSprite(imp);
+    impSprite.setTextureRect(IntRect(10, 211, 18, 15));
 
-    Clock gameClock;
+    EnemyClass imp1(impSprite, fireballSprite, 500, 441);
 
+    sf::Thread thread(&EnemyClass::IdleAnimation, &imp1);
+
+    thread.launch();
+
+    sf::Thread threadIdlePlayer(&PlayerClass::IdleAnimation, &player);
+
+    threadIdlePlayer.launch();
 
    //start the main loop
     while (window.isOpen())
@@ -173,26 +111,30 @@ int main(){
                 }
 
         }
-        window.clear();
+        window.clear(Color(161, 242, 236));
 
-        window.draw(backgroundSprite);
+        //drawing the background
+        for(int i = 0; i < window_width/backgroundSprite.getGlobalBounds().width; i++){
+                backgroundSprite.setPosition(i*backgroundSprite.getGlobalBounds().width + (player.sprite_.getPosition().x - window_width/2), 0);
+                window.draw(backgroundSprite);
+        }
+        for(int i = 0; i < window_width/backgroundSprite.getGlobalBounds().width; i++){
+                backgroundSprite_2.setPosition(i*backgroundSprite_2.getGlobalBounds().width + (player.sprite_.getPosition().x - window_width/2), window_height);
+                window.draw(backgroundSprite_2);
+        }
 
         //detect an arrow key press - i might find a better way for this logic
         if(Keyboard::isKeyPressed(Keyboard::Right)){
             player_right = true;
-            //move the view with the player
-            view.move(1.f, 0.f);
-            window.setView(view);
         }
 
         if(Keyboard::isKeyPressed(Keyboard::Left)){
             player_left = true;
-            view.move(-1.f, 0.f);
-            window.setView(view);
         }
 
-        if(Keyboard::isKeyPressed(Keyboard::Up))
+        if(Keyboard::isKeyPressed(Keyboard::Up)){
             player_up = true;
+        }
 
         if(Keyboard::isKeyPressed(Keyboard::Down))
             player_down = true;
@@ -210,36 +152,55 @@ int main(){
             player_down = false;
 
         //let the player know if the key has been pressed
-        player.update(player_up, player_down, player_right, player_left);
+        player.update(player_up, player_down, player_right, player_left, platforms);
 
-        //check for collision and move
-        player.collision(platforms);
+        //here we center the view on the player
+        view.setCenter(Vector2f(player.sprite_.getPosition().x, player.sprite_.getPosition().y - window_height/8));
+        window.setView(view);
 
-        time = gameClock.getElapsedTime().asMilliseconds();
-
-        //update rectangle_index if its time for the next frame
-        if(current_frame_time+delta_time < time){
-            current_frame_time = time;
-            if(rectangles_index == 5){
-                rectangles_index = 0;
-                current_frame_time = 0;
-                rectangles_index--;
-                gameClock.restart();
-            }
-            rectangles_index++;
+        //draw construct based on the keys pressed - draw the corresponding animation
+        if(player.jumping_ && player_left){
+            player.sprite_.setTextureRect(IntRect(433, 0, 9, 25));
+            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[1]);
+            player.plasma_sprite_.setScale(4, 4);
+            player.plasma_sprite_.setPosition(player.sprite_.getPosition().x + 4, player.sprite_.getPosition().y + player.sprite_.getGlobalBounds().height - 4);
+            window.draw(player.plasma_sprite_);
         }
-
-        //draw construct
-        player.sprite_.setTextureRect(rectangles[rectangles_index]);
+        else if(player.jumping_ && player_right){
+            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[2]);
+            player.plasma_sprite_.setScale(4, 4);
+            player.plasma_sprite_.setPosition(player.sprite_.getPosition().x , player.sprite_.getPosition().y + player.sprite_.getGlobalBounds().height - 4);
+            window.draw(player.plasma_sprite_);
+            player.sprite_.setTextureRect(IntRect(483, 0, 9, 25));
+        }
+        else if(player.jumping_ && !player_left && !player_right){
+            player.sprite_.setTextureRect(IntRect(477, 50, 21, 25));
+            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[0]);
+            player.plasma_sprite_.setScale(4, 4);
+            player.plasma_sprite_.setPosition(player.sprite_.getPosition().x + 24, player.sprite_.getPosition().y + player.sprite_.getGlobalBounds().height);
+            window.draw(player.plasma_sprite_);
+        }
+        else if(player_right)
+            player.sprite_.setTextureRect(player.rectanglesRight_[player.rectangles_index_]);
+        else if(player_left){
+            player.sprite_.setTextureRect(player.rectanglesLeft_[player.rectangles_index_]);
+        }
+        else{
+            player.sprite_.setTextureRect(player.rectanglesIdle_[player.rectangles_index_idle_]);
+        }
         window.draw(player.sprite_);
 
-        //draw platforms
-        window.draw(platform_1.sprite_);
-        window.draw(platform_2.sprite_);
-        window.draw(platform_3.sprite_);
 
+        //draw platforms
+        for(auto plat : platforms){
+            window.draw(plat.sprite_);
+        }
+
+        window.draw(imp1.sprite_);
         window.display();
     }
 
     return 0;
 }
+
+
