@@ -4,6 +4,7 @@
 #include <vector>
 #include "PlayerClass.hpp"
 #include "EnemyClass.hpp"
+#include "BigPlatform.hpp"
 
 using namespace sf;
 double window_height = 600;
@@ -23,15 +24,15 @@ int main(){
 
     //the construct - our protagonist
     Texture construct_tex;
-    construct_tex.loadFromFile("assets/images/roboto_walk_idle_jump_2.png");
+    construct_tex.loadFromFile("assets/images/roboto_walk_idle_jump_4.png");
     Sprite construct_sprite(construct_tex);
     construct_sprite.setTextureRect(IntRect(131, 50, 11, 25));
-    construct_sprite.getTextureRect();
     bool player_right, player_left, player_up, player_down;
 
-    //plasma sprite
+    //plasma sprite - for jumping
     Sprite plasma_booster_sprite(construct_tex);
 
+    //making a player object
     PlayerClass player(plasma_booster_sprite, construct_sprite, 0, 400);
 
     //background element
@@ -50,50 +51,54 @@ int main(){
     backgroundSprite_2.scale(1, window_height/backgroundSprite.getLocalBounds().height);
 
     //platform initialization
-    std::vector<PlatformClass> platforms;
-    Texture platformTex;
-    platformTex.loadFromFile("assets/images/tileset.png");
-    Sprite platformSprite(platformTex);
-    platformSprite.setTextureRect(IntRect(16, 16, 16, 16));
+    std::vector<BigPlatform> big_platforms;
+    int platform_distance = 750;
+    int fixed_platform_height = 500;
+    int platform_height_offset = 50;
 
-    Sprite platformSprite_middle(platformTex);
-    platformSprite_middle.setTextureRect(IntRect(48, 16, 16, 16));
+    Texture platform_tex;
+    platform_tex.loadFromFile("assets/images/tileset.png");
 
-    Sprite platformSprite_left(platformTex);
-    platformSprite_left.setTextureRect(IntRect(240, 224, 16, 16));
+    Sprite platform_sprite(platform_tex);
 
-    Sprite platformSprite_right(platformTex);
-    platformSprite_right.setTextureRect(IntRect(304, 224, 16, 16));
-
-    //generate platforms
     for(int j = 0; j < 10; j++){
-
-        platforms.push_back(PlatformClass(platformSprite_left, j*850, 500 - (j % 2)*50));
-
-        for(int i = 1; i < 11; i++){
-            platforms.push_back(PlatformClass(platformSprite_middle, 50*i + j*850, 500 - (j % 2)*50));
-        }
-        platforms.push_back(PlatformClass(platformSprite_right, 550 + j*850, 500 - (j % 2)*50));
+        big_platforms.push_back(BigPlatform(platform_distance*j, fixed_platform_height - (j%3)*platform_height_offset, 10, platform_sprite));
     }
 
+    //imp initialization
     Texture imp;
     imp.loadFromFile("assets/images/imp.png");
 
-    Sprite impSprite(imp);
-    Sprite fireballSprite(imp);
-    impSprite.setTextureRect(IntRect(10, 211, 18, 15));
+    Sprite imp_sprite(imp);
+    Sprite fireball_sprite(imp);
 
-    EnemyClass imp1(impSprite, fireballSprite, 500, 441);
+    fireball_sprite.setTextureRect(IntRect(10, 211, 18, 15));
+    imp_sprite.setTextureRect(IntRect(23, 377, 1, 1));
 
-    sf::Thread thread(&EnemyClass::IdleAnimation, &imp1);
+    EnemyClass imp_1(imp_sprite, fireball_sprite, 500, 441);
 
-    thread.launch();
+    //these threads do all the animation calculations - yes i said THREADS... IM A REAL PROGRAMMER!
+    //create a thread asign a function and an object to the thread
+    sf::Thread imp_thread(&EnemyClass::Animation, &imp_1);
+    //start the thread
+    imp_thread.launch();
 
-    sf::Thread threadIdlePlayer(&PlayerClass::IdleAnimation, &player);
+    sf::Thread cunstruct_thread(&PlayerClass::Animation, &player);
+    cunstruct_thread.launch();
 
-    threadIdlePlayer.launch();
+    //a little audio for out little game
+    sf::Music music;
+    if (!music.openFromFile("assets/music/bg_pop.ogg")){
+        std::cout << "we have failed at music" << std::endl; // error
+    }
+    music.setVolume(0.3f);
+    music.setLoop(true);
+    music.play();
 
-   //start the main loop
+    //soon there will be another
+    int level = 1;
+
+    //start the main loop
     while (window.isOpen())
     {
 
@@ -152,7 +157,7 @@ int main(){
             player_down = false;
 
         //let the player know if the key has been pressed
-        player.update(player_up, player_down, player_right, player_left, platforms);
+        player.update(player_up, player_down, player_right, player_left, big_platforms);
 
         //here we center the view on the player
         view.setCenter(Vector2f(player.sprite_.getPosition().x, player.sprite_.getPosition().y - window_height/8));
@@ -160,24 +165,104 @@ int main(){
 
         //draw construct based on the keys pressed - draw the corresponding animation
         if(player.jumping_ && player_left){
+            //TODO refactor this part of the code
             player.sprite_.setTextureRect(IntRect(433, 0, 9, 25));
             player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[1]);
             player.plasma_sprite_.setScale(4, 4);
             player.plasma_sprite_.setPosition(player.sprite_.getPosition().x + 4, player.sprite_.getPosition().y + player.sprite_.getGlobalBounds().height - 4);
             window.draw(player.plasma_sprite_);
+
+
+            player.plasma_sprite_.move(0, 4);
+            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_]);
+            window.draw(player.plasma_sprite_);
+
+            player.plasma_sprite_.move(4, 0);
+            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_+1]);
+            window.draw(player.plasma_sprite_);
+
+            player.plasma_sprite_.move(8, 0);
+            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_]);
+            window.draw(player.plasma_sprite_);
+
+            player.plasma_sprite_.move(8, 0);
+            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_]);
+            window.draw(player.plasma_sprite_);
+
+            player.plasma_sprite_.move(4, 0);
+            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_+2]);
+            window.draw(player.plasma_sprite_);
+
+            player.plasma_sprite_.move(4, 0);
+            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_+1]);
+            window.draw(player.plasma_sprite_);
+
         }
         else if(player.jumping_ && player_right){
+            player.sprite_.setTextureRect(IntRect(483, 0, 9, 25));
+
             player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[2]);
             player.plasma_sprite_.setScale(4, 4);
             player.plasma_sprite_.setPosition(player.sprite_.getPosition().x , player.sprite_.getPosition().y + player.sprite_.getGlobalBounds().height - 4);
             window.draw(player.plasma_sprite_);
-            player.sprite_.setTextureRect(IntRect(483, 0, 9, 25));
+
+
+            player.plasma_sprite_.move(0, 4);
+            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_]);
+            window.draw(player.plasma_sprite_);
+
+            player.plasma_sprite_.move(4, 0);
+            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_+1]);
+            window.draw(player.plasma_sprite_);
+
+            player.plasma_sprite_.move(8, 0);
+            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_]);
+            window.draw(player.plasma_sprite_);
+
+            player.plasma_sprite_.move(8, 0);
+            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_]);
+            window.draw(player.plasma_sprite_);
+
+            player.plasma_sprite_.move(4, 0);
+            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_+2]);
+            window.draw(player.plasma_sprite_);
+
+            player.plasma_sprite_.move(4, 0);
+            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_+1]);
+            window.draw(player.plasma_sprite_);
+
+
         }
         else if(player.jumping_ && !player_left && !player_right){
             player.sprite_.setTextureRect(IntRect(477, 50, 21, 25));
+
             player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[0]);
             player.plasma_sprite_.setScale(4, 4);
             player.plasma_sprite_.setPosition(player.sprite_.getPosition().x + 24, player.sprite_.getPosition().y + player.sprite_.getGlobalBounds().height);
+            window.draw(player.plasma_sprite_);
+
+            player.plasma_sprite_.move(0, 4);
+            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_]);
+            window.draw(player.plasma_sprite_);
+
+            player.plasma_sprite_.move(4, 0);
+            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_+1]);
+            window.draw(player.plasma_sprite_);
+
+            player.plasma_sprite_.move(8, 0);
+            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_]);
+            window.draw(player.plasma_sprite_);
+
+            player.plasma_sprite_.move(8, 0);
+            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_]);
+            window.draw(player.plasma_sprite_);
+
+            player.plasma_sprite_.move(4, 0);
+            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_+2]);
+            window.draw(player.plasma_sprite_);
+
+            player.plasma_sprite_.move(8, 0);
+            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_+1]);
             window.draw(player.plasma_sprite_);
         }
         else if(player_right)
@@ -188,19 +273,41 @@ int main(){
         else{
             player.sprite_.setTextureRect(player.rectanglesIdle_[player.rectangles_index_idle_]);
         }
+
+        if(player.sprite_.getPosition().y > 750){
+            std::cout << "Congratulations! you died!" << std::endl;
+            player.sprite_.setPosition(0, 400);
+        }
         window.draw(player.sprite_);
 
+        //TODO platforms and creatures are level specific they should be encapsulated
+        if(level == 1){
 
         //draw platforms
-        for(auto plat : platforms){
-            window.draw(plat.sprite_);
+        for(auto bp : big_platforms){
+                for(auto plat : bp.platforms_)
+                    window.draw(plat.sprite_);
         }
 
-        window.draw(imp1.sprite_);
+        //fireball collision
+        if(imp_1.fireball_sprite_.getGlobalBounds().intersects(player.sprite_.getGlobalBounds())){
+                    //std::cout << "Fire has collided: " << iz <<std::endl;
+                    //iz++;
+            }
+
+        //draw the little imp bastard
+        window.draw(imp_1.sprite_);
+        //window.draw(imp_1.fireball_sprite_);
+        }
+        else if(level == 2){
+            std::cout << "Comming soon! A whole new level! new enemies! new puzzles to solve! hazza!" << std::endl;
+        }
+
         window.display();
-    }
+    }//while loop
 
     return 0;
 }
+
 
 

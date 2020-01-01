@@ -2,22 +2,27 @@
 #define _ENEMY_CLASS_HPP
 
 #include "GameObject.hpp"
+#include "PlayerClass.hpp"
 
 using namespace sf;
 
+//TODO player is unused that plan went nowhere
 //Enemy class
 class EnemyClass : public GameObject{
 public:
 
-    EnemyClass(Sprite sprite, Sprite fireball_sprite, double x_pos, double y_pos) : GameObject(x_pos, y_pos), sprite_(sprite), fireball_sprite_(fireball_sprite){
+    EnemyClass(Sprite sprite, Sprite fireball_sprite, double x_pos, double y_pos)
+     : GameObject(x_pos, y_pos), sprite_(sprite), fireball_sprite_(fireball_sprite){
         sprite_.setPosition(GameObject::x_pos_, GameObject::y_pos_);
+        fireball_sprite_.setPosition(GameObject::x_pos_, GameObject::y_pos_);
         scale_ = 4;
         sprite_.setScale(scale_, scale_);
+        fireball_sprite_.setScale(scale_, scale_);
 
         init_rectangles();
     }
 
-    void IdleAnimation(){
+    void Animation(){
 
         //delt_time - duration of a frame
         int delta_time = 150;
@@ -48,10 +53,10 @@ public:
         int death_time = 0;
         int death_tmp_time = 0;
 
-        /*//fireball parameters
+        //fireball parameters
         Clock fireball_clock;
         int fireball_time = 0;
-        int fireball_tmp_time = 0;*/
+        int fireball_tmp_time = 0;
 
         //phase change paramaters
         Clock phase_clock;
@@ -73,7 +78,7 @@ public:
 
             index_update(death_time, death_tmp_time, delta_time, death_clock, 5, rectangles_index_death_);
 
-            //index_update(fireball_time, fireball_tmp_time, delta_time, fireball_clock, 5, rectangles_index_fireball_);
+            index_update(fireball_time, fireball_tmp_time, delta_time, fireball_clock, 6, rectangles_index_fireball_);
 
             phase_time = phase_clock.getElapsedTime().asMilliseconds();
 
@@ -87,7 +92,6 @@ public:
                 phase_clock.restart();
                 move_phase = 0;
             }
-
             if(move_phase == 0 || move_phase == 2){
                 sprite_.setTextureRect(rectangles_imp_idle_[rectangles_index_]);
                 }
@@ -97,12 +101,22 @@ public:
             }else if(move_phase == 3){
                 sprite_.setPosition(Vector2f(sprite_.getPosition().x+0.00009f, sprite_.getPosition().y));
                 sprite_.setTextureRect(rectangles_imp_walk_right_[rectangles_index_walk_]);
+            }else if(move_phase == 4){
+                if(rectangles_index_attack_ < 2)
+                    fireball_sprite_.setPosition(sprite_.getPosition().x + 48, sprite_.getPosition().y + 20);
+                else if(rectangles_index_attack_ == 2)
+                    fireball_sprite_.setPosition(sprite_.getPosition().x + -28, sprite_.getPosition().y + 20);
+                else{
+                    fireball_sprite_.move(Vector2f(-0.001, 0.0));
+                }
+
+                sprite_.setTextureRect(rectangles_imp_attack_left_[rectangles_index_attack_]);
+                fireball_sprite_.setTextureRect(rectangles_imp_fireBall_left_[rectangles_index_attack_]);
             }
 
         }//while
 
     }//IdleAnimation
-
     Sprite sprite_;
     Sprite fireball_sprite_;
     std::vector<IntRect> rectangles_imp_idle_;
@@ -114,14 +128,14 @@ public:
     std::vector<IntRect> rectangles_imp_take_damage_right_;
     std::vector<IntRect> rectangles_imp_death_left_;
     std::vector<IntRect> rectangles_imp_death_right_;
-    //std::vector<IntRect> rectangles_imp_fireBall_left_;
-    //std::vector<IntRect> rectangles_imp_fireBall_right_;
+    std::vector<IntRect> rectangles_imp_fireBall_left_;
+    std::vector<IntRect> rectangles_imp_fireBall_right_;
     int rectangles_index_;
     int rectangles_index_walk_;
     int rectangles_index_attack_;
     int rectangles_index_damage_;
     int rectangles_index_death_;
-    //int rectangles_index_fireball_;
+    int rectangles_index_fireball_;
     double scale_;
     double x_vel_;
     double y_vel_;
@@ -149,7 +163,7 @@ private:
         rectangles_index_attack_ = 0;
         rectangles_index_damage_ = 0;
         rectangles_index_death_ = 0;
-        //rectangles_index_fireball_ = 0;
+        rectangles_index_fireball_ = 0;
 
         for (int i = 0; i < 7; i++){
             rectangles_imp_idle_.push_back(IntRect(10 + i*32, 209, 15, 15));
@@ -163,7 +177,7 @@ private:
             rectangles_imp_walk_right_.push_back(IntRect(7 + i*32, 49, 15, 15));
         }
         for (int i = 0; i < 6; i++){
-            rectangles_imp_attack_left_.push_back(IntRect(169 - i*32, 273, 17, 15));
+            rectangles_imp_attack_left_.push_back(IntRect(9 + i*32, 273, 17, 15));
         }
 
         for (int i = 0; i < 6; i++){
@@ -183,7 +197,22 @@ private:
         for (int i = 0; i < 6; i++){
             rectangles_imp_death_right_.push_back(IntRect(9 + i*32, 337, 16, 15));
         }
-        //TODO fireball init
+        //no pattern with fireballs :(
+        rectangles_imp_fireBall_left_.push_back(IntRect(23, 377, 1, 1));
+        rectangles_imp_fireBall_left_.push_back(IntRect(54, 376, 3, 4));
+        rectangles_imp_fireBall_left_.push_back(IntRect(66, 376, 19, 3));
+        rectangles_imp_fireBall_left_.push_back(IntRect(98, 376, 9, 3));
+        rectangles_imp_fireBall_left_.push_back(IntRect(130, 376, 5, 3));
+        rectangles_imp_fireBall_left_.push_back(IntRect(162, 372, 4, 8));
+        rectangles_imp_fireBall_left_.push_back(IntRect(194, 375, 4, 8));
+
+        rectangles_imp_fireBall_right_.push_back(IntRect(8, 185, 1, 1));
+        rectangles_imp_fireBall_right_.push_back(IntRect(39, 184, 3, 4));
+        rectangles_imp_fireBall_right_.push_back(IntRect(75, 184, 19, 3));
+        rectangles_imp_fireBall_right_.push_back(IntRect(117, 184, 9, 3));
+        rectangles_imp_fireBall_right_.push_back(IntRect(153, 184, 5, 3));
+        rectangles_imp_fireBall_right_.push_back(IntRect(186, 181, 4, 8));
+        rectangles_imp_fireBall_right_.push_back(IntRect(218, 183, 4, 8));
 
     }
 };
