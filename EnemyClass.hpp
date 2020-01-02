@@ -15,6 +15,7 @@ public:
      : GameObject(x_pos, y_pos), sprite_(sprite), fireball_sprite_(fireball_sprite){
         sprite_.setPosition(GameObject::x_pos_, GameObject::y_pos_);
         fireball_sprite_.setPosition(GameObject::x_pos_, GameObject::y_pos_);
+        imp_hp_ = 100.0;
         scale_ = 4;
         sprite_.setScale(scale_, scale_);
         fireball_sprite_.setScale(scale_, scale_);
@@ -60,8 +61,8 @@ public:
 
         //phase change paramaters
         Clock phase_clock;
-        //movement animations: 0 - idle, 1 - walk left, 2 - walk right, 4 - attack left, 5 - attack right,
-        int move_phase = 0;
+        //movement animations: 0 - idle, 1 - walk left, 2 - walk right, 4 - attack left, 5 - attack right, 8 - death left
+        move_phase_ = 0;
         int phase_time = 0;
         int phase_time_tmp = 0;
         int phase_delta = 3000;
@@ -84,24 +85,26 @@ public:
 
             if(phase_time > phase_time_tmp + phase_delta){
                 phase_time_tmp = phase_time;
-                move_phase++;
+                move_phase_++;
             }
 
-            if(move_phase == 4){
+            if(move_phase_ == 4){
                 phase_time_tmp = 0;
                 phase_clock.restart();
-                move_phase = 0;
+                move_phase_ = 0;
             }
-            if(move_phase == 0 || move_phase == 2){
+
+            if(imp_hp_ <= 0) move_phase_ = 8;
+            if(move_phase_ == 0 || move_phase_ == 2){
                 sprite_.setTextureRect(rectangles_imp_idle_[rectangles_index_]);
                 }
-            else if(move_phase == 1){
+            else if(move_phase_ == 1){
                 sprite_.setPosition(Vector2f(sprite_.getPosition().x-0.00009f, sprite_.getPosition().y));
                 sprite_.setTextureRect(rectangles_imp_walk_left_[rectangles_index_walk_]);
-            }else if(move_phase == 3){
+            }else if(move_phase_ == 3){
                 sprite_.setPosition(Vector2f(sprite_.getPosition().x+0.00009f, sprite_.getPosition().y));
                 sprite_.setTextureRect(rectangles_imp_walk_right_[rectangles_index_walk_]);
-            }else if(move_phase == 4){
+            }else if(move_phase_ == 4){
                 if(rectangles_index_attack_ < 2)
                     fireball_sprite_.setPosition(sprite_.getPosition().x + 48, sprite_.getPosition().y + 20);
                 else if(rectangles_index_attack_ == 2)
@@ -112,6 +115,13 @@ public:
 
                 sprite_.setTextureRect(rectangles_imp_attack_left_[rectangles_index_attack_]);
                 fireball_sprite_.setTextureRect(rectangles_imp_fireBall_left_[rectangles_index_attack_]);
+            }else if(move_phase_ == 8){
+                sprite_.setTextureRect(rectangles_imp_death_left_[rectangles_index_death_]);
+
+                if(rectangles_index_death_ == 5){
+                    break;
+                }
+
             }
 
         }//while
@@ -139,6 +149,8 @@ public:
     double scale_;
     double x_vel_;
     double y_vel_;
+    double imp_hp_;
+    int move_phase_;
 
 private:
     void index_update(int time, int &tmp_time, int delta_time, Clock &clock, int iters, int &index){

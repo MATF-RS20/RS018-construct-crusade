@@ -16,6 +16,46 @@ double window_height = 600;
 double window_width = 1200;
 Clock bigTime;
 
+//TODO maybe seporate this into a hpp file
+void draw_player_hp_mp(RenderWindow &window, PlayerClass &player, Sprite hp_sprite){
+
+        //we draw the hp bar propartionally to the amount of hp left
+        hp_sprite.setTextureRect(IntRect(8, 14, 64*player.construct_hp_/100.0, 9));
+        hp_sprite.setScale(2, 2);
+        hp_sprite.setPosition(player.sprite_.getPosition().x - window_width/2 + 16, player.sprite_.getPosition().y - 0.62*window_height);
+        window.draw(hp_sprite);
+
+        hp_sprite.setTextureRect(IntRect(8, 0, 64*player.construct_mp_/100.0, 9));
+        hp_sprite.setScale(2, 2);
+        hp_sprite.setPosition(player.sprite_.getPosition().x - window_width/2 + 16, player.sprite_.getPosition().y - 0.58*window_height);
+        window.draw(hp_sprite);
+
+        hp_sprite.setTextureRect(IntRect(0, 42, 80, 9));
+        hp_sprite.setScale(2, 2);
+        hp_sprite.setPosition(player.sprite_.getPosition().x - window_width/2, player.sprite_.getPosition().y - 0.62*window_height);
+        window.draw(hp_sprite);
+
+        hp_sprite.setTextureRect(IntRect(0, 54, 80, 9));
+        hp_sprite.setScale(2, 2);
+        hp_sprite.setPosition(player.sprite_.getPosition().x - window_width/2, player.sprite_.getPosition().y - 0.58*window_height);
+        window.draw(hp_sprite);
+}
+
+void draw_imp_hp(RenderWindow &window,EnemyClass &imp_1,Sprite hp_sprite){
+
+        if(imp_1.imp_hp_ > 0){
+            hp_sprite.setTextureRect(IntRect(1, 65, 110*imp_1.imp_hp_/100.0, 8));
+            hp_sprite.setScale(0.6, 1);
+            hp_sprite.setPosition(imp_1.sprite_.getPosition().x, imp_1.sprite_.getPosition().y - 20);
+            window.draw(hp_sprite);
+        }
+        hp_sprite.setTextureRect(IntRect(0, 81, 111, 8));
+        hp_sprite.setScale(0.6, 1);
+        hp_sprite.setPosition(imp_1.sprite_.getPosition().x, imp_1.sprite_.getPosition().y - 20);
+        window.draw(hp_sprite);
+
+}
+
 int main(){
 
     //create the main window
@@ -32,7 +72,7 @@ int main(){
 
     //the construct - our protagonist
     Texture construct_tex;
-    construct_tex.loadFromFile("assets/images/roboto_walk_idle_jump_laser_5.png");
+    construct_tex.loadFromFile("assets/images/roboto_walk_idle_jump_laser_6.png");
     Sprite construct_sprite(construct_tex);
     construct_sprite.setTextureRect(IntRect(131, 50, 11, 25));
     // 1 - move left, 2 - move right, 4 - move up, 8 - move down
@@ -44,8 +84,15 @@ int main(){
     //laser sprite - for disintegrating
     Sprite laser_sprite(construct_tex);
 
+    bool laser_hit_ind = false;
+
     //making a player object
     PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, 0, 400);
+
+    //health and mana bars
+    Texture hp_tex;
+    hp_tex.loadFromFile("assets/images/hp_mp_bars.png");
+    Sprite hp_sprite(hp_tex);
 
     //background element
     Texture background;
@@ -98,6 +145,9 @@ int main(){
     sf::Thread cunstruct_thread(&PlayerClass::Animation, &player);
     cunstruct_thread.launch();
 
+    //for recovering mana
+    sf::Thread mana_thread(&PlayerClass::mana_recovery, &player);
+
     //a little audio for out little game
     sf::Music music;
     if (!music.openFromFile("assets/music/bg_fa.ogg")){
@@ -136,6 +186,14 @@ int main(){
                     }
                     if(event.key.code == sf::Keyboard::S){
                         construct_move |= 8;
+                    }if(event.key.code == sf::Keyboard::E){
+                        if(player.construct_mp_ == 100){
+                            player.laser_ = true;
+                            laser_hit_ind = true;
+                            player.construct_mp_ = 0;
+                            mana_thread.launch();
+                        }
+
                     }
             }//key pressed
             if (event.type == sf::Event::KeyReleased){
@@ -216,11 +274,21 @@ int main(){
             player.sprite_.setPosition(0, 400);
         }
 
+        if(player.laser_){
+            player.sprite_.setTextureRect(player.rectangles_laser_[7 + player.rectangles_index_laser_ % 2]);
+        }
+
         window.draw(player.sprite_);
-        player.laser_sprite_.setTextureRect(player.rectangles_laser_[player.rectangles_index_laser_]);
-        player.laser_sprite_.setPosition(player.sprite_.getPosition().x + 100, player.sprite_.getPosition().y + 50);
-        player.laser_sprite_.setScale(4, 4);
-        //window.draw(player.laser_sprite_);
+
+        draw_player_hp_mp(window, player, hp_sprite);
+
+        if(player.laser_){
+            player.laser_sprite_.setTextureRect(player.rectangles_laser_[player.rectangles_index_laser_]);
+            player.laser_sprite_.setPosition(player.sprite_.getPosition().x + 56, player.sprite_.getPosition().y + 36);
+            player.laser_sprite_.setScale(2.5, 4);
+            window.draw(player.laser_sprite_);
+
+        }
 
 
         //TODO platforms and creatures are level specific they should be encapsulated
@@ -232,13 +300,28 @@ int main(){
         }
 
         //fireball collision
+        //TODO - make this work only when it supposed to
         if(imp_1.fireball_sprite_.getGlobalBounds().intersects(player.sprite_.getGlobalBounds())){
                 //TODO actual collision
             }
 
+        //laser collision
+        if(player.laser_){
+            if(player.laser_sprite_.getGlobalBounds().intersects(imp_1.sprite_.getGlobalBounds())){
+                    //if we hit the imp reduce his hp
+                    if(laser_hit_ind){
+                        imp_1.imp_hp_ -= 50;
+                        laser_hit_ind = false;
+                    }
+            }
+        }
+
         //draw the little imp bastard
         window.draw(imp_1.sprite_);
         //window.draw(imp_1.fireball_sprite_);
+
+        draw_imp_hp(window, imp_1, hp_sprite);
+
 
         }//first level end
         else if(level == 2){

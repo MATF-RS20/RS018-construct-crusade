@@ -16,7 +16,9 @@ public:
     PlayerClass(Sprite laser_sprite, Sprite plasma_sprite, Sprite sprite, double x_pos, double y_pos)
      : GameObject(x_pos, y_pos), sprite_(sprite), plasma_sprite_(plasma_sprite), laser_sprite_(laser_sprite){
         sprite_.setPosition(GameObject::x_pos_, GameObject::y_pos_);
-        laser_ = true;
+        construct_hp_ = 100.0;
+        construct_mp_ = 100.0;
+        laser_ = false;
         jump_time_ = 0;
         scale_ = 4;
         sprite_.setScale(scale_, scale_);
@@ -100,6 +102,26 @@ public:
 
             }//platforms-for
     }
+    //this is a thread called function - im abusing threads at this point
+    void mana_recovery(){
+
+        Clock mana_clock;
+        int mana_time = 0;
+        int mana_tmp_time = 0;
+        int mana_delta_time = 500;
+
+        while(true){
+            mana_time = mana_clock.getElapsedTime().asMilliseconds();
+
+            if(mana_tmp_time + mana_delta_time < mana_time){
+                mana_tmp_time = mana_time;
+                construct_mp_ += 5;
+                if(construct_mp_ == 100)
+                    break;
+            }
+        }
+
+    }
 
     void Animation(){
 
@@ -132,7 +154,10 @@ public:
                 index_update(jump_animation_time, current_jump_animation_time, 75, jump_anime_clock, 9, rectangles_index_jump_, 3);
             }
             if(laser_){
-                index_update(laser_time, current_laser_time, 175, laser_clock, 6, rectangles_index_laser_, 0);
+                index_update(laser_time, current_laser_time, 105, laser_clock, 7, rectangles_index_laser_, 0);
+                if(rectangles_index_laser_ == 7){
+                    laser_ = false;
+                }
             }
 
         }//while
@@ -160,6 +185,8 @@ public:
     int jump_time_;
     bool laser_;
     bool left_collide_ = false;
+    double construct_hp_;
+    double construct_mp_;
 private:
     void index_update(int time, int &tmp_time, int delta_time, Clock &clock, int iters, int &index, int start_index){
         time = clock.getElapsedTime().asMilliseconds();
@@ -224,6 +251,10 @@ private:
         rectangles_laser_.push_back(IntRect(549, 0, 8, 8));
         //energy ball after trace scatter index 6
         rectangles_laser_.push_back(IntRect(559, 0, 9, 9));
+        //robot sprite while lasering index 7
+        rectangles_laser_.push_back(IntRect(534, 0, 14, 25));
+        //robot sprite while lasering #2 index 8
+        rectangles_laser_.push_back(IntRect(534, 25, 14, 25));
 
         //laser trails white
         for(int i = 0; i < 9; i++)
