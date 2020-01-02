@@ -2,9 +2,14 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include "PlayerClass.hpp"
 #include "EnemyClass.hpp"
 #include "BigPlatform.hpp"
+#include "DrawTrails.hpp"
+
 
 using namespace sf;
 double window_height = 600;
@@ -22,18 +27,25 @@ int main(){
     //activate it
     window.setView(view);
 
+    srand (time(NULL));
+    //generate secret number between 0 and 99: rand() % 100
+
     //the construct - our protagonist
     Texture construct_tex;
-    construct_tex.loadFromFile("assets/images/roboto_walk_idle_jump_4.png");
+    construct_tex.loadFromFile("assets/images/roboto_walk_idle_jump_laser_5.png");
     Sprite construct_sprite(construct_tex);
     construct_sprite.setTextureRect(IntRect(131, 50, 11, 25));
-    bool player_right, player_left, player_up, player_down;
+    // 1 - move left, 2 - move right, 4 - move up, 8 - move down
+    int construct_move = 0;
 
     //plasma sprite - for jumping
     Sprite plasma_booster_sprite(construct_tex);
 
+    //laser sprite - for disintegrating
+    Sprite laser_sprite(construct_tex);
+
     //making a player object
-    PlayerClass player(plasma_booster_sprite, construct_sprite, 0, 400);
+    PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, 0, 400);
 
     //background element
     Texture background;
@@ -88,10 +100,10 @@ int main(){
 
     //a little audio for out little game
     sf::Music music;
-    if (!music.openFromFile("assets/music/bg_dotf.ogg")){
+    if (!music.openFromFile("assets/music/bg_fa.ogg")){
         std::cout << "we have failed at music" << std::endl; // error
     }
-    music.setVolume(100.0f);
+    music.setVolume(0.3f);
     music.setLoop(true);
     music.play();
 
@@ -108,6 +120,40 @@ int main(){
         {
             if (event.type == sf::Event::Closed)
                 window.close();
+            if (event.type == sf::Event::KeyPressed){
+
+                    if(event.key.code == sf::Keyboard::Escape){
+                        window.close();
+                    }
+                    if(event.key.code == sf::Keyboard::A){
+                        construct_move |= 1;
+                    }
+                    if(event.key.code == sf::Keyboard::D){
+                        construct_move |= 2;
+                    }
+                    if(event.key.code == sf::Keyboard::W){
+                        construct_move |= 4;
+                    }
+                    if(event.key.code == sf::Keyboard::S){
+                        construct_move |= 8;
+                    }
+            }//key pressed
+            if (event.type == sf::Event::KeyReleased){
+
+                    if(event.key.code == sf::Keyboard::A){
+                        construct_move ^= 1;
+                    }
+                    if(event.key.code == sf::Keyboard::D){
+                        construct_move ^= 2;
+                    }
+                    if(event.key.code == sf::Keyboard::W){
+                        construct_move ^= 4;
+                    }
+                    if(event.key.code == sf::Keyboard::S){
+                        construct_move ^= 8;
+                    }
+            }//key released
+
             if (event.type == sf::Event::Resized)
                 {
                 // update the view to the new size of the window
@@ -128,146 +174,37 @@ int main(){
                 window.draw(backgroundSprite_2);
         }
 
-        //detect an arrow key press - i might find a better way for this logic
-        if(Keyboard::isKeyPressed(Keyboard::Right)){
-            player_right = true;
-        }
-
-        if(Keyboard::isKeyPressed(Keyboard::Left)){
-            player_left = true;
-        }
-
-        if(Keyboard::isKeyPressed(Keyboard::Up)){
-            player_up = true;
-        }
-
-        if(Keyboard::isKeyPressed(Keyboard::Down))
-            player_down = true;
-
-        if(!Keyboard::isKeyPressed(Keyboard::Right))
-            player_right = false;
-
-        if(!Keyboard::isKeyPressed(Keyboard::Left))
-            player_left = false;
-
-        if(!Keyboard::isKeyPressed(Keyboard::Up))
-            player_up = false;
-
-        if(!Keyboard::isKeyPressed(Keyboard::Down))
-            player_down = false;
-
         //let the player know if the key has been pressed
-        player.update(player_up, player_down, player_right, player_left, big_platforms);
+        player.update(construct_move, big_platforms);
 
         //here we center the view on the player
         view.setCenter(Vector2f(player.sprite_.getPosition().x, player.sprite_.getPosition().y - window_height/8));
         window.setView(view);
 
         //draw construct based on the keys pressed - draw the corresponding animation
-        if(player.jumping_ && player_left){
-            //TODO refactor this part of the code
+        if(!player.on_ground_ && (construct_move & 1)){
+
             player.sprite_.setTextureRect(IntRect(433, 0, 9, 25));
-            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[1]);
-            player.plasma_sprite_.setScale(4, 4);
-            player.plasma_sprite_.setPosition(player.sprite_.getPosition().x + 4, player.sprite_.getPosition().y + player.sprite_.getGlobalBounds().height - 4);
-            window.draw(player.plasma_sprite_);
-
-
-            player.plasma_sprite_.move(0, 4);
-            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_]);
-            window.draw(player.plasma_sprite_);
-
-            player.plasma_sprite_.move(4, 0);
-            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_+1]);
-            window.draw(player.plasma_sprite_);
-
-            player.plasma_sprite_.move(8, 0);
-            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_]);
-            window.draw(player.plasma_sprite_);
-
-            player.plasma_sprite_.move(8, 0);
-            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_]);
-            window.draw(player.plasma_sprite_);
-
-            player.plasma_sprite_.move(4, 0);
-            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_+2]);
-            window.draw(player.plasma_sprite_);
-
-            player.plasma_sprite_.move(4, 0);
-            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_+1]);
-            window.draw(player.plasma_sprite_);
+            //this functions draws the little animated trail when the robot is jumping
+            //dont look at this function implementation - its sickening
+            draw_left_trail(player, window);
 
         }
-        else if(player.jumping_ && player_right){
+        else if(!player.on_ground_ && (construct_move & 2)){
+
             player.sprite_.setTextureRect(IntRect(483, 0, 9, 25));
-
-            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[2]);
-            player.plasma_sprite_.setScale(4, 4);
-            player.plasma_sprite_.setPosition(player.sprite_.getPosition().x , player.sprite_.getPosition().y + player.sprite_.getGlobalBounds().height - 4);
-            window.draw(player.plasma_sprite_);
-
-
-            player.plasma_sprite_.move(0, 4);
-            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_]);
-            window.draw(player.plasma_sprite_);
-
-            player.plasma_sprite_.move(4, 0);
-            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_+1]);
-            window.draw(player.plasma_sprite_);
-
-            player.plasma_sprite_.move(8, 0);
-            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_]);
-            window.draw(player.plasma_sprite_);
-
-            player.plasma_sprite_.move(8, 0);
-            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_]);
-            window.draw(player.plasma_sprite_);
-
-            player.plasma_sprite_.move(4, 0);
-            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_+2]);
-            window.draw(player.plasma_sprite_);
-
-            player.plasma_sprite_.move(4, 0);
-            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_+1]);
-            window.draw(player.plasma_sprite_);
-
+            draw_right_trail(player, window);
 
         }
-        else if(player.jumping_ && !player_left && !player_right){
+        else if(!player.on_ground_ && !((construct_move & 1) || (construct_move & 2))){
+
             player.sprite_.setTextureRect(IntRect(477, 50, 21, 25));
+            draw_middle_trail(player, window);
 
-            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[0]);
-            player.plasma_sprite_.setScale(4, 4);
-            player.plasma_sprite_.setPosition(player.sprite_.getPosition().x + 24, player.sprite_.getPosition().y + player.sprite_.getGlobalBounds().height);
-            window.draw(player.plasma_sprite_);
-
-            player.plasma_sprite_.move(0, 4);
-            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_]);
-            window.draw(player.plasma_sprite_);
-
-            player.plasma_sprite_.move(4, 0);
-            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_+1]);
-            window.draw(player.plasma_sprite_);
-
-            player.plasma_sprite_.move(8, 0);
-            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_]);
-            window.draw(player.plasma_sprite_);
-
-            player.plasma_sprite_.move(8, 0);
-            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_]);
-            window.draw(player.plasma_sprite_);
-
-            player.plasma_sprite_.move(4, 0);
-            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_+2]);
-            window.draw(player.plasma_sprite_);
-
-            player.plasma_sprite_.move(8, 0);
-            player.plasma_sprite_.setTextureRect(player.rectangles_plasma_booster_[player.rectangles_index_jump_+1]);
-            window.draw(player.plasma_sprite_);
         }
-        else if(player_right)
+        else if(construct_move & 2)
             player.sprite_.setTextureRect(player.rectanglesRight_[player.rectangles_index_]);
-        else if(player_left){
+        else if(construct_move & 1){
             player.sprite_.setTextureRect(player.rectanglesLeft_[player.rectangles_index_]);
         }
         else{
@@ -278,11 +215,16 @@ int main(){
             std::cout << "Congratulations! you died!" << std::endl;
             player.sprite_.setPosition(0, 400);
         }
+
         window.draw(player.sprite_);
+        player.laser_sprite_.setTextureRect(player.rectangles_laser_[player.rectangles_index_laser_]);
+        player.laser_sprite_.setPosition(player.sprite_.getPosition().x + 100, player.sprite_.getPosition().y + 50);
+        player.laser_sprite_.setScale(4, 4);
+        //window.draw(player.laser_sprite_);
+
 
         //TODO platforms and creatures are level specific they should be encapsulated
         if(level == 1){
-
         //draw platforms
         for(auto bp : big_platforms){
                 for(auto plat : bp.platforms_)
@@ -291,14 +233,14 @@ int main(){
 
         //fireball collision
         if(imp_1.fireball_sprite_.getGlobalBounds().intersects(player.sprite_.getGlobalBounds())){
-                    //std::cout << "Fire has collided: " << iz <<std::endl;
-                    //iz++;
+                //TODO actual collision
             }
 
         //draw the little imp bastard
         window.draw(imp_1.sprite_);
         //window.draw(imp_1.fireball_sprite_);
-        }
+
+        }//first level end
         else if(level == 2){
             std::cout << "Comming soon! A whole new level! new enemies! new puzzles to solve! hazza!" << std::endl;
         }

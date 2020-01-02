@@ -13,13 +13,15 @@ extern Clock bigTime;
 class PlayerClass : public GameObject{
 public:
 
-    PlayerClass(Sprite plasma_sprite, Sprite sprite, double x_pos, double y_pos) : GameObject(x_pos, y_pos), sprite_(sprite), plasma_sprite_(plasma_sprite){
+    PlayerClass(Sprite laser_sprite, Sprite plasma_sprite, Sprite sprite, double x_pos, double y_pos)
+     : GameObject(x_pos, y_pos), sprite_(sprite), plasma_sprite_(plasma_sprite), laser_sprite_(laser_sprite){
         sprite_.setPosition(GameObject::x_pos_, GameObject::y_pos_);
-        jumping_ = false;
+        laser_ = true;
         jump_time_ = 0;
         scale_ = 4;
         sprite_.setScale(scale_, scale_);
         plasma_sprite.setScale(scale_, scale_);
+        laser_sprite.setScale(scale_, scale_);
         on_ground_ = true;
 
         init_rectangles();
@@ -27,63 +29,32 @@ public:
     }
 
     //gain velocity if a button is pressed
-    void update(bool player_up,bool player_down,bool player_right,bool player_left, std::vector<BigPlatform>& platforms){
+    void update(int construct_move, std::vector<BigPlatform>& platforms){
         int time;
         int delta_time = 500;
-        if(player_up){
-            if(!jumping_){
-                jumping_ = true;
-                jump_time_ = bigTime.getElapsedTime().asMilliseconds();
-                on_ground_ = false;
+        if(construct_move & 4){
+            if(on_ground_){
+               jump_time_ = bigTime.getElapsedTime().asMilliseconds();
+               on_ground_ = false;
             }
         }
-        if(!jumping_){
-            y_vel_ = VEL;
+        y_vel_ = VEL;
+        if(!(construct_move & 1 || construct_move & 2)){
+            x_vel_ = 0;
         }
-        if(player_up && player_down){
-            y_vel_ = 0;
-        }
-        if(!player_up && !player_down){
-            y_vel_ = VEL;
-        }
-        if(player_left){
+        if(construct_move & 1){
             x_vel_ = -VEL;
         }
-        if(player_right){
+        if(construct_move & 2){
             x_vel_ = VEL;
-        }
-        if(player_left && player_right){
-            x_vel_ = 0;
-        }
-        if(!player_left && !player_right){
-            x_vel_ = 0;
-        }
-        if(player_left && player_up){
-            x_vel_ = 0;
-            y_vel_ = 0;
-        }
-        if(player_left && player_down){
-            x_vel_ = 0;
-            y_vel_ = 0;
-        }
-        if(player_up && player_right){
-            x_vel_ = 0;
-            y_vel_ = 0;
-        }
-        if(player_down && player_right){
-            x_vel_ = 0;
-            y_vel_ = 0;
         }
 
         //move the sprite
         time = bigTime.getElapsedTime().asMilliseconds();
-        if(jumping_ && jump_time_ + delta_time > time){
+        if(!on_ground_ && jump_time_ + delta_time > time){
             y_vel_ = -VEL;
         }
-        else if(jumping_ && !on_ground_){
-            y_vel_ = VEL;
-        }else if(jumping_  && on_ground_){
-            jumping_ = false;
+        else if(on_ground_){
             rectangles_index_jump_ = 3;
         }
         sprite_.move(Vector2f(0, y_vel_));
@@ -93,8 +64,6 @@ public:
         if(!left_collide_)
             sprite_.move(Vector2f(x_vel_, 0));
         collision(x_vel_, 0, platforms);
-
-
 
     }
 
@@ -150,13 +119,20 @@ public:
         int jump_animation_time = 0;
         int current_jump_animation_time = 0;
 
+        Clock laser_clock;
+        int laser_time = 0;
+        int current_laser_time = 0;
+
         while(true){
 
             index_update(time_idle, current_frame_time_idle, delta_time, game_clock_idle, 4, rectangles_index_idle_, 0);
             index_update(time, current_frame_time, delta_time, game_clock, 5, rectangles_index_, 0);
 
-            if(jumping_){
-                index_update(jump_animation_time, current_jump_animation_time, 100, jump_anime_clock, 7, rectangles_index_jump_, 3);
+            if(!on_ground_){
+                index_update(jump_animation_time, current_jump_animation_time, 75, jump_anime_clock, 9, rectangles_index_jump_, 3);
+            }
+            if(laser_){
+                index_update(laser_time, current_laser_time, 175, laser_clock, 6, rectangles_index_laser_, 0);
             }
 
         }//while
@@ -167,17 +143,22 @@ public:
     std::vector<IntRect> rectanglesRight_;
     std::vector<IntRect> rectanglesLeft_;
     std::vector<IntRect> rectangles_plasma_booster_;
+    std::vector<IntRect> rectangles_laser_;
+    std::vector<IntRect> rectangles_laser_trails_;
     bool on_ground_;
     int rectangles_index_idle_;
     int rectangles_index_;
     int rectangles_index_jump_;
+    int rectangles_index_laser_;
+    int rectangles_index_laser_trails_;
     Sprite sprite_;
     Sprite plasma_sprite_;
+    Sprite laser_sprite_;
     double scale_;
     double x_vel_;
     double y_vel_;
     int jump_time_;
-    bool jumping_;
+    bool laser_;
     bool left_collide_ = false;
 private:
     void index_update(int time, int &tmp_time, int delta_time, Clock &clock, int iters, int &index, int start_index){
@@ -199,6 +180,8 @@ private:
         rectangles_index_idle_ = 0;
         rectangles_index_ = 0;
         rectangles_index_jump_ = 3;
+        rectangles_index_laser_ = 0;
+        rectangles_index_laser_trails_ = 0;
 
         for (int i = 0; i < 6; i++){
             rectanglesRight_.push_back(IntRect(131 + i*25, 50, 12, 25));
@@ -219,8 +202,38 @@ private:
         //right
         rectangles_plasma_booster_.push_back(IntRect(483, 24, 8, 3));
 
-        for(int i = 0; i < 7; i++)
-            rectangles_plasma_booster_.push_back(IntRect(503 + i, 51, 1, 1 + i));
+        //plasma trail blue
+        for(int i = 0; i < 9; i++)
+            rectangles_plasma_booster_.push_back(IntRect(500 + i, 50, 1, 1 + i));
+
+        //plasma trail white
+        for(int i = 0; i < 9; i++)
+            rectangles_plasma_booster_.push_back(IntRect(509 + i, 50, 1, 1 + i));
+
+        //laser ball index 0
+        rectangles_laser_.push_back(IntRect(569, 0, 8, 8));
+        //laser beam small index 1
+        rectangles_laser_.push_back(IntRect(549, 17, 251, 6));
+        //laser beam big index 2
+        rectangles_laser_.push_back(IntRect(549, 9, 251, 8));
+        //laser beam big color change index 3
+        rectangles_laser_.push_back(IntRect(549, 34, 251, 8));
+        //darker finishing trace for the laser index 4
+        rectangles_laser_.push_back(IntRect(549, 42, 251, 6));
+        //energy ball after trace index 5
+        rectangles_laser_.push_back(IntRect(549, 0, 8, 8));
+        //energy ball after trace scatter index 6
+        rectangles_laser_.push_back(IntRect(559, 0, 9, 9));
+
+        //laser trails white
+        for(int i = 0; i < 9; i++)
+            rectangles_laser_trails_.push_back(IntRect(550 + i, 25, 1, 9 - i));
+        //blue
+        for(int i = 0; i < 9; i++)
+            rectangles_laser_trails_.push_back(IntRect(559 + i, 25, 1, 9 - i));
+
+
+
     }
 };
 
