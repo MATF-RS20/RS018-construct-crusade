@@ -52,7 +52,7 @@ int main(){
 
     //platform initialization
     std::vector<BigPlatform> big_platforms;
-    int platform_distance = 750;
+    int platform_distance = 800;
     int fixed_platform_height = 500;
     int platform_height_offset = 50;
 
@@ -88,10 +88,10 @@ int main(){
 
     //a little audio for out little game
     sf::Music music;
-    if (!music.openFromFile("assets/music/bg_pop.ogg")){
+    if (!music.openFromFile("assets/music/bg_dotf.ogg")){
         std::cout << "we have failed at music" << std::endl; // error
     }
-    music.setVolume(0.3f);
+    music.setVolume(100.0f);
     music.setLoop(true);
     music.play();
 

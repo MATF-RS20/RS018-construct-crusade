@@ -124,7 +124,7 @@ public:
                     left_collide_ = true;
                 }
                 if(delta_x < 0){
-                    sprite_.setPosition(Vector2f(bp.platform_bot_ + 5, sprite_.getPosition().y));
+                    sprite_.setPosition(Vector2f(bp.platform_right_ + 5, sprite_.getPosition().y));
                 }
 
             }
