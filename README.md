@@ -13,6 +13,6 @@ Kratak opis projekta: 2D platformer
 Koriscene biblioteke: SFML-2.5.1
 
 nacin pokretanja projekta u windows-u:
-koristimo Code Blocks, a ovde:
+  koristimo Code Blocks, a ovd -
 https://www.youtube.com/watch?v=4qq3T2DXaKQ&list=PL2RPjWnJduNlK7KsW2PJXoYDEdp539WIr&index=7
-- je lepo objasnjeno kako se linkuju stvari
+ je lepo objasnjeno kako se linkuju stvari
