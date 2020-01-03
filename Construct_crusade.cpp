@@ -11,6 +11,7 @@
 #include "DrawTrails.hpp"
 #include "Bars.hpp"
 #include "Level_one.hpp"
+#include "Level_two.hpp"
 
 using namespace sf;
 double window_height = 600;
@@ -22,7 +23,8 @@ bool laser_hit_ind = false;
 Clock bigTime;
 
 int main(){
-
+    //soon there will be another
+    int level = 1;
     //create the main window
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Construct Crusade!");
 
@@ -57,6 +59,12 @@ int main(){
     hp_tex.loadFromFile("assets/images/hp_mp_bars.png");
     Sprite hp_sprite(hp_tex);
 
+    sf::Thread cunstruct_thread(&PlayerClass::Animation, &player);
+    cunstruct_thread.launch();
+
+    //for recovering mana
+    sf::Thread mana_thread(&PlayerClass::mana_recovery, &player);
+
     //background element
     Texture background;
     background.loadFromFile("assets/images/sky.png");
@@ -72,6 +80,9 @@ int main(){
 
     //platform initialization
     std::vector<BigPlatform> big_platforms;
+
+
+
     int platform_distance = 800;
     int fixed_platform_height = 500;
     int platform_height_offset = 75;
@@ -88,6 +99,7 @@ int main(){
     for(int j = 1; j < 10; j++){
         big_platforms.push_back(BigPlatform(-platform_distance*j, fixed_platform_height - (j%3)*platform_height_offset, 10, platform_sprite));
     }
+    big_platforms.push_back(BigPlatform(0, -400, 10, platform_sprite));
 
     //imp initialization
     Texture imp;
@@ -107,12 +119,6 @@ int main(){
     //start the thread
     imp_thread.launch();
 
-    sf::Thread cunstruct_thread(&PlayerClass::Animation, &player);
-    cunstruct_thread.launch();
-
-    //for recovering mana
-    sf::Thread mana_thread(&PlayerClass::mana_recovery, &player);
-
     //a little audio for out little game
     sf::Music music;
     if (!music.openFromFile("assets/music/bg_fa.ogg")){
@@ -122,8 +128,13 @@ int main(){
     music.setLoop(true);
     music.play();
 
-    //soon there will be another
-    int level = 1;
+    //inicijalizacije za NIVO 2
+
+    //platforme za nivo 2
+    std::vector<BigPlatform> big_platforms_2;
+
+    //prva platforma nivoa 2
+    big_platforms_2.push_back(BigPlatform(0, -400, 10, platform_sprite));
 
     //start the main loop
     while (window.isOpen())
@@ -152,7 +163,7 @@ int main(){
                     if(event.key.code == sf::Keyboard::S){
                         construct_move |= 8;
                     }if(event.key.code == sf::Keyboard::E){
-                        if(player.construct_mp_ == 100){
+                        if(player.construct_mp_ == 100 && player.on_ground_){
                             player.laser_ = true;
                             laser_hit_ind = true;
                             player.construct_mp_ = 0;
@@ -279,14 +290,22 @@ int main(){
             player.construct_mp_ = 100.0;
         }
 
-        if(level == 1){
-                level_one(window, big_platforms, imp_1, player, hp_sprite);
-        }//first level end
-        else if(level == 2){
-            std::cout << "Comming soon! A whole new level! new enemies! new puzzles to solve! hazza!" << std::endl;
-        }
+    //deo specifican za svaki nivo
+    if(level == 1){
+        level_one(window, big_platforms, imp_1, player, hp_sprite);
 
-        window.display();
+        //prelaz iz nivoa 1 u nivo 2
+        //level = 2;
+        //player.sprite_.setPosition(0, -500);
+    }
+    else if(level == 2){
+
+        level_two(window, big_platforms_2, player);
+
+    }
+
+    window.display();
+
     }//while loop
 
     return 0;

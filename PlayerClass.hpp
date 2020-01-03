@@ -120,8 +120,10 @@ public:
             if(mana_tmp_time + mana_delta_time < mana_time){
                 mana_tmp_time = mana_time;
                 construct_mp_ += 5;
-                if(construct_mp_ == 100)
+                if(construct_mp_ >= 100){
+                    construct_mp_ = 100;
                     break;
+                }
             }
         }
 
