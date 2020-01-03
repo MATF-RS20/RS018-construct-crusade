@@ -88,7 +88,7 @@ int main(){
     for(int j = 1; j < 10; j++){
         big_platforms.push_back(BigPlatform(-platform_distance*j, fixed_platform_height - (j%3)*platform_height_offset, 10, platform_sprite));
     }
-
+    big_platforms.push_back(BigPlatform(0, -400, 10, platform_sprite));
     //imp initialization
     Texture imp;
     imp.loadFromFile("assets/images/imp.png");
@@ -258,7 +258,7 @@ int main(){
                 player.construct_mp_ = 0.0;
              }
         }
-            window.draw(player.sprite_);
+            //window.draw(player.sprite_);
         }
 
 
@@ -278,11 +278,19 @@ int main(){
             player.construct_hp_ = 100.0;
             player.construct_mp_ = 100.0;
         }
-
+        level = 2;
         if(level == 1){
                 level_one(window, big_platforms, imp_1, player, hp_sprite);
         }//first level end
         else if(level == 2){
+            player.sprite_.setPosition(player.sprite_.getPosition().x, -500);
+            window.draw(player.sprite_);
+
+            for(auto bp : big_platforms){
+                for(auto plat : bp.platforms_)
+                    window.draw(plat.sprite_);
+        }
+
             std::cout << "Comming soon! A whole new level! new enemies! new puzzles to solve! hazza!" << std::endl;
         }
 
