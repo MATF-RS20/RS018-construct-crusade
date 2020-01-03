@@ -16,6 +16,8 @@ public:
         sprite_.setPosition(GameObject::x_pos_, GameObject::y_pos_);
         fireball_sprite_.setPosition(GameObject::x_pos_, GameObject::y_pos_);
         imp_hp_ = 100.0;
+        facing_left_ = true;
+        attacking_ = false;
         scale_ = 4;
         sprite_.setScale(scale_, scale_);
         fireball_sprite_.setScale(scale_, scale_);
@@ -77,10 +79,13 @@ public:
 
             index_update(damage_time, damage_tmp_time, delta_time, damage_clock, 3, rectangles_index_damage_);
 
-            index_update(death_time, death_tmp_time, delta_time, death_clock, 5, rectangles_index_death_);
+            if(imp_hp_ <= 0)
+                index_update(death_time, death_tmp_time, delta_time, death_clock, 5, rectangles_index_death_);
 
-            index_update(fireball_time, fireball_tmp_time, delta_time, fireball_clock, 6, rectangles_index_fireball_);
+            if(attacking_)
+                index_update(fireball_time, fireball_tmp_time, delta_time + 200, fireball_clock, 6, rectangles_index_fireball_);
 
+            if(!attacking_  && imp_hp_ > 0){
             phase_time = phase_clock.getElapsedTime().asMilliseconds();
 
             if(phase_time > phase_time_tmp + phase_delta){
@@ -94,29 +99,58 @@ public:
                 move_phase_ = 0;
             }
 
-            if(imp_hp_ <= 0) move_phase_ = 8;
+
             if(move_phase_ == 0 || move_phase_ == 2){
                 sprite_.setTextureRect(rectangles_imp_idle_[rectangles_index_]);
                 }
             else if(move_phase_ == 1){
+                facing_left_ = true;
                 sprite_.setPosition(Vector2f(sprite_.getPosition().x-0.00009f, sprite_.getPosition().y));
                 sprite_.setTextureRect(rectangles_imp_walk_left_[rectangles_index_walk_]);
             }else if(move_phase_ == 3){
+                facing_left_ = false;
                 sprite_.setPosition(Vector2f(sprite_.getPosition().x+0.00009f, sprite_.getPosition().y));
                 sprite_.setTextureRect(rectangles_imp_walk_right_[rectangles_index_walk_]);
-            }else if(move_phase_ == 4){
-                if(rectangles_index_attack_ < 2)
-                    fireball_sprite_.setPosition(sprite_.getPosition().x + 48, sprite_.getPosition().y + 20);
-                else if(rectangles_index_attack_ == 2)
-                    fireball_sprite_.setPosition(sprite_.getPosition().x + -28, sprite_.getPosition().y + 20);
-                else{
-                    fireball_sprite_.move(Vector2f(-0.001, 0.0));
-                }
+            }
 
-                sprite_.setTextureRect(rectangles_imp_attack_left_[rectangles_index_attack_]);
-                fireball_sprite_.setTextureRect(rectangles_imp_fireBall_left_[rectangles_index_attack_]);
-            }else if(move_phase_ == 8){
-                sprite_.setTextureRect(rectangles_imp_death_left_[rectangles_index_death_]);
+            }
+
+
+            //if(attacking_) move_phase_ = 5;
+            //if(imp_hp_ <= 0) move_phase_ = 8;
+
+
+            if(attacking_){
+                if(facing_left_){
+                    if(rectangles_index_attack_ < 2)
+                        fireball_sprite_.setPosition(sprite_.getPosition().x + 48, sprite_.getPosition().y + 20);
+                    else if(rectangles_index_attack_ == 2)
+                        fireball_sprite_.setPosition(sprite_.getPosition().x + -28, sprite_.getPosition().y + 20);
+                    else
+                        fireball_sprite_.move(Vector2f(-0.0015, 0.0));
+
+
+                    sprite_.setTextureRect(rectangles_imp_attack_left_[rectangles_index_attack_]);
+                    fireball_sprite_.setTextureRect(rectangles_imp_fireBall_left_[rectangles_index_attack_]);
+                }else{
+                    if(rectangles_index_attack_ < 2)
+                        fireball_sprite_.setPosition(sprite_.getPosition().x, sprite_.getPosition().y + 20);
+                    else if(rectangles_index_attack_ == 2)
+                        fireball_sprite_.setPosition(sprite_.getPosition().x + 28, sprite_.getPosition().y + 20);
+                    else
+                        fireball_sprite_.move(Vector2f(0.0015, 0.0));
+
+
+                    sprite_.setTextureRect(rectangles_imp_attack_right_[rectangles_index_attack_]);
+                    fireball_sprite_.setTextureRect(rectangles_imp_fireBall_right_[rectangles_index_attack_]);
+                    }
+            }
+
+            if(imp_hp_ <= 0){
+                attacking_ = false;
+                if(facing_left_){
+                    sprite_.setTextureRect(rectangles_imp_death_left_[rectangles_index_death_]);
+                    }
 
                 if(rectangles_index_death_ == 5){
                     break;
@@ -150,6 +184,8 @@ public:
     double x_vel_;
     double y_vel_;
     double imp_hp_;
+    bool facing_left_;
+    bool attacking_;
     int move_phase_;
 
 private:

@@ -145,10 +145,18 @@ public:
         int laser_time = 0;
         int current_laser_time = 0;
 
+        Clock death_clock;
+        int death_time = 0;
+        int current_death_time = 0;
+
         while(true){
 
             index_update(time_idle, current_frame_time_idle, delta_time, game_clock_idle, 4, rectangles_index_idle_, 0);
             index_update(time, current_frame_time, delta_time, game_clock, 5, rectangles_index_, 0);
+
+            if(construct_hp_ <= 0){
+                index_update(death_time, current_death_time, delta_time, death_clock, 11, rectangles_index_death_, 0);
+            }
 
             if(!on_ground_){
                 index_update(jump_animation_time, current_jump_animation_time, 75, jump_anime_clock, 9, rectangles_index_jump_, 3);
@@ -170,12 +178,14 @@ public:
     std::vector<IntRect> rectangles_plasma_booster_;
     std::vector<IntRect> rectangles_laser_;
     std::vector<IntRect> rectangles_laser_trails_;
+    std::vector<IntRect> rectangles_death_;
     bool on_ground_;
     int rectangles_index_idle_;
     int rectangles_index_;
     int rectangles_index_jump_;
     int rectangles_index_laser_;
     int rectangles_index_laser_trails_;
+    int rectangles_index_death_;
     Sprite sprite_;
     Sprite plasma_sprite_;
     Sprite laser_sprite_;
@@ -209,6 +219,7 @@ private:
         rectangles_index_jump_ = 3;
         rectangles_index_laser_ = 0;
         rectangles_index_laser_trails_ = 0;
+        rectangles_index_death_ = 0;
 
         for (int i = 0; i < 6; i++){
             rectanglesRight_.push_back(IntRect(131 + i*25, 50, 12, 25));
@@ -262,6 +273,17 @@ private:
         //blue
         for(int i = 0; i < 9; i++)
             rectangles_laser_trails_.push_back(IntRect(559 + i, 25, 1, 9 - i));
+
+        for(int i = 0; i < 7; i++)
+            rectangles_death_.push_back(IntRect(0 + 25*i, 75, 25, 25));
+
+        rectangles_death_.push_back(IntRect(175, 75, 29, 25));
+
+        rectangles_death_.push_back(IntRect(204, 75, 35, 25));
+
+        rectangles_death_.push_back(IntRect(239, 75, 35, 25));
+
+        rectangles_death_.push_back(IntRect(274, 75, 35, 25));
 
 
 

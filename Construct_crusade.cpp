@@ -44,12 +44,12 @@ void draw_player_hp_mp(RenderWindow &window, PlayerClass &player, Sprite hp_spri
 void draw_imp_hp(RenderWindow &window,EnemyClass &imp_1,Sprite hp_sprite){
 
         if(imp_1.imp_hp_ > 0){
-            hp_sprite.setTextureRect(IntRect(1, 65, 110*imp_1.imp_hp_/100.0, 8));
+            hp_sprite.setTextureRect(IntRect(0, 65, 1 + 110*imp_1.imp_hp_/100.0, 8));
             hp_sprite.setScale(0.6, 1);
             hp_sprite.setPosition(imp_1.sprite_.getPosition().x, imp_1.sprite_.getPosition().y - 20);
             window.draw(hp_sprite);
         }
-        hp_sprite.setTextureRect(IntRect(0, 81, 111, 8));
+        hp_sprite.setTextureRect(IntRect(0, 81, 112, 8));
         hp_sprite.setScale(0.6, 1);
         hp_sprite.setPosition(imp_1.sprite_.getPosition().x, imp_1.sprite_.getPosition().y - 20);
         window.draw(hp_sprite);
@@ -72,11 +72,12 @@ int main(){
 
     //the construct - our protagonist
     Texture construct_tex;
-    construct_tex.loadFromFile("assets/images/roboto_walk_idle_jump_laser_6.png");
+    construct_tex.loadFromFile("assets/images/roboto_walk_idle_jump_laser_RIP_2.png");
     Sprite construct_sprite(construct_tex);
     construct_sprite.setTextureRect(IntRect(131, 50, 11, 25));
     // 1 - move left, 2 - move right, 4 - move up, 8 - move down
     int construct_move = 0;
+    bool RIP_construct = false;
 
     //plasma sprite - for jumping
     Sprite plasma_booster_sprite(construct_tex);
@@ -134,7 +135,10 @@ int main(){
     fireball_sprite.setTextureRect(IntRect(10, 211, 18, 15));
     imp_sprite.setTextureRect(IntRect(23, 377, 1, 1));
 
-    EnemyClass imp_1(imp_sprite, fireball_sprite, 500, 441);
+    EnemyClass imp_1(imp_sprite, fireball_sprite, 1000, 391);
+
+    //so the fireball hits only once
+    bool fireball_attack_ind = true;
 
     //these threads do all the animation calculations - yes i said THREADS... IM A REAL PROGRAMMER!
     //create a thread asign a function and an object to the thread
@@ -232,53 +236,67 @@ int main(){
                 window.draw(backgroundSprite_2);
         }
 
-        //let the player know if the key has been pressed
-        player.update(construct_move, big_platforms);
 
-        //here we center the view on the player
-        view.setCenter(Vector2f(player.sprite_.getPosition().x, player.sprite_.getPosition().y - window_height/8));
-        window.setView(view);
 
         //draw construct based on the keys pressed - draw the corresponding animation
-        if(!player.on_ground_ && (construct_move & 1)){
+        if(!RIP_construct){
 
-            player.sprite_.setTextureRect(IntRect(433, 0, 9, 25));
-            //this functions draws the little animated trail when the robot is jumping
-            //dont look at this function implementation - its sickening
-            draw_left_trail(player, window);
+            //let the player know if the key has been pressed
+            player.update(construct_move, big_platforms);
 
+            //here we center the view on the player
+            view.setCenter(Vector2f(player.sprite_.getPosition().x, player.sprite_.getPosition().y - window_height/8));
+            window.setView(view);
+
+            if(!player.on_ground_ && (construct_move & 1)){
+
+                player.sprite_.setTextureRect(IntRect(433, 0, 9, 25));
+                //this functions draws the little animated trail when the robot is jumping
+                //dont look at this function implementation - its sickening
+                draw_left_trail(player, window);
+
+            }
+            else if(!player.on_ground_ && (construct_move & 2)){
+
+                player.sprite_.setTextureRect(IntRect(483, 0, 9, 25));
+                draw_right_trail(player, window);
+
+            }
+            else if(!player.on_ground_ && !((construct_move & 1) || (construct_move & 2))){
+
+                player.sprite_.setTextureRect(IntRect(477, 50, 21, 25));
+                draw_middle_trail(player, window);
+
+            }
+            else if(construct_move & 2)
+                player.sprite_.setTextureRect(player.rectanglesRight_[player.rectangles_index_]);
+            else if(construct_move & 1){
+                player.sprite_.setTextureRect(player.rectanglesLeft_[player.rectangles_index_]);
+            }
+            else{
+                player.sprite_.setTextureRect(player.rectanglesIdle_[player.rectangles_index_idle_]);
+            }
+
+            if(player.sprite_.getPosition().y > 750){
+                std::cout << "Congratulations! you died!" << std::endl;
+                player.sprite_.setPosition(0, 400);
+            }
+
+            if(player.laser_){
+                player.sprite_.setTextureRect(player.rectangles_laser_[7 + player.rectangles_index_laser_ % 2]);
+            }
+
+            if(player.construct_hp_ <= 0){
+             player.sprite_.setTextureRect(player.rectangles_death_[player.rectangles_index_death_]);
+
+             if(player.rectangles_index_death_ == 10){
+                RIP_construct = true;
+                player.construct_mp_ = 0.0;
+             }
         }
-        else if(!player.on_ground_ && (construct_move & 2)){
-
-            player.sprite_.setTextureRect(IntRect(483, 0, 9, 25));
-            draw_right_trail(player, window);
-
-        }
-        else if(!player.on_ground_ && !((construct_move & 1) || (construct_move & 2))){
-
-            player.sprite_.setTextureRect(IntRect(477, 50, 21, 25));
-            draw_middle_trail(player, window);
-
-        }
-        else if(construct_move & 2)
-            player.sprite_.setTextureRect(player.rectanglesRight_[player.rectangles_index_]);
-        else if(construct_move & 1){
-            player.sprite_.setTextureRect(player.rectanglesLeft_[player.rectangles_index_]);
-        }
-        else{
-            player.sprite_.setTextureRect(player.rectanglesIdle_[player.rectangles_index_idle_]);
+            window.draw(player.sprite_);
         }
 
-        if(player.sprite_.getPosition().y > 750){
-            std::cout << "Congratulations! you died!" << std::endl;
-            player.sprite_.setPosition(0, 400);
-        }
-
-        if(player.laser_){
-            player.sprite_.setTextureRect(player.rectangles_laser_[7 + player.rectangles_index_laser_ % 2]);
-        }
-
-        window.draw(player.sprite_);
 
         draw_player_hp_mp(window, player, hp_sprite);
 
@@ -299,10 +317,48 @@ int main(){
                     window.draw(plat.sprite_);
         }
 
+
+        //draw the little imp bastard
+        window.draw(imp_1.sprite_);
+
+        draw_imp_hp(window, imp_1, hp_sprite);
+
+        //attack phase checker
+        if(player.sprite_.getPosition().x > imp_1.sprite_.getPosition().x - 400 && player.sprite_.getPosition().x < imp_1.sprite_.getPosition().x + 400 && imp_1.move_phase_ != 8){
+            if(player.sprite_.getPosition().x < imp_1.sprite_.getPosition().x){
+                imp_1.facing_left_ = true;
+        }
+            else{
+                imp_1.facing_left_ = false;
+                }
+            imp_1.attacking_ = true;
+
+        }else{
+            imp_1.attacking_ = false;
+        }
+
+        if(imp_1.attacking_){
+            window.draw(imp_1.fireball_sprite_);
+        }
+
+
         //fireball collision
-        //TODO - make this work only when it supposed to
+        if(imp_1.rectangles_index_attack_ == 0){
+                    fireball_attack_ind = true;
+                }
+
+        //patching until i implementa a destructor
+        if(imp_1.move_phase_ == 8){
+            fireball_attack_ind = false;
+        }
+
         if(imp_1.fireball_sprite_.getGlobalBounds().intersects(player.sprite_.getGlobalBounds())){
-                //TODO actual collision
+            if(fireball_attack_ind && !RIP_construct){
+                    fireball_attack_ind = false;
+                    player.construct_hp_ -= 10;
+                    if(player.construct_hp_ < 0)
+                        player.construct_hp_ = 0;
+                }
             }
 
         //laser collision
@@ -310,17 +366,12 @@ int main(){
             if(player.laser_sprite_.getGlobalBounds().intersects(imp_1.sprite_.getGlobalBounds())){
                     //if we hit the imp reduce his hp
                     if(laser_hit_ind){
-                        imp_1.imp_hp_ -= 50;
+                        imp_1.imp_hp_ -= 10;
                         laser_hit_ind = false;
                     }
             }
         }
 
-        //draw the little imp bastard
-        window.draw(imp_1.sprite_);
-        //window.draw(imp_1.fireball_sprite_);
-
-        draw_imp_hp(window, imp_1, hp_sprite);
 
 
         }//first level end
