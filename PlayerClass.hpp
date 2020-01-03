@@ -19,6 +19,7 @@ public:
         construct_hp_ = 100.0;
         construct_mp_ = 100.0;
         laser_ = false;
+        facing_left_ = false;
         jump_time_ = 0;
         scale_ = 4;
         sprite_.setScale(scale_, scale_);
@@ -43,12 +44,15 @@ public:
         y_vel_ = VEL;
         if(!(construct_move & 1 || construct_move & 2)){
             x_vel_ = 0;
+            facing_left_ = false;
         }
         if(construct_move & 1){
             x_vel_ = -VEL;
+            facing_left_ = true;
         }
         if(construct_move & 2){
             x_vel_ = VEL;
+            facing_left_ = false;
         }
 
         //move the sprite
@@ -195,6 +199,7 @@ public:
     int jump_time_;
     bool laser_;
     bool left_collide_ = false;
+    bool facing_left_;
     double construct_hp_;
     double construct_mp_;
 private:
@@ -274,6 +279,7 @@ private:
         for(int i = 0; i < 9; i++)
             rectangles_laser_trails_.push_back(IntRect(559 + i, 25, 1, 9 - i));
 
+        //right
         for(int i = 0; i < 7; i++)
             rectangles_death_.push_back(IntRect(0 + 25*i, 75, 25, 25));
 
@@ -284,6 +290,18 @@ private:
         rectangles_death_.push_back(IntRect(239, 75, 35, 25));
 
         rectangles_death_.push_back(IntRect(274, 75, 35, 25));
+
+        //left
+        for(int i = 0; i < 7; i++)
+            rectangles_death_.push_back(IntRect(300 - 25*i, 100, 25, 25));
+
+        rectangles_death_.push_back(IntRect(121, 100, 29, 25));
+
+        rectangles_death_.push_back(IntRect(86, 100, 35, 25));
+
+        rectangles_death_.push_back(IntRect(51, 100, 35, 25));
+
+        rectangles_death_.push_back(IntRect(16, 100, 35, 25));
 
 
 

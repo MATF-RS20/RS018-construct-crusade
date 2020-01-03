@@ -9,52 +9,17 @@
 #include "EnemyClass.hpp"
 #include "BigPlatform.hpp"
 #include "DrawTrails.hpp"
-
+#include "Bars.hpp"
+#include "Level_one.hpp"
 
 using namespace sf;
 double window_height = 600;
 double window_width = 1200;
+bool RIP_construct = false;
+//so the fireball hits only once
+bool fireball_attack_ind = true;
+bool laser_hit_ind = false;
 Clock bigTime;
-
-//TODO maybe seporate this into a hpp file
-void draw_player_hp_mp(RenderWindow &window, PlayerClass &player, Sprite hp_sprite){
-
-        //we draw the hp bar propartionally to the amount of hp left
-        hp_sprite.setTextureRect(IntRect(8, 14, 64*player.construct_hp_/100.0, 9));
-        hp_sprite.setScale(2, 2);
-        hp_sprite.setPosition(player.sprite_.getPosition().x - window_width/2 + 16, player.sprite_.getPosition().y - 0.62*window_height);
-        window.draw(hp_sprite);
-
-        hp_sprite.setTextureRect(IntRect(8, 0, 64*player.construct_mp_/100.0, 9));
-        hp_sprite.setScale(2, 2);
-        hp_sprite.setPosition(player.sprite_.getPosition().x - window_width/2 + 16, player.sprite_.getPosition().y - 0.58*window_height);
-        window.draw(hp_sprite);
-
-        hp_sprite.setTextureRect(IntRect(0, 42, 80, 9));
-        hp_sprite.setScale(2, 2);
-        hp_sprite.setPosition(player.sprite_.getPosition().x - window_width/2, player.sprite_.getPosition().y - 0.62*window_height);
-        window.draw(hp_sprite);
-
-        hp_sprite.setTextureRect(IntRect(0, 54, 80, 9));
-        hp_sprite.setScale(2, 2);
-        hp_sprite.setPosition(player.sprite_.getPosition().x - window_width/2, player.sprite_.getPosition().y - 0.58*window_height);
-        window.draw(hp_sprite);
-}
-
-void draw_imp_hp(RenderWindow &window,EnemyClass &imp_1,Sprite hp_sprite){
-
-        if(imp_1.imp_hp_ > 0){
-            hp_sprite.setTextureRect(IntRect(0, 65, 1 + 110*imp_1.imp_hp_/100.0, 8));
-            hp_sprite.setScale(0.6, 1);
-            hp_sprite.setPosition(imp_1.sprite_.getPosition().x, imp_1.sprite_.getPosition().y - 20);
-            window.draw(hp_sprite);
-        }
-        hp_sprite.setTextureRect(IntRect(0, 81, 112, 8));
-        hp_sprite.setScale(0.6, 1);
-        hp_sprite.setPosition(imp_1.sprite_.getPosition().x, imp_1.sprite_.getPosition().y - 20);
-        window.draw(hp_sprite);
-
-}
 
 int main(){
 
@@ -72,20 +37,17 @@ int main(){
 
     //the construct - our protagonist
     Texture construct_tex;
-    construct_tex.loadFromFile("assets/images/roboto_walk_idle_jump_laser_RIP_2.png");
+    construct_tex.loadFromFile("assets/images/roboto_walk_idle_jump_laser_RIP_3.png");
     Sprite construct_sprite(construct_tex);
     construct_sprite.setTextureRect(IntRect(131, 50, 11, 25));
     // 1 - move left, 2 - move right, 4 - move up, 8 - move down
     int construct_move = 0;
-    bool RIP_construct = false;
 
     //plasma sprite - for jumping
     Sprite plasma_booster_sprite(construct_tex);
 
     //laser sprite - for disintegrating
     Sprite laser_sprite(construct_tex);
-
-    bool laser_hit_ind = false;
 
     //making a player object
     PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, 0, 400);
@@ -114,7 +76,7 @@ int main(){
     std::vector<BigPlatform> big_platforms;
     int platform_distance = 800;
     int fixed_platform_height = 500;
-    int platform_height_offset = 50;
+    int platform_height_offset = 75;
 
     Texture platform_tex;
     platform_tex.loadFromFile("assets/images/tileset.png");
@@ -123,6 +85,10 @@ int main(){
 
     for(int j = 0; j < 10; j++){
         big_platforms.push_back(BigPlatform(platform_distance*j, fixed_platform_height - (j%3)*platform_height_offset, 10, platform_sprite));
+    }
+
+    for(int j = 1; j < 10; j++){
+        big_platforms.push_back(BigPlatform(-platform_distance*j, fixed_platform_height - (j%3)*platform_height_offset, 10, platform_sprite));
     }
 
     //imp initialization
@@ -135,10 +101,7 @@ int main(){
     fireball_sprite.setTextureRect(IntRect(10, 211, 18, 15));
     imp_sprite.setTextureRect(IntRect(23, 377, 1, 1));
 
-    EnemyClass imp_1(imp_sprite, fireball_sprite, 1000, 391);
-
-    //so the fireball hits only once
-    bool fireball_attack_ind = true;
+    EnemyClass imp_1(imp_sprite, fireball_sprite, 1000, 366);
 
     //these threads do all the animation calculations - yes i said THREADS... IM A REAL PROGRAMMER!
     //create a thread asign a function and an object to the thread
@@ -278,8 +241,7 @@ int main(){
             }
 
             if(player.sprite_.getPosition().y > 750){
-                std::cout << "Congratulations! you died!" << std::endl;
-                player.sprite_.setPosition(0, 400);
+                player.construct_hp_ = 0;
             }
 
             if(player.laser_){
@@ -287,9 +249,13 @@ int main(){
             }
 
             if(player.construct_hp_ <= 0){
-             player.sprite_.setTextureRect(player.rectangles_death_[player.rectangles_index_death_]);
+                    if(!player.facing_left_){
+                        player.sprite_.setTextureRect(player.rectangles_death_[ player.rectangles_index_death_]);
+                    }else{
+                        player.sprite_.setTextureRect(player.rectangles_death_[11 + player.rectangles_index_death_]);
+                    }
 
-             if(player.rectangles_index_death_ == 10){
+             if(player.rectangles_index_death_ == 11){
                 RIP_construct = true;
                 player.construct_mp_ = 0.0;
              }
@@ -308,72 +274,15 @@ int main(){
 
         }
 
+        if(player.construct_hp_ <= 0 && RIP_construct){
+            RIP_construct = false;
+            player.sprite_.setPosition(0, 400);
+            player.construct_hp_ = 100.0;
+            player.construct_mp_ = 100.0;
+        }
 
-        //TODO platforms and creatures are level specific they should be encapsulated
         if(level == 1){
-        //draw platforms
-        for(auto bp : big_platforms){
-                for(auto plat : bp.platforms_)
-                    window.draw(plat.sprite_);
-        }
-
-
-        //draw the little imp bastard
-        window.draw(imp_1.sprite_);
-
-        draw_imp_hp(window, imp_1, hp_sprite);
-
-        //attack phase checker
-        if(player.sprite_.getPosition().x > imp_1.sprite_.getPosition().x - 400 && player.sprite_.getPosition().x < imp_1.sprite_.getPosition().x + 400 && imp_1.move_phase_ != 8){
-            if(player.sprite_.getPosition().x < imp_1.sprite_.getPosition().x){
-                imp_1.facing_left_ = true;
-        }
-            else{
-                imp_1.facing_left_ = false;
-                }
-            imp_1.attacking_ = true;
-
-        }else{
-            imp_1.attacking_ = false;
-        }
-
-        if(imp_1.attacking_){
-            window.draw(imp_1.fireball_sprite_);
-        }
-
-
-        //fireball collision
-        if(imp_1.rectangles_index_attack_ == 0){
-                    fireball_attack_ind = true;
-                }
-
-        //patching until i implementa a destructor
-        if(imp_1.move_phase_ == 8){
-            fireball_attack_ind = false;
-        }
-
-        if(imp_1.fireball_sprite_.getGlobalBounds().intersects(player.sprite_.getGlobalBounds())){
-            if(fireball_attack_ind && !RIP_construct){
-                    fireball_attack_ind = false;
-                    player.construct_hp_ -= 10;
-                    if(player.construct_hp_ < 0)
-                        player.construct_hp_ = 0;
-                }
-            }
-
-        //laser collision
-        if(player.laser_){
-            if(player.laser_sprite_.getGlobalBounds().intersects(imp_1.sprite_.getGlobalBounds())){
-                    //if we hit the imp reduce his hp
-                    if(laser_hit_ind){
-                        imp_1.imp_hp_ -= 10;
-                        laser_hit_ind = false;
-                    }
-            }
-        }
-
-
-
+                level_one(window, big_platforms, imp_1, player, hp_sprite);
         }//first level end
         else if(level == 2){
             std::cout << "Comming soon! A whole new level! new enemies! new puzzles to solve! hazza!" << std::endl;
