@@ -34,7 +34,7 @@ public:
     //gain velocity if a button is pressed
     void update(int construct_move, std::vector<BigPlatform>& platforms){
         int time;
-        int delta_time = 500;
+        int delta_time = 600;
         if(construct_move & 4){
             if(on_ground_){
                jump_time_ = bigTime.getElapsedTime().asMilliseconds();

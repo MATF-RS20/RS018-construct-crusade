@@ -65,12 +65,10 @@ int main(){
     background_2.loadFromFile("assets/images/skyReverse.png");
 
     Sprite backgroundSprite(background);
-    backgroundSprite.getTextureRect();
-    backgroundSprite.scale(1, window_height/backgroundSprite.getLocalBounds().height);
+    backgroundSprite.setScale(1, window_height/backgroundSprite.getLocalBounds().height);
 
     Sprite backgroundSprite_2(background_2);
-    backgroundSprite_2.getTextureRect();
-    backgroundSprite_2.scale(1, window_height/backgroundSprite.getLocalBounds().height);
+    backgroundSprite_2.setScale(1, window_height/backgroundSprite.getLocalBounds().height);
 
     //platform initialization
     std::vector<BigPlatform> big_platforms;
@@ -208,7 +206,7 @@ int main(){
             player.update(construct_move, big_platforms);
 
             //here we center the view on the player
-            view.setCenter(Vector2f(player.sprite_.getPosition().x, player.sprite_.getPosition().y - window_height/8));
+            view.setCenter(Vector2f(player.sprite_.getPosition().x, player.sprite_.getPosition().y));
             window.setView(view);
 
             if(!player.on_ground_ && (construct_move & 1)){
