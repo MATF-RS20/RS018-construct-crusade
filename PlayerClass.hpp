@@ -78,9 +78,6 @@ public:
         if(delta_x < 0 || delta_y != 0){
             left_collide_ = false;
         }
-        /*for(PlatformClass const& plat : platforms){
-            if(plat.sprite_.getGlobalBounds().intersects(sprite_.getGlobalBounds())){*/
-
         for(const BigPlatform& bp : platforms){
             if(sprite_.getPosition().x + sprite_.getGlobalBounds().width > bp.platform_left_ &&
                sprite_.getPosition().x < bp.platform_right_ &&
@@ -135,40 +132,26 @@ public:
         int delta_time = 200;
 
         Clock game_clock_idle;
-        int time_idle = 0;
-        //helps us determin if our frame should be changed - it marks the time when a frame is first used
-        int current_frame_time_idle = 0;
-
         Clock game_clock;
-        int time = 0;
-        int current_frame_time = 0;
-
         Clock jump_anime_clock;
-        int jump_animation_time = 0;
-        int current_jump_animation_time = 0;
-
         Clock laser_clock;
-        int laser_time = 0;
-        int current_laser_time = 0;
-
         Clock death_clock;
-        int death_time = 0;
-        int current_death_time = 0;
+
 
         while(true){
 
-            index_update(time_idle, current_frame_time_idle, delta_time, game_clock_idle, 4, rectangles_index_idle_, 0);
-            index_update(time, current_frame_time, delta_time, game_clock, 5, rectangles_index_, 0);
+            index_update(delta_time, game_clock_idle, 5, rectangles_index_idle_, 0);
+            index_update(delta_time, game_clock, 6, rectangles_index_, 0);
 
             if(construct_hp_ <= 0){
-                index_update(death_time, current_death_time, delta_time, death_clock, 11, rectangles_index_death_, 0);
+                index_update(delta_time, death_clock, 14, rectangles_index_death_, 0);
             }
 
             if(!on_ground_){
-                index_update(jump_animation_time, current_jump_animation_time, 75, jump_anime_clock, 9, rectangles_index_jump_, 3);
+                index_update(75, jump_anime_clock, 9, rectangles_index_jump_, 3);
             }
             if(laser_){
-                index_update(laser_time, current_laser_time, 105, laser_clock, 7, rectangles_index_laser_, 0);
+                index_update(105, laser_clock, 8, rectangles_index_laser_, 0);
                 if(rectangles_index_laser_ == 7){
                     laser_ = false;
                 }
@@ -205,18 +188,13 @@ public:
     double construct_hp_;
     double construct_mp_;
 private:
-    void index_update(int time, int &tmp_time, int delta_time, Clock &clock, int iters, int &index, int start_index){
-        time = clock.getElapsedTime().asMilliseconds();
+    void index_update(int delta_time, Clock &clock, int iters, int &index, int start_index){
 
-        if(tmp_time + delta_time < time){
-            tmp_time = time;
-            if(index == iters){
-                index = start_index;
-                tmp_time = 0;
-                index--;
-                clock.restart();
-            }
+        if(clock.getElapsedTime().asMilliseconds() > delta_time){
             index++;
+            if(index == iters)
+                index = start_index;
+            clock.restart();
         }
     }
     void init_rectangles(){
@@ -293,6 +271,10 @@ private:
 
         rectangles_death_.push_back(IntRect(274, 75, 35, 25));
 
+        rectangles_death_.push_back(IntRect(274, 75, 35, 25));
+
+        rectangles_death_.push_back(IntRect(274, 75, 35, 25));
+
         //left
         for(int i = 0; i < 7; i++)
             rectangles_death_.push_back(IntRect(300 - 25*i, 100, 25, 25));
@@ -302,6 +284,10 @@ private:
         rectangles_death_.push_back(IntRect(86, 100, 35, 25));
 
         rectangles_death_.push_back(IntRect(51, 100, 35, 25));
+
+        rectangles_death_.push_back(IntRect(16, 100, 35, 25));
+
+        rectangles_death_.push_back(IntRect(16, 100, 35, 25));
 
         rectangles_death_.push_back(IntRect(16, 100, 35, 25));
 

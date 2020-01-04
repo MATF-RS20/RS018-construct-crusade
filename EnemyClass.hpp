@@ -28,78 +28,49 @@ public:
     void Animation(){
 
         //delt_time - duration of a frame
-        int delta_time = 150;
+        int delta_time = 200;
 
-        //Idle parameters
         Clock imp_clock;
-        int time = 0;
-        //helps us determin if our frame should be changed - it marks the time when a frame is first used
-        int current_frame_time = 0;
-
-        //walk parameters
         Clock imp_walk_clock;
-        int time_walk = 0;
-        int current_walk_frame_time = 0;
-
-        //attack parameters
         Clock attack_clock;
-        int attack_time = 0;
-        int attack_tmp_time = 0;
-
-        //take damage parameters
         Clock damage_clock;
-        int damage_time = 0;
-        int damage_tmp_time = 0;
-
-        //death parameters
         Clock death_clock;
-        int death_time = 0;
-        int death_tmp_time = 0;
-
-        //fireball parameters
         Clock fireball_clock;
-        int fireball_time = 0;
-        int fireball_tmp_time = 0;
 
         //phase change paramaters
         Clock phase_clock;
-        //movement animations: 0 - idle, 1 - walk left, 2 - walk right, 4 - attack left, 5 - attack right, 8 - death left
+        //movement animations: 0,2 - idle, 1 - walk left, 3 - walk right
         move_phase_ = 0;
-        int phase_time = 0;
-        int phase_time_tmp = 0;
         int phase_delta = 3000;
 
         while(true){
 
-            index_update(time, current_frame_time, delta_time, imp_clock, 6, rectangles_index_);
+            index_update(delta_time, imp_clock, 6, rectangles_index_);
 
-            index_update(time_walk, current_walk_frame_time, delta_time, imp_walk_clock, 7, rectangles_index_walk_);
+            index_update(delta_time, imp_walk_clock, 7, rectangles_index_walk_);
 
-            index_update(attack_time, attack_tmp_time, delta_time, attack_clock, 5, rectangles_index_attack_);
+            index_update(delta_time, attack_clock, 5, rectangles_index_attack_);
 
-            index_update(damage_time, damage_tmp_time, delta_time, damage_clock, 3, rectangles_index_damage_);
+            index_update(delta_time, damage_clock, 3, rectangles_index_damage_);
 
             if(imp_hp_ <= 0)
-                index_update(death_time, death_tmp_time, delta_time, death_clock, 5, rectangles_index_death_);
+                index_update(delta_time, death_clock, 5, rectangles_index_death_);
 
             if(attacking_)
-                index_update(fireball_time, fireball_tmp_time, delta_time + 200, fireball_clock, 6, rectangles_index_fireball_);
+                index_update(delta_time + 200, fireball_clock, 6, rectangles_index_fireball_);
 
             if(!attacking_  && imp_hp_ > 0){
-            phase_time = phase_clock.getElapsedTime().asMilliseconds();
 
-            if(phase_time > phase_time_tmp + phase_delta){
-                phase_time_tmp = phase_time;
+            if(phase_clock.getElapsedTime().asMilliseconds() > phase_delta){
+                phase_clock.restart();
                 move_phase_++;
             }
 
             if(move_phase_ == 4){
-                phase_time_tmp = 0;
-                phase_clock.restart();
                 move_phase_ = 0;
             }
 
-
+            //marching left then right
             if(move_phase_ == 0 || move_phase_ == 2){
                 sprite_.setTextureRect(rectangles_imp_idle_[rectangles_index_]);
                 }
@@ -114,11 +85,6 @@ public:
             }
 
             }
-
-
-            //if(attacking_) move_phase_ = 5;
-            //if(imp_hp_ <= 0) move_phase_ = 8;
-
 
             if(attacking_){
                 if(facing_left_){
@@ -189,18 +155,13 @@ public:
     int move_phase_;
 
 private:
-    void index_update(int time, int &tmp_time, int delta_time, Clock &clock, int iters, int &index){
-        time = clock.getElapsedTime().asMilliseconds();
+    void index_update(int delta_time, Clock &clock, int iters, int &index){
 
-        if(tmp_time + delta_time < time){
-            tmp_time = time;
-            if(index == iters){
-                index = 0;
-                tmp_time = 0;
-                index--;
-                clock.restart();
-            }
+        if(clock.getElapsedTime().asMilliseconds() > delta_time){
             index++;
+            if(index == iters)
+                index = 0;
+            clock.restart();
         }
     }
 

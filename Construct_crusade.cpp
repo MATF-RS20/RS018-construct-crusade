@@ -264,7 +264,7 @@ int main(){
                         player.sprite_.setTextureRect(player.rectangles_death_[11 + player.rectangles_index_death_]);
                     }
 
-             if(player.rectangles_index_death_ == 11){
+             if(player.rectangles_index_death_ == 13){
                 RIP_construct = true;
                 player.construct_mp_ = 0.0;
              }
