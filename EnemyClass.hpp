@@ -27,7 +27,7 @@ public:
 
     void Animation(){
 
-        //delt_time - duration of a frame
+        //duration of a frame
         int delta_time = 200;
 
         Clock imp_idle_clock;
@@ -224,6 +224,4 @@ private:
 
     }
 };
-
-
 #endif // _ENEMY_CLASS_HPP

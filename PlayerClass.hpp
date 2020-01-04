@@ -2,14 +2,10 @@
 #define _PLAYER_CLASS_HPP
 
 #include "BigPlatform.hpp"
-
-//TODO this shoud coralate to fps somehow
-double VEL = 1;
+#define VEL 400
 
 using namespace sf;
-extern Clock bigTime;
 
-//the constructs class
 class PlayerClass : public GameObject{
 public:
 
@@ -27,43 +23,52 @@ public:
         laser_sprite.setScale(scale_, scale_);
         on_ground_ = true;
 
-        init_rectangles();
+        //these help us keep track of platforms that are closest to our construct
+        platform_index_ = 8;
+        platform_index_offset_ = 8;
+        num_of_platforms_ = 0;
 
+        x_vel_ = 0;
+        y_vel_ = 0;
+
+        init_rectangles();
     }
 
     //gain velocity if a button is pressed
-    void update(int construct_move, std::vector<BigPlatform>& platforms){
-        int time;
-        int delta_time = 600;
+    void update(int construct_move, std::vector<BigPlatform>& platforms, float uniform_time){
+        int delta_time = 700;
+
         if(construct_move & 4 && on_ground_){
-               jump_time_ = bigTime.getElapsedTime().asMilliseconds();
                on_ground_ = false;
         }
-        y_vel_ = VEL;
+
+        y_vel_ = VEL*uniform_time;
+        //this is here because when you move a window everything is paused on screen(but the clocks are working)
+        //so the uniform_time because huge - and we get catapulted down - this is my fix
+        if(y_vel_ > 50){
+            y_vel_ = 1;
+        }
         if(!(construct_move & 1 || construct_move & 2)){
             x_vel_ = 0;
-            facing_left_ = false;
         }
         if(construct_move & 1){
-            x_vel_ = -VEL;
+            x_vel_ = -VEL*uniform_time;
             facing_left_ = true;
         }
         if(construct_move & 2){
-            x_vel_ = VEL;
+            x_vel_ = VEL*uniform_time;
             facing_left_ = false;
         }
 
-        //move the sprite
-        time = bigTime.getElapsedTime().asMilliseconds();
-        if(!on_ground_ && jump_time_ + delta_time > time){
-            y_vel_ = -VEL;
+        if(!on_ground_ && big_time_.getElapsedTime().asMilliseconds() < delta_time){
+            y_vel_ = -VEL*uniform_time;
         }
         else if(on_ground_){
             rectangles_index_jump_ = 3;
+            big_time_.restart();
         }
 
-
-
+        //move the sprite
         if(!left_collide_)
             sprite_.move(Vector2f(x_vel_, 0));
         collision(x_vel_, 0, platforms);
@@ -77,29 +82,34 @@ public:
     void collision(float delta_x, float delta_y, std::vector<BigPlatform>& platforms){
 
         int ind = 0;
+        int index = 0;
         if(delta_x < 0 || delta_y != 0){
             left_collide_ = false;
         }
-        for(const BigPlatform& bp : platforms){
-            if(sprite_.getPosition().x + sprite_.getGlobalBounds().width > bp.platform_left_ &&
-               sprite_.getPosition().x < bp.platform_right_ &&
-               sprite_.getPosition().y + sprite_.getGlobalBounds().height > bp.platform_top_ &&
-               sprite_.getPosition().y < bp.platform_bot_
+        //platform index has the value of the current platform we are standing on in the grand scheme of things
+        //platform index offset makes a range of platforms that are closest to our current platform
+        //we check for collision within this range
+        for(int i = platform_index_ - platform_index_offset_; i <= platform_index_ + platform_index_offset_; i++){
+            if(sprite_.getPosition().x + sprite_.getGlobalBounds().width > platforms[i].platform_left_ &&
+               sprite_.getPosition().x < platforms[i].platform_right_ &&
+               sprite_.getPosition().y + sprite_.getGlobalBounds().height > platforms[i].platform_top_ &&
+               sprite_.getPosition().y < platforms[i].platform_bot_
                ){
                 if(delta_y > 0){
-                    //on_ground_ = true;
+                    //we have collided with a platform - ind marks that - index tells us witch platform was it
                     ind = 1;
-                    sprite_.setPosition(Vector2f(sprite_.getPosition().x, bp.platform_top_ - sprite_.getGlobalBounds().height));
+                    index = i;
+                    sprite_.setPosition(Vector2f(sprite_.getPosition().x, platforms[i].platform_top_ - sprite_.getGlobalBounds().height));
                 }
                 if(delta_y < 0){
-                    sprite_.setPosition(Vector2f(sprite_.getPosition().x, bp.platform_bot_));
+                    sprite_.setPosition(Vector2f(sprite_.getPosition().x, platforms[i].platform_bot_));
                 }
                 if(delta_x > 0){
-                    sprite_.setPosition(Vector2f(bp.platform_left_ - sprite_.getGlobalBounds().width - 36, sprite_.getPosition().y));
+                    sprite_.setPosition(Vector2f(platforms[i].platform_left_ - sprite_.getGlobalBounds().width - 36, sprite_.getPosition().y));
                     left_collide_ = true;
                 }
                 if(delta_x < 0){
-                    sprite_.setPosition(Vector2f(bp.platform_right_ + 5, sprite_.getPosition().y));
+                    sprite_.setPosition(Vector2f(platforms[i].platform_right_ + 5, sprite_.getPosition().y));
                 }
 
             }
@@ -107,9 +117,15 @@ public:
             }//platforms-for
 
             if(ind == 1){
+                //here we make sure that our index wont lead us out of bounds (of platforms vector)
+                if(index < platform_index_offset_)
+                    index = platform_index_offset_;
+                if(index > num_of_platforms_ - platform_index_offset_)
+                    index = num_of_platforms_ - platform_index_offset_;
+                platform_index_ = index;
+                //there was a collision with a topside of a platform
                 on_ground_ = true;
-            }
-            else
+            }else
                 on_ground_ = false;
     }
     //this is a thread called function - im abusing threads at this point
@@ -196,6 +212,10 @@ public:
     bool facing_left_;
     double construct_hp_;
     double construct_mp_;
+    int platform_index_;
+    int num_of_platforms_;
+    int platform_index_offset_;
+    Clock big_time_;
 private:
     void index_update(int delta_time, Clock &clock, int iters, int &index, int start_index){
 
@@ -304,7 +324,4 @@ private:
 
     }
 };
-
-
-
 #endif // _PLAYER_CLASS_HPP

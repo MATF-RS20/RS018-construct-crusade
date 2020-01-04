@@ -12,10 +12,9 @@ void level_one(sf::RenderWindow &window,
                PlayerClass &player,
                Sprite &hp_sprite
                  ){
-
-    //draw platforms
-    for(auto bp : big_platforms){
-            for(auto plat : bp.platforms_)
+    //draw platforms that are in the constructs area
+    for(int i = player.platform_index_ - player.platform_index_offset_; i <= player.platform_index_ + player.platform_index_offset_; i++){
+            for(const PlatformClass &plat : big_platforms[i].platforms_)
                 window.draw(plat.sprite_);
     }
 
@@ -42,6 +41,7 @@ void level_one(sf::RenderWindow &window,
 
 
     //fireball collision
+    //FIX - collision bugs sometimes
     if(imp_1.rectangles_index_attack_ == 0){
                 fireball_attack_ind = true;
             }
@@ -76,12 +76,5 @@ void level_one(sf::RenderWindow &window,
         window.draw(imp_1.fireball_sprite_);
     }
 
-
-
-
-
-
 }
-
-
 #endif // _LEVEL_ONE_HPP
