@@ -13,66 +13,69 @@ void level_one(sf::RenderWindow &window,
                Sprite &hp_sprite
                  ){
 
-        //draw platforms
-        for(auto bp : big_platforms){
-                for(auto plat : bp.platforms_)
-                    window.draw(plat.sprite_);
-        }
+    //draw platforms
+    for(auto bp : big_platforms){
+            for(auto plat : bp.platforms_)
+                window.draw(plat.sprite_);
+    }
 
 
-        //draw the little imp bastard
-        window.draw(imp_1.sprite_);
+    //draw the little imp bastard
+    window.draw(imp_1.sprite_);
 
-        draw_imp_hp(window, imp_1, hp_sprite);
+    draw_imp_hp(window, imp_1, hp_sprite);
 
-        //attack phase checker
-        if(player.sprite_.getPosition().x > imp_1.sprite_.getPosition().x - 400 && player.sprite_.getPosition().x < imp_1.sprite_.getPosition().x + 400 && imp_1.move_phase_ != 8){
-            if(player.sprite_.getPosition().x < imp_1.sprite_.getPosition().x){
-                imp_1.facing_left_ = true;
-        }
-            else{
-                imp_1.facing_left_ = false;
-                }
-            imp_1.attacking_ = true;
+    //attack phase checker
+    if(player.sprite_.getPosition().x > imp_1.sprite_.getPosition().x - 400 && player.sprite_.getPosition().x < imp_1.sprite_.getPosition().x + 400 && imp_1.move_phase_ != 8){
+        if(player.sprite_.getPosition().x < imp_1.sprite_.getPosition().x){
+            imp_1.facing_left_ = true;
+    }
+        else{
+            imp_1.facing_left_ = false;
+            }
+        imp_1.attacking_ = true;
 
-        }else{
-            imp_1.attacking_ = false;
-        }
-
-        if(imp_1.attacking_){
-            window.draw(imp_1.fireball_sprite_);
-        }
+    }else{
+        imp_1.attacking_ = false;
+        imp_1.fireball_sprite_.setPosition(imp_1.sprite_.getPosition().x, imp_1.sprite_.getPosition().y + 20);
+    }
 
 
-        //fireball collision
-        if(imp_1.rectangles_index_attack_ == 0){
-                    fireball_attack_ind = true;
-                }
-
-        //patching until i implementa a destructor
-        if(imp_1.move_phase_ == 8){
-            fireball_attack_ind = false;
-        }
-
-        if(imp_1.fireball_sprite_.getGlobalBounds().intersects(player.sprite_.getGlobalBounds())){
-            if(fireball_attack_ind && !RIP_construct){
-                    fireball_attack_ind = false;
-                    player.construct_hp_ -= 10;
-                    if(player.construct_hp_ < 0)
-                        player.construct_hp_ = 0;
-                }
+    //fireball collision
+    if(imp_1.rectangles_index_attack_ == 0){
+                fireball_attack_ind = true;
             }
 
-        //laser collision
-        if(player.laser_){
-            if(player.laser_sprite_.getGlobalBounds().intersects(imp_1.sprite_.getGlobalBounds())){
-                    //if we hit the imp reduce his hp
-                    if(laser_hit_ind){
-                        imp_1.imp_hp_ -= 10;
-                        laser_hit_ind = false;
-                    }
+    if(imp_1.imp_hp_ <= 0){
+        fireball_attack_ind = false;
+        imp_1.attacking_ = false;
+
+    }
+
+    if(imp_1.fireball_sprite_.getGlobalBounds().intersects(player.sprite_.getGlobalBounds())){
+        if(fireball_attack_ind && !RIP_construct && imp_1.imp_hp_ > 0){
+                fireball_attack_ind = false;
+                player.construct_hp_ -= 10;
+                if(player.construct_hp_ < 0)
+                    player.construct_hp_ = 0;
             }
         }
+
+    //laser collision
+    if(player.laser_){
+        if(player.laser_sprite_.getGlobalBounds().intersects(imp_1.sprite_.getGlobalBounds())){
+                //if we hit the imp reduce his hp
+                if(laser_hit_ind){
+                    imp_1.imp_hp_ -= 100;
+                    laser_hit_ind = false;
+                }
+        }
+    }
+
+    if(imp_1.attacking_){
+        window.draw(imp_1.fireball_sprite_);
+    }
+
 
 
 

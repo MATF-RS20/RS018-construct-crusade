@@ -35,11 +35,9 @@ public:
     void update(int construct_move, std::vector<BigPlatform>& platforms){
         int time;
         int delta_time = 600;
-        if(construct_move & 4){
-            if(on_ground_){
+        if(construct_move & 4 && on_ground_){
                jump_time_ = bigTime.getElapsedTime().asMilliseconds();
                on_ground_ = false;
-            }
         }
         y_vel_ = VEL;
         if(!(construct_move & 1 || construct_move & 2)){
@@ -63,18 +61,22 @@ public:
         else if(on_ground_){
             rectangles_index_jump_ = 3;
         }
-        sprite_.move(Vector2f(0, y_vel_));
-        collision(0, y_vel_, platforms);
+
 
 
         if(!left_collide_)
             sprite_.move(Vector2f(x_vel_, 0));
         collision(x_vel_, 0, platforms);
 
+        sprite_.move(Vector2f(0, y_vel_));
+        collision(0, y_vel_, platforms);
+
     }
 
     //check if you are intersecting with a platform
     void collision(float delta_x, float delta_y, std::vector<BigPlatform>& platforms){
+
+        int ind = 0;
         if(delta_x < 0 || delta_y != 0){
             left_collide_ = false;
         }
@@ -85,7 +87,8 @@ public:
                sprite_.getPosition().y < bp.platform_bot_
                ){
                 if(delta_y > 0){
-                    on_ground_ = true;
+                    //on_ground_ = true;
+                    ind = 1;
                     sprite_.setPosition(Vector2f(sprite_.getPosition().x, bp.platform_top_ - sprite_.getGlobalBounds().height));
                 }
                 if(delta_y < 0){
@@ -102,6 +105,12 @@ public:
             }
 
             }//platforms-for
+
+            if(ind == 1){
+                on_ground_ = true;
+            }
+            else
+                on_ground_ = false;
     }
     //this is a thread called function - im abusing threads at this point
     void mana_recovery(){

@@ -2,6 +2,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -52,7 +53,7 @@ int main(){
     Sprite laser_sprite(construct_tex);
 
     //making a player object
-    PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, 0, 400);
+    PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, 5 * 800, 400);
 
     //health and mana bars
     Texture hp_tex;
@@ -80,26 +81,27 @@ int main(){
 
     //platform initialization
     std::vector<BigPlatform> big_platforms;
-
-
-
     int platform_distance = 800;
     int fixed_platform_height = 500;
-    int platform_height_offset = 75;
+    int platform_height_offset = 160;
 
     Texture platform_tex;
     platform_tex.loadFromFile("assets/images/tileset.png");
 
     Sprite platform_sprite(platform_tex);
 
-    for(int j = 0; j < 10; j++){
-        big_platforms.push_back(BigPlatform(platform_distance*j, fixed_platform_height - (j%3)*platform_height_offset, 10, platform_sprite));
+    for(int j = -6; j < 6; j++){
+        big_platforms.push_back(BigPlatform(platform_distance*j, fixed_platform_height, 8 + rand() % 3, platform_sprite));
     }
 
-    for(int j = 1; j < 10; j++){
-        big_platforms.push_back(BigPlatform(-platform_distance*j, fixed_platform_height - (j%3)*platform_height_offset, 10, platform_sprite));
+    for(int j = 1; j < 6; j++){
+        big_platforms.push_back(BigPlatform(6.3*platform_distance + platform_distance/2.5*(pow((-1),j)), fixed_platform_height - j*platform_height_offset , 7 + rand() % 3, platform_sprite));
     }
-    big_platforms.push_back(BigPlatform(0, -400, 10, platform_sprite));
+
+    for(int j = 0; j < 6; j++){
+        big_platforms.push_back(BigPlatform(platform_distance*j, fixed_platform_height - 5*platform_height_offset, 8 + rand() % 3, platform_sprite));
+    }
+    //TODO finish up the platforms
 
     //imp initialization
     Texture imp;
@@ -111,7 +113,7 @@ int main(){
     fireball_sprite.setTextureRect(IntRect(10, 211, 18, 15));
     imp_sprite.setTextureRect(IntRect(23, 377, 1, 1));
 
-    EnemyClass imp_1(imp_sprite, fireball_sprite, 1000, 366);
+    EnemyClass imp_1(imp_sprite, fireball_sprite, 1000, 440);
 
     //these threads do all the animation calculations - yes i said THREADS... IM A REAL PROGRAMMER!
     //create a thread asign a function and an object to the thread
@@ -261,7 +263,7 @@ int main(){
                     if(!player.facing_left_){
                         player.sprite_.setTextureRect(player.rectangles_death_[ player.rectangles_index_death_]);
                     }else{
-                        player.sprite_.setTextureRect(player.rectangles_death_[11 + player.rectangles_index_death_]);
+                        player.sprite_.setTextureRect(player.rectangles_death_[13 + player.rectangles_index_death_]);
                     }
 
              if(player.rectangles_index_death_ == 13){
@@ -280,7 +282,6 @@ int main(){
             player.laser_sprite_.setPosition(player.sprite_.getPosition().x + 56, player.sprite_.getPosition().y + 36);
             player.laser_sprite_.setScale(2.5, 4);
             window.draw(player.laser_sprite_);
-
         }
 
         if(player.construct_hp_ <= 0 && RIP_construct){
@@ -288,6 +289,7 @@ int main(){
             player.sprite_.setPosition(0, 400);
             player.construct_hp_ = 100.0;
             player.construct_mp_ = 100.0;
+            player.on_ground_ = true;
         }
 
     //deo specifican za svaki nivo

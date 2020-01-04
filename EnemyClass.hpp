@@ -30,7 +30,7 @@ public:
         //delt_time - duration of a frame
         int delta_time = 200;
 
-        Clock imp_clock;
+        Clock imp_idle_clock;
         Clock imp_walk_clock;
         Clock attack_clock;
         Clock damage_clock;
@@ -45,7 +45,7 @@ public:
 
         while(true){
 
-            index_update(delta_time, imp_clock, 6, rectangles_index_);
+            index_update(delta_time, imp_idle_clock, 6, rectangles_index_);
 
             index_update(delta_time, imp_walk_clock, 7, rectangles_index_walk_);
 
@@ -54,7 +54,7 @@ public:
             index_update(delta_time, damage_clock, 3, rectangles_index_damage_);
 
             if(imp_hp_ <= 0)
-                index_update(delta_time, death_clock, 5, rectangles_index_death_);
+                index_update(delta_time, death_clock, 6, rectangles_index_death_);
 
             if(attacking_)
                 index_update(delta_time + 200, fireball_clock, 6, rectangles_index_fireball_);
@@ -113,7 +113,6 @@ public:
             }
 
             if(imp_hp_ <= 0){
-                attacking_ = false;
                 if(facing_left_){
                     sprite_.setTextureRect(rectangles_imp_death_left_[rectangles_index_death_]);
                     }
