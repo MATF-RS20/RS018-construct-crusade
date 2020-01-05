@@ -5,7 +5,7 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms, PlayerClass
 
     int platform_distance = 800;
     int fixed_platform_height = -400;
-    int platform_height_offset = 140;
+    //int platform_height_offset = 140;
     int coef = -1;
 
     big_platforms.push_back(BigPlatform(0, -400, 10, platform_sprite));
@@ -20,7 +20,6 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms, PlayerClass
         fixed_platform_height = fixed_platform_height-(150+(rand()%100));
         big_platforms.push_back(BigPlatform(platform_distance, fixed_platform_height, 8 + rand() % 3, platform_sprite));
         player.num_of_platforms_++;
-        std::cout << coef << std::endl;
     }
 
 

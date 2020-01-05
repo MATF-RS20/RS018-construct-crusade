@@ -26,12 +26,13 @@ void level_one(sf::RenderWindow &window,
 
     //attack phase checker
     if(player.sprite_.getPosition().x > imp_1.sprite_.getPosition().x - 400 && player.sprite_.getPosition().x < imp_1.sprite_.getPosition().x + 400 && imp_1.move_phase_ != 8){
-        if(player.sprite_.getPosition().x < imp_1.sprite_.getPosition().x){
+        /*if(player.sprite_.getPosition().x < imp_1.sprite_.getPosition().x){
             imp_1.facing_left_ = true;
     }
         else{
             imp_1.facing_left_ = false;
-            }
+            }*/
+        imp_1.facing_left_ = player.sprite_.getPosition().x < imp_1.sprite_.getPosition().x;
         imp_1.attacking_ = true;
 
     }else{

@@ -6,7 +6,6 @@
 
 using namespace sf;
 
-//TODO player is unused that plan went nowhere
 //Enemy class
 class EnemyClass : public GameObject{
 public:
@@ -33,7 +32,6 @@ public:
         Clock imp_idle_clock;
         Clock imp_walk_clock;
         Clock attack_clock;
-        Clock damage_clock;
         Clock death_clock;
         Clock fireball_clock;
 
@@ -50,8 +48,6 @@ public:
             index_update(delta_time, imp_walk_clock, 7, rectangles_index_walk_);
 
             index_update(delta_time, attack_clock, 5, rectangles_index_attack_);
-
-            index_update(delta_time, damage_clock, 3, rectangles_index_damage_);
 
             if(imp_hp_ <= 0)
                 index_update(delta_time, death_clock, 6, rectangles_index_death_);
@@ -113,9 +109,7 @@ public:
             }
 
             if(imp_hp_ <= 0){
-                if(facing_left_){
-                    sprite_.setTextureRect(rectangles_imp_death_left_[rectangles_index_death_]);
-                    }
+                    sprite_.setTextureRect(rectangles_imp_death_[5*(facing_left_) + rectangles_index_death_]);
 
                 if(rectangles_index_death_ == 5){
                     break;
@@ -133,16 +127,12 @@ public:
     std::vector<IntRect> rectangles_imp_walk_left_;
     std::vector<IntRect> rectangles_imp_attack_left_;
     std::vector<IntRect> rectangles_imp_attack_right_;
-    std::vector<IntRect> rectangles_imp_take_damage_left_;
-    std::vector<IntRect> rectangles_imp_take_damage_right_;
-    std::vector<IntRect> rectangles_imp_death_left_;
-    std::vector<IntRect> rectangles_imp_death_right_;
+    std::vector<IntRect> rectangles_imp_death_;
     std::vector<IntRect> rectangles_imp_fireBall_left_;
     std::vector<IntRect> rectangles_imp_fireBall_right_;
     int rectangles_index_;
     int rectangles_index_walk_;
     int rectangles_index_attack_;
-    int rectangles_index_damage_;
     int rectangles_index_death_;
     int rectangles_index_fireball_;
     double scale_;
@@ -169,7 +159,6 @@ private:
         rectangles_index_ = 0;
         rectangles_index_walk_ = 0;
         rectangles_index_attack_ = 0;
-        rectangles_index_damage_ = 0;
         rectangles_index_death_ = 0;
         rectangles_index_fireball_ = 0;
 
@@ -192,18 +181,11 @@ private:
             rectangles_imp_attack_right_.push_back(IntRect(7 + i*32, 81, 17, 15));
         }
 
-        for (int i = 0; i < 4; i++){
-            rectangles_imp_take_damage_left_.push_back(IntRect(9 + i*32, 305, 15, 15));
-        }
-        for (int i = 0; i < 4; i++){
-            rectangles_imp_take_damage_right_.push_back(IntRect(8 + i*32, 113, 15, 15));
-        }
-
         for (int i = 0; i < 6; i++){
-            rectangles_imp_death_left_.push_back(IntRect(7 + i*32, 145, 16, 15));
+            rectangles_imp_death_.push_back(IntRect(7 + i*32, 145, 16, 15));
         }
         for (int i = 0; i < 6; i++){
-            rectangles_imp_death_right_.push_back(IntRect(9 + i*32, 337, 16, 15));
+            rectangles_imp_death_.push_back(IntRect(9 + i*32, 337, 16, 15));
         }
         //no pattern with fireballs :(
         rectangles_imp_fireBall_left_.push_back(IntRect(23, 377, 1, 1));

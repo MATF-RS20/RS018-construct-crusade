@@ -6,6 +6,8 @@
 
 using namespace sf;
 
+extern bool shooting;
+
 class PlayerClass : public GameObject{
 public:
 
@@ -40,6 +42,7 @@ public:
 
         if(construct_move & 4 && on_ground_){
                on_ground_ = false;
+               big_time_.restart();
         }
 
         y_vel_ = VEL*uniform_time;
@@ -59,15 +62,17 @@ public:
             x_vel_ = VEL*uniform_time;
             facing_left_ = false;
         }
-
+        //std::cout << big_time_.getElapsedTime().asMilliseconds() << std::endl;
         if(!on_ground_ && big_time_.getElapsedTime().asMilliseconds() < delta_time){
             y_vel_ = -VEL*uniform_time;
         }
         else if(on_ground_){
             rectangles_index_jump_ = 3;
-            big_time_.restart();
         }
-
+        if(shooting){
+            x_vel_ = 0;
+            on_ground_ = true;
+        }
         //move the sprite
         if(!left_collide_)
             sprite_.move(Vector2f(x_vel_, 0));
@@ -161,12 +166,14 @@ public:
         Clock jump_anime_clock;
         Clock laser_clock;
         Clock death_clock;
+        Clock shooting_clock;
 
 
         while(true){
 
             index_update(delta_time, game_clock_idle, 5, rectangles_index_idle_, 0);
             index_update(delta_time, game_clock, 6, rectangles_index_, 0);
+            index_update(100, shooting_clock, 4, rectangles_index_shooting_, 0);
 
             if(construct_hp_ <= 0){
                 index_update(delta_time, death_clock, 14, rectangles_index_death_, 0);
@@ -193,6 +200,7 @@ public:
     std::vector<IntRect> rectangles_laser_;
     std::vector<IntRect> rectangles_laser_trails_;
     std::vector<IntRect> rectangles_death_;
+    std::vector<IntRect> rectangles_shooting_;
     bool on_ground_;
     int rectangles_index_idle_;
     int rectangles_index_;
@@ -200,6 +208,7 @@ public:
     int rectangles_index_laser_;
     int rectangles_index_laser_trails_;
     int rectangles_index_death_;
+    int rectangles_index_shooting_;
     Sprite sprite_;
     Sprite plasma_sprite_;
     Sprite laser_sprite_;
@@ -234,6 +243,7 @@ private:
         rectangles_index_laser_ = 0;
         rectangles_index_laser_trails_ = 0;
         rectangles_index_death_ = 0;
+        rectangles_index_shooting_ = 0;
 
         for (int i = 0; i < 6; i++){
             rectanglesRight_.push_back(IntRect(131 + i*25, 50, 12, 25));
@@ -262,6 +272,7 @@ private:
         for(int i = 0; i < 9; i++)
             rectangles_plasma_booster_.push_back(IntRect(509 + i, 50, 1, 1 + i));
 
+        //laser right
         //laser ball index 0
         rectangles_laser_.push_back(IntRect(569, 0, 8, 8));
         //laser beam small index 1
@@ -287,6 +298,26 @@ private:
         //blue
         for(int i = 0; i < 9; i++)
             rectangles_laser_trails_.push_back(IntRect(559 + i, 25, 1, 9 - i));
+
+        //laser left
+        //laser ball index 9
+        rectangles_laser_.push_back(IntRect(525, 108, 251, 8));
+        //laser beam small index 10
+        rectangles_laser_.push_back(IntRect(525, 67, 251, 6));
+        //laser beam big index 11
+        rectangles_laser_.push_back(IntRect(525, 59, 251, 8));
+        //laser beam big color change index 12
+        rectangles_laser_.push_back(IntRect(525, 84, 251, 8));
+        //darker finishing trace for the laser index 13
+        rectangles_laser_.push_back(IntRect(525, 92, 251, 6));
+        //energy ball after trace index 14
+        rectangles_laser_.push_back(IntRect(525, 100, 251, 8));
+        //energy ball after trace scatter index 15
+        rectangles_laser_.push_back(IntRect(525, 125, 251, 9));
+        //robot sprite while lasering index 16
+        rectangles_laser_.push_back(IntRect(778, 50, 14, 25));
+        //robot sprite while lasering #2 index 17
+        rectangles_laser_.push_back(IntRect(778, 75, 14, 25));
 
         //right
         for(int i = 0; i < 7; i++)
@@ -319,6 +350,15 @@ private:
         rectangles_death_.push_back(IntRect(16, 100, 35, 25));
 
         rectangles_death_.push_back(IntRect(16, 100, 35, 25));
+
+        for(int i = 0; i < 4; i++)
+            rectangles_shooting_.push_back(IntRect(4 + 25*i, 125, 20, 25));
+
+        for(int i = 0; i < 4; i++)
+            rectangles_shooting_.push_back(IntRect(80 - 25*i, 175, 20, 25));
+
+
+
 
 
 
