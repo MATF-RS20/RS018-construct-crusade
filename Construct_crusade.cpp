@@ -14,8 +14,9 @@
 #include "Level_one.hpp"
 #include "Level_two.hpp"
 #include "init_platforms.hpp"
-#include "CleopatraClass.hpp"
 
+#include "CleopatraClass.hpp"
+#include "init_platforms_level_2.hpp"
 
 using namespace sf;
 
@@ -315,10 +316,12 @@ int main(){
         level = 2;
         player.sprite_.setPosition(0, -500);
         big_platforms.clear();
-        big_platforms.push_back(BigPlatform(0, -400, 10, platform_sprite));
-        player.platform_index_ = 0;
-        player.platform_index_offset_ = 0;
 
+        player.num_of_platforms_ = 0;
+        init_platforms_level_2(big_platforms, player, platform_sprite);
+
+        player.platform_index_ = 6;
+        player.platform_index_offset_ = 6;
 
 
     }
