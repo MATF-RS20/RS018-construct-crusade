@@ -14,6 +14,8 @@
 #include "Level_one.hpp"
 #include "Level_two.hpp"
 #include "init_platforms.hpp"
+#include "CleopatraClass.hpp"
+
 
 using namespace sf;
 
@@ -117,11 +119,24 @@ int main(){
 
     //inicijalizacije za NIVO 2
 
+    //cleopatra initialization
+    Texture cleo;
+    cleo.loadFromFile("assets/images/cleopatra.png");
+    Sprite cleo_sprite(cleo, IntRect(0,0,25,25));
+
+    CleopatraClass cleopatra(cleo_sprite, 200, -500);
+
+    sf::Thread cleo_thread(&CleopatraClass::Animation, &cleopatra);
+    //start the thread
+    cleo_thread.launch();
+
     //platforme za nivo 2
     std::vector<BigPlatform> big_platforms_2;
 
     //prva platforma nivoa 2
     big_platforms_2.push_back(BigPlatform(0, -400, 10, platform_sprite));
+
+
 
     //start the main loop
     while (window.isOpen())
@@ -288,6 +303,8 @@ int main(){
             player.construct_mp_ = 100.0;
             player.on_ground_ = true;
             player.platform_index_ = 6;
+
+
         }
 
     //deo specifican za svaki nivo
@@ -295,17 +312,21 @@ int main(){
         level_one(window, big_platforms, imp_1, player, hp_sprite);
 
         //prelaz iz nivoa 1 u nivo 2
-//        level = 2;
-//        player.sprite_.setPosition(0, -500);
-//        big_platforms.clear();
-//        big_platforms.push_back(BigPlatform(0, -400, 10, platform_sprite));
-//        player.platform_index_ = 0;
-//        player.platform_index_offset_ = 0;
+        level = 2;
+        player.sprite_.setPosition(0, -500);
+        big_platforms.clear();
+        big_platforms.push_back(BigPlatform(0, -400, 10, platform_sprite));
+        player.platform_index_ = 0;
+        player.platform_index_offset_ = 0;
+
+
+
     }
     else if(level == 2){
 
         level_two(window, big_platforms, player);
 
+        window.draw(cleopatra.sprite_);
     }
 
     window.display();
