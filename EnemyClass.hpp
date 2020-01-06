@@ -35,6 +35,7 @@ public:
         Clock attack_clock;
         Clock death_clock;
         Clock fireball_clock;
+        Clock dino_slam_clock;
 
 
 
@@ -56,6 +57,8 @@ public:
             index_update(delta_time, imp_walk_clock, 8, rectangles_index_walk_);
 
             index_update(delta_time, attack_clock, 6, rectangles_index_attack_);
+
+            index_update(140, dino_slam_clock, 4, rectangles_index_dino_slam_);
 
             if(imp_hp_ <= 0)
                 index_update(delta_time, death_clock, 6, rectangles_index_death_);
@@ -138,11 +141,13 @@ public:
     std::vector<IntRect> rectangles_imp_death_;
     std::vector<IntRect> rectangles_imp_fireBall_left_;
     std::vector<IntRect> rectangles_imp_fireBall_right_;
+    std::vector<IntRect> rectangles_dino_slam_;
     int rectangles_index_;
     int rectangles_index_walk_;
     int rectangles_index_attack_;
     int rectangles_index_death_;
     int rectangles_index_fireball_;
+    int rectangles_index_dino_slam_;
     double scale_;
     double x_vel_;
     double y_vel_;
@@ -185,6 +190,11 @@ private:
         rectangles_index_attack_ = 0;
         rectangles_index_death_ = 0;
         rectangles_index_fireball_ = 0;
+        rectangles_index_dino_slam_ = 0;
+
+        for (int i = 0; i < 4; i++){
+            rectangles_dino_slam_.push_back(IntRect(0 , 0+25*i, 33, 25));
+        }
 
 
         //Cleopatra rectangles

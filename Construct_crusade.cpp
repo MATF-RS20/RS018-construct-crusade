@@ -129,7 +129,17 @@ int main(){
 
     //inicijalizacije za NIVO 2
 
-    //Cleopatra initialization must be before starting enemy thread
+
+    //Dinoo bambinooo
+    Texture dino;
+    dino.loadFromFile("assets/images/dinomooove.png");
+    Sprite dino_sprite(dino, IntRect(0,0,30,25));
+
+    //Cleopatra initialization
+    Texture cleo;
+    cleo.loadFromFile("assets/images/cleopatra.png");
+    Sprite cleo_sprite(cleo, IntRect(0,0,25,25));
+
 
 
     //sf::Thread cleo_thread(&CleopatraClass::Animation, &cleopatra);
@@ -341,6 +351,10 @@ int main(){
         cleopatra.sprite_.setPosition(Vector2f(cleopatra.sprite_.getPosition().x-0.1f, cleopatra.sprite_.getPosition().y));
 
         window.draw(cleopatra.sprite_);
+        dino_sprite.setTextureRect(imp_1.rectangles_dino_slam_[imp_1.rectangles_index_dino_slam_]);
+        dino_sprite.setScale(7,7);
+        dino_sprite.setPosition(400, -575);
+        window.draw(dino_sprite);
     }
 
     window.display();
