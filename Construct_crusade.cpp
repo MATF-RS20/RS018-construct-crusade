@@ -108,6 +108,12 @@ int main(){
     init_platforms(big_platforms, player, platform_sprite, imps, imp_sprite, fireball_sprite);
 
     EnemyClass imp_1(imp_sprite, fireball_sprite, 1000, 440);
+
+    Texture cleo;
+    cleo.loadFromFile("assets/images/cleopatra.png");
+    Sprite cleo_sprite(cleo, IntRect(0,0,25,25));
+    EnemyClass cleopatra(cleo_sprite, fireball_sprite, 200, -500);
+
     //these threads do all the animation calculations - yes i said THREADS... IM A REAL PROGRAMMER!
     //create a thread asign a function and an object to the thread
     sf::Thread imp_thread(&EnemyClass::Animation, &imp_1);
@@ -125,16 +131,22 @@ int main(){
 
     //inicijalizacije za NIVO 2
 
+
+    //Dinoo bambinooo
+    Texture dino;
+    dino.loadFromFile("assets/images/dinomooove.png");
+    Sprite dino_sprite(dino, IntRect(0,0,30,25));
+
     //Cleopatra initialization
     Texture cleo;
     cleo.loadFromFile("assets/images/cleopatra.png");
     Sprite cleo_sprite(cleo, IntRect(0,0,25,25));
 
-    CleopatraClass cleopatra(cleo_sprite, 200, -500);
 
-    sf::Thread cleo_thread(&CleopatraClass::Animation, &cleopatra);
+
+    //sf::Thread cleo_thread(&CleopatraClass::Animation, &cleopatra);
     //start the thread
-    cleo_thread.launch();
+    //cleo_thread.launch();
 
     //start the main loop
     while (window.isOpen())
@@ -323,15 +335,15 @@ int main(){
         level_one(window, big_platforms, imp_1, player, hp_sprite, imps, shooting_sprite);
 
         //prelaz iz nivoa 1 u nivo 2
-//        level = 2;
-//        player.sprite_.setPosition(0, -500);
-//        big_platforms.clear();
-//
-//        player.num_of_platforms_ = 0;
-//        init_platforms_level_2(big_platforms, player, platform_sprite);
-//
-//        player.platform_index_ = 6;
-//        player.platform_index_offset_ = 6;
+        level = 2;
+        player.sprite_.setPosition(0, -500);
+        big_platforms.clear();
+
+        player.num_of_platforms_ = 0;
+        init_platforms_level_2(big_platforms, player, platform_sprite);
+
+        player.platform_index_ = 6;
+        player.platform_index_offset_ = 6;
 
 
     }
@@ -339,7 +351,14 @@ int main(){
 
         level_two(window, big_platforms, player);
 
+        cleopatra.sprite_.setTextureRect(imp_1.rectangles_cleo_walk_left_[imp_1.rectangles_index_walk_cleo_]);
+        cleopatra.sprite_.setPosition(Vector2f(cleopatra.sprite_.getPosition().x-0.1f, cleopatra.sprite_.getPosition().y));
+
         window.draw(cleopatra.sprite_);
+        dino_sprite.setTextureRect(imp_1.rectangles_dino_slam_[imp_1.rectangles_index_dino_slam_]);
+        dino_sprite.setScale(7,7);
+        dino_sprite.setPosition(400, -575);
+        window.draw(dino_sprite);
     }
 
     window.display();

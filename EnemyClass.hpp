@@ -7,6 +7,7 @@
 using namespace sf;
 
 //Enemy class
+
 class EnemyClass : public GameObject{
 public:
 
@@ -41,6 +42,13 @@ public:
         Clock attack_clock;
         Clock death_clock;
         Clock fireball_clock;
+        Clock dino_slam_clock;
+
+
+
+        //cleo
+        Clock cleo_idle_clock;
+        Clock cleo_walk_clock;
 
         //phase change paramaters
         //Clock phase_clock;
@@ -49,12 +57,15 @@ public:
         //int phase_delta = 3000;
 
         while(true){
+            index_update(delta_time, cleo_walk_clock, 4, rectangles_index_walk_cleo_);
 
-            index_update(delta_time, imp_idle_clock, 6, rectangles_index_);
+            index_update(delta_time, imp_idle_clock, 7, rectangles_index_);
 
-            index_update(delta_time, imp_walk_clock, 7, rectangles_index_walk_);
+            index_update(delta_time, imp_walk_clock, 8, rectangles_index_walk_);
 
-            index_update(delta_time, attack_clock, 5, rectangles_index_attack_);
+            index_update(delta_time, attack_clock, 6, rectangles_index_attack_);
+
+            index_update(140, dino_slam_clock, 4, rectangles_index_dino_slam_);
 
 
             index_update(delta_time, death_clock, 6, rectangles_index_death_);
@@ -137,11 +148,13 @@ public:
     std::vector<IntRect> rectangles_imp_death_;
     std::vector<IntRect> rectangles_imp_fireBall_left_;
     std::vector<IntRect> rectangles_imp_fireBall_right_;
+    std::vector<IntRect> rectangles_dino_slam_;
     int rectangles_index_;
     int rectangles_index_walk_;
     int rectangles_index_attack_;
     int rectangles_index_death_;
     int rectangles_index_fireball_;
+    int rectangles_index_dino_slam_;
     double scale_;
     double x_vel_;
     double y_vel_;
@@ -156,6 +169,18 @@ public:
     bool first_hit_shooting_;
     bool enemy_dead_;
 
+    //cleo parameters
+    std::vector<IntRect> rectangles_cleo_idle_;
+    int rectangles_index_idle_cleo_;
+
+    std::vector<IntRect> rectangles_cleo_walk_right_;
+    std::vector<IntRect> rectangles_cleo_walk_left_;
+    int rectangles_index_walk_cleo_;
+
+//    std::vector<IntRect> rectangles_cleo_attack_left_;
+//    std::vector<IntRect> rectangles_cleo_attack_right_;
+//    int rectangles_index_attack_cleo_;
+
 private:
     void index_update(int delta_time, Clock &clock, int iters, int &index){
 
@@ -168,13 +193,42 @@ private:
     }
 
     void init_rectangles(){
+        //Cleopatra indices
+        rectangles_index_idle_cleo_ = 0;
+        rectangles_index_walk_cleo_ = 0;
 
+        //imp indices
         rectangles_index_ = 0;
         rectangles_index_walk_ = 0;
         rectangles_index_attack_ = 0;
         rectangles_index_death_ = 0;
         rectangles_index_fireball_ = 0;
+        rectangles_index_dino_slam_ = 0;
 
+        for (int i = 0; i < 4; i++){
+            rectangles_dino_slam_.push_back(IntRect(0 , 0+25*i, 33, 25));
+        }
+
+
+        //Cleopatra rectangles
+        for (int i = 0; i < 4; i++){
+            rectangles_cleo_walk_left_.push_back(IntRect(i*25, 75, 25, 25));
+        }
+
+        for (int i = 0; i < 3; i++){
+            rectangles_cleo_idle_.push_back(IntRect(i*25, 0, 25, 25));
+        }
+        rectangles_cleo_idle_.push_back(IntRect(25, 0, 25, 25));
+
+        for (int i = 0; i < 4; i++){
+            rectangles_cleo_walk_left_.push_back(IntRect(i*25, 75, 25, 25));
+        }
+
+        for (int i = 0; i < 4; i++){
+            rectangles_cleo_walk_right_.push_back(IntRect(i*25, 50, 25, 25));
+        }
+
+        //Imp rectangles
         for (int i = 0; i < 7; i++){
             rectangles_imp_idle_.push_back(IntRect(10 + i*32, 209, 15, 15));
         }
