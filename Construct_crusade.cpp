@@ -8,22 +8,21 @@
 #include <time.h>
 #include "PlayerClass.hpp"
 #include "EnemyClass.hpp"
+#include "RealEnemyClass.hpp"
 #include "BigPlatform.hpp"
 #include "DrawTrails.hpp"
 #include "Bars.hpp"
 #include "Level_one.hpp"
 #include "Level_two.hpp"
 #include "init_platforms.hpp"
-#include "CleopatraClass.hpp"
 #include "init_platforms_level_2.hpp"
+
 
 using namespace sf;
 double window_height = 600;
 double window_width = 1200;
 bool RIP_construct = false;
 bool shooting = false;
-//so the laser hits only once
-bool laser_hit_ind = false;
 int level = 1;
 //Clock random_clock;
 
@@ -103,22 +102,22 @@ int main(){
     Sprite imp_sprite(imp, IntRect(23, 377, 1, 1));
     Sprite fireball_sprite(imp, IntRect(10, 211, 18, 15));
 
-    std::vector<EnemyClass> imps;
+    std::vector<RealEnemyClass> imps;
 
     init_platforms(big_platforms, player, platform_sprite, imps, imp_sprite, fireball_sprite);
 
-    EnemyClass imp_1(imp_sprite, fireball_sprite, 1000, 440);
+    EnemyClass enemy(1);
 
     Texture cleo;
     cleo.loadFromFile("assets/images/cleopatra.png");
     Sprite cleo_sprite(cleo, IntRect(0,0,25,25));
-    EnemyClass cleopatra(cleo_sprite, fireball_sprite, 200, -500);
+    RealEnemyClass cleopatra(cleo_sprite, fireball_sprite, 200, -500, 200, 200);
 
     //these threads do all the animation calculations - yes i said THREADS... IM A REAL PROGRAMMER!
     //create a thread asign a function and an object to the thread
-    sf::Thread imp_thread(&EnemyClass::Animation, &imp_1);
+    sf::Thread enemy_thread(&EnemyClass::Animation, &enemy);
     //start the thread
-    imp_thread.launch();
+    enemy_thread.launch();
 
     //a little audio for our little game
     sf::Music music;
@@ -136,17 +135,6 @@ int main(){
     Texture dino;
     dino.loadFromFile("assets/images/dinomooove.png");
     Sprite dino_sprite(dino, IntRect(0,0,30,25));
-
-    //Cleopatra initialization
-    Texture cleo;
-    cleo.loadFromFile("assets/images/cleopatra.png");
-    Sprite cleo_sprite(cleo, IntRect(0,0,25,25));
-
-
-
-    //sf::Thread cleo_thread(&CleopatraClass::Animation, &cleopatra);
-    //start the thread
-    //cleo_thread.launch();
 
     //start the main loop
     while (window.isOpen())
@@ -178,9 +166,8 @@ int main(){
                     }if(event.key.code == sf::Keyboard::E){
                         if(player.construct_mp_ == 100 && player.on_ground_){
                             player.laser_ = true;
-                            laser_hit_ind = true;
                             for(auto imp : imps){
-                                imp.laser_hit_ind_ = true;
+                                imp.first_hit_laser_ = true;
                             }
                             player.construct_mp_ = 0;
                             mana_thread.launch();
@@ -311,7 +298,7 @@ int main(){
                 for(auto imp : imps){
                     //check for collision with the imp
                     if(imp.first_hit_shooting_ && shooting_sprite.getGlobalBounds().intersects(imp.sprite_.getGlobalBounds())){
-                            imp.imp_hp_ -= 10;
+                            imp.enemy_hp_ -= 10;
                             imp.first_hit_shooting_ = false;
                     }
                 }
@@ -332,7 +319,7 @@ int main(){
 
     //deo specifican za svaki nivo
     if(level == 1){
-        level_one(window, big_platforms, imp_1, player, hp_sprite, imps, shooting_sprite);
+        level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite);
 
         //prelaz iz nivoa 1 u nivo 2
         level = 2;
@@ -351,11 +338,13 @@ int main(){
 
         level_two(window, big_platforms, player);
 
-        cleopatra.sprite_.setTextureRect(imp_1.rectangles_cleo_walk_left_[imp_1.rectangles_index_walk_cleo_]);
+        cleopatra.sprite_.setTextureRect(enemy.rectangles_cleo_walk_left_[enemy.rectangles_index_walk_cleo_]);
         cleopatra.sprite_.setPosition(Vector2f(cleopatra.sprite_.getPosition().x-0.1f, cleopatra.sprite_.getPosition().y));
 
         window.draw(cleopatra.sprite_);
-        dino_sprite.setTextureRect(imp_1.rectangles_dino_slam_[imp_1.rectangles_index_dino_slam_]);
+
+        //draw dino
+        dino_sprite.setTextureRect(enemy.rectangles_dino_slam_[enemy.rectangles_index_dino_slam_]);
         dino_sprite.setScale(7,7);
         dino_sprite.setPosition(400, -575);
         window.draw(dino_sprite);

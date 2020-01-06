@@ -3,14 +3,12 @@
 
 extern bool RIP_construct;
 //so the fireball hits only once
-extern bool fireball_attack_ind;
-extern bool laser_hit_ind;
 extern bool shooting;
 
-void handle_imp(EnemyClass &imp_1, EnemyClass &imp, PlayerClass &player, sf::RenderWindow &window){
+void handle_imp(EnemyClass &enemy, RealEnemyClass &imp, PlayerClass &player, sf::RenderWindow &window){
 
     //attack phase checker
-    if(imp.imp_hp_ > 0 && player.sprite_.getPosition().x > imp.sprite_.getPosition().x - 400 && player.sprite_.getPosition().x < imp.sprite_.getPosition().x + 400){
+    if(imp.enemy_hp_ > 0 && player.sprite_.getPosition().x > imp.sprite_.getPosition().x - 400 && player.sprite_.getPosition().x < imp.sprite_.getPosition().x + 400){
 
         imp.facing_left_ = player.sprite_.getPosition().x < imp.sprite_.getPosition().x;
         imp.attacking_ = true;
@@ -20,7 +18,7 @@ void handle_imp(EnemyClass &imp_1, EnemyClass &imp, PlayerClass &player, sf::Ren
         imp.fireball_sprite_.setPosition(imp.sprite_.getPosition().x, imp.sprite_.getPosition().y + 20);
     }
 
-    if(!imp.attacking_ && imp.imp_hp_ > 0){
+    if(!imp.attacking_ && imp.enemy_hp_ > 0){
         if(imp.phase_clock_.getElapsedTime().asMilliseconds() > imp.phase_delta_){
                 imp.phase_clock_.restart();
                 imp.move_phase_++;
@@ -32,64 +30,66 @@ void handle_imp(EnemyClass &imp_1, EnemyClass &imp, PlayerClass &player, sf::Ren
 
             //marching left then right
             if(imp.move_phase_ == 0 || imp.move_phase_ == 2){
-                imp.sprite_.setTextureRect(imp_1.rectangles_imp_idle_[imp_1.rectangles_index_]);
+                imp.sprite_.setTextureRect(enemy.rectangles_imp_idle_[enemy.rectangles_index_]);
                 }
             else if(imp.move_phase_ == 1){
                 imp.facing_left_ = true;
                 imp.sprite_.setPosition(Vector2f(imp.sprite_.getPosition().x-0.4f, imp.sprite_.getPosition().y));
-                imp.sprite_.setTextureRect(imp_1.rectangles_imp_walk_left_[imp_1.rectangles_index_walk_]);
+                imp.sprite_.setTextureRect(enemy.rectangles_imp_walk_left_[enemy.rectangles_index_walk_]);
+                if(imp.sprite_.getPosition().x < imp.platform_left_)
+                    imp.sprite_.setPosition(Vector2f(imp.platform_left_, imp.sprite_.getPosition().y));
             }else if(imp.move_phase_ == 3){
                 imp.facing_left_ = false;
                 imp.sprite_.setPosition(Vector2f(imp.sprite_.getPosition().x+0.4f, imp.sprite_.getPosition().y));
-                imp.sprite_.setTextureRect(imp_1.rectangles_imp_walk_right_[imp_1.rectangles_index_walk_]);
+                imp.sprite_.setTextureRect(enemy.rectangles_imp_walk_right_[enemy.rectangles_index_walk_]);
+                if(imp.sprite_.getPosition().x + imp.sprite_.getGlobalBounds().width > imp.platform_right_)
+                    imp.sprite_.setPosition(Vector2f(imp.platform_right_ - imp.sprite_.getGlobalBounds().width, imp.sprite_.getPosition().y));
             }
     }
 
             if(imp.attacking_){
                 if(imp.facing_left_){
-                    if(imp_1.rectangles_index_attack_ < 2)
+                    if(enemy.rectangles_index_attack_ < 2)
                         imp.fireball_sprite_.setPosition(imp.sprite_.getPosition().x + 48, imp.sprite_.getPosition().y + 20);
-                    else if(imp_1.rectangles_index_attack_ == 2)
+                    else if(enemy.rectangles_index_attack_ == 2)
                         imp.fireball_sprite_.setPosition(imp.sprite_.getPosition().x + -28, imp.sprite_.getPosition().y + 20);
                     else
                         imp.fireball_sprite_.move(Vector2f(-4, 0.0));
 
 
-                    imp.sprite_.setTextureRect(imp_1.rectangles_imp_attack_left_[imp_1.rectangles_index_attack_]);
-                    imp.fireball_sprite_.setTextureRect(imp_1.rectangles_imp_fireBall_left_[imp_1.rectangles_index_attack_]);
+                    imp.sprite_.setTextureRect(enemy.rectangles_imp_attack_left_[enemy.rectangles_index_attack_]);
+                    imp.fireball_sprite_.setTextureRect(enemy.rectangles_imp_fireBall_left_[enemy.rectangles_index_attack_]);
                 }else{
-                    if(imp_1.rectangles_index_attack_ < 2)
+                    if(enemy.rectangles_index_attack_ < 2)
                         imp.fireball_sprite_.setPosition(imp.sprite_.getPosition().x, imp.sprite_.getPosition().y + 20);
-                    else if(imp_1.rectangles_index_attack_ == 2)
+                    else if(enemy.rectangles_index_attack_ == 2)
                         imp.fireball_sprite_.setPosition(imp.sprite_.getPosition().x + 28, imp.sprite_.getPosition().y + 20);
                     else
                         imp.fireball_sprite_.move(Vector2f(4, 0.0));
 
 
-                    imp.sprite_.setTextureRect(imp_1.rectangles_imp_attack_right_[imp_1.rectangles_index_attack_]);
-                    imp.fireball_sprite_.setTextureRect(imp_1.rectangles_imp_fireBall_right_[imp_1.rectangles_index_attack_]);
+                    imp.sprite_.setTextureRect(enemy.rectangles_imp_attack_right_[enemy.rectangles_index_attack_]);
+                    imp.fireball_sprite_.setTextureRect(enemy.rectangles_imp_fireBall_right_[enemy.rectangles_index_attack_]);
                     }
                 window.draw(imp.fireball_sprite_);
             }
+            //TODO make this animation last longer
+            if(!imp.enemy_dead_ && imp.enemy_hp_ <= 0){
+                    imp.sprite_.setTextureRect(enemy.rectangles_imp_death_[5*(imp.facing_left_) + enemy.rectangles_index_death_]);
 
-            if(!imp.enemy_dead_ && imp.imp_hp_ <= 0){
-                    imp.sprite_.setTextureRect(imp_1.rectangles_imp_death_[5*(imp.facing_left_) + imp_1.rectangles_index_death_]);
-
-                if(imp_1.rectangles_index_death_ == 5){
+                if(enemy.rectangles_index_death_ == 5){
                     imp.enemy_dead_ = true;
                 }
 
             }
-
-
 }
 
 void level_one(sf::RenderWindow &window,
                std::vector<BigPlatform> &big_platforms,
-               EnemyClass &imp_1,
+               EnemyClass &enemy,
                PlayerClass &player,
                Sprite &hp_sprite,
-               std::vector<EnemyClass> &imps,
+               std::vector<RealEnemyClass> &imps,
                Sprite &shooting_sprite
                  ){
 
@@ -99,94 +99,50 @@ void level_one(sf::RenderWindow &window,
                 window.draw(plat.sprite_);
     }
 
-    draw_imp_hp(window, imp_1, hp_sprite);
-
-    //attack phase checker
-    if(imp_1.imp_hp_ > 0 && player.sprite_.getPosition().x > imp_1.sprite_.getPosition().x - 400 && player.sprite_.getPosition().x < imp_1.sprite_.getPosition().x + 400){
-
-        imp_1.facing_left_ = player.sprite_.getPosition().x < imp_1.sprite_.getPosition().x;
-        imp_1.attacking_ = true;
-
-    }else{
-        imp_1.attacking_ = false;
-        imp_1.fireball_sprite_.setPosition(imp_1.sprite_.getPosition().x, imp_1.sprite_.getPosition().y + 20);
-    }
-    //imp_1 -> imp
-    //fireball collision - maybe optimize this at a later date
-    if(imp_1.rectangles_index_attack_ == 0)
-        imp_1.fireball_attack_ind_ = true;
-
-    if(imp_1.imp_hp_ <= 0){
-        imp_1.fireball_attack_ind_ = false;
-        imp_1.attacking_ = false;
-    }
-
-    if(imp_1.fireball_attack_ind_ && imp_1.fireball_sprite_.getGlobalBounds().intersects(player.sprite_.getGlobalBounds())){
-                imp_1.fireball_attack_ind_ = false;
-                player.construct_hp_ -= 10*!(imp_1.rectangles_index_attack_ == 0);
-                if(player.construct_hp_ < 0)
-                    player.construct_hp_ = 0;
-        }
-
-    //laser collision
-    if(player.laser_){
-        if(laser_hit_ind && player.laser_sprite_.getGlobalBounds().intersects(imp_1.sprite_.getGlobalBounds())){
-                //if we hit the imp reduce his hp
-                    imp_1.imp_hp_ -= 30;
-                    laser_hit_ind = false;
-        }
-    }
-
-    //draw the little imp bastard
-    window.draw(imp_1.sprite_);
-
-    for(EnemyClass &imp : imps){
-
-        //laser collision //TODO fix this for laser hits
+    for(RealEnemyClass &imp : imps){
+        if(!imp.enemy_dead_){
+        //laser collision
         if(player.laser_){
-            if(imp.laser_hit_ind_ && player.laser_sprite_.getGlobalBounds().intersects(imp.sprite_.getGlobalBounds())){
-                    //if we hit the imp reduce his hp
-                        imp.imp_hp_ -= 100;
-                        imp_1.rectangles_index_death_ = 0;
-                        imp.laser_hit_ind_ = false;
+                if(imp.first_hit_laser_ && player.laser_sprite_.getGlobalBounds().intersects(imp.sprite_.getGlobalBounds())){
+                        //if we hit the imp reduce his hp
+                        imp.enemy_hp_ -= 100;
+                        enemy.rectangles_index_death_ = 0;
+                        imp.first_hit_laser_ = false;
+                }
             }
+            if(shooting){
+                if(player.rectangles_index_shooting_ == 1){
+                        imp.first_hit_shooting_ = true;
+                }
+
+                //check for collision with the imp
+                if(imp.first_hit_shooting_ && shooting_sprite.getGlobalBounds().intersects(imp.sprite_.getGlobalBounds())){
+                        imp.enemy_hp_ -= 10;
+                        imp.first_hit_shooting_ = false;
+                }
+            }
+
+            handle_imp(enemy, imp, player, window);
+
+            //fireball collision - maybe optimize this at a later date
+            if(enemy.rectangles_index_attack_ == 0)
+                imp.first_hit_fireball_ = true;
+
+            if(imp.enemy_hp_ <= 0){
+                imp.first_hit_fireball_ = false;
+                imp.attacking_ = false;
+            }
+
+            if(imp.first_hit_fireball_ && imp.fireball_sprite_.getGlobalBounds().intersects(player.sprite_.getGlobalBounds())){
+                        imp.first_hit_fireball_ = false;
+                        player.construct_hp_ -= 10*!(enemy.rectangles_index_attack_ == 0);
+                        if(player.construct_hp_ < 0)
+                            player.construct_hp_ = 0;
+                }
+
+            draw_imp_hp(window, imp, hp_sprite);
+            window.draw(imp.sprite_);
         }
-        if(shooting){
-            if(player.rectangles_index_shooting_ == 1){
-                    imp.first_hit_shooting_ = true;
-            }
-
-            //check for collision with the imp
-            if(imp.first_hit_shooting_ && shooting_sprite.getGlobalBounds().intersects(imp.sprite_.getGlobalBounds())){
-                    imp.imp_hp_ -= 10;
-                    imp.first_hit_shooting_ = false;
-            }
-        }
-
-        handle_imp(imp_1, imp, player, window);
-
-        //fireball collision - maybe optimize this at a later date
-        if(imp_1.rectangles_index_attack_ == 0)
-            imp.fireball_attack_ind_ = true;
-
-        if(imp.imp_hp_ <= 0){
-            imp.fireball_attack_ind_ = false;
-            imp.attacking_ = false;
-        }
-
-        if(imp.fireball_attack_ind_ && imp.fireball_sprite_.getGlobalBounds().intersects(player.sprite_.getGlobalBounds())){
-                    imp.fireball_attack_ind_ = false;
-                    player.construct_hp_ -= 10*!(imp_1.rectangles_index_attack_ == 0);
-                    if(player.construct_hp_ < 0)
-                        player.construct_hp_ = 0;
-            }
-
-        draw_imp_hp(window, imp, hp_sprite);
-        window.draw(imp.sprite_);
-    }
-
-    if(imp_1.attacking_){
-        window.draw(imp_1.fireball_sprite_);
     }
 
 }

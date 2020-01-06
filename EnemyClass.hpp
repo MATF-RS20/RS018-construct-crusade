@@ -1,33 +1,13 @@
 #ifndef _ENEMY_CLASS_HPP
 #define _ENEMY_CLASS_HPP
 
-#include "GameObject.hpp"
-#include "PlayerClass.hpp"
-
 using namespace sf;
 
-//Enemy class
-
-class EnemyClass : public GameObject{
+//Enemy class - this is used to animate everything - and storage for our rectangle frames
+class EnemyClass{
 public:
 
-    EnemyClass(Sprite sprite, Sprite fireball_sprite, double x_pos, double y_pos)
-     : GameObject(x_pos, y_pos), sprite_(sprite), fireball_sprite_(fireball_sprite){
-        sprite_.setPosition(GameObject::x_pos_, GameObject::y_pos_);
-        fireball_sprite_.setPosition(GameObject::x_pos_, GameObject::y_pos_);
-        imp_hp_ = 100.0;
-        facing_left_ = true;
-        attacking_ = false;
-        scale_ = 4;
-        sprite_.setScale(scale_, scale_);
-        fireball_sprite_.setScale(scale_, scale_);
-        fireball_attack_ind_ = true;
-        move_phase_ = 0;
-        phase_delta_ = 3000;
-        phase_clock_.restart();
-        laser_hit_ind_ = true;
-        first_hit_shooting_ = true;
-        enemy_dead_ = false;
+    EnemyClass(int value_that_has_no_value_you_are_here_because_i_desire_you_to_be){
 
         init_rectangles();
     }
@@ -44,17 +24,9 @@ public:
         Clock fireball_clock;
         Clock dino_slam_clock;
 
-
-
         //cleo
         Clock cleo_idle_clock;
         Clock cleo_walk_clock;
-
-        //phase change paramaters
-        //Clock phase_clock;
-        //movement animations: 0,2 - idle, 1 - walk left, 3 - walk right
-        move_phase_ = 0;
-        //int phase_delta = 3000;
 
         while(true){
             index_update(delta_time, cleo_walk_clock, 4, rectangles_index_walk_cleo_);
@@ -70,76 +42,12 @@ public:
 
             index_update(delta_time, death_clock, 6, rectangles_index_death_);
 
-            if(attacking_)
-                index_update(delta_time + 200, fireball_clock, 6, rectangles_index_fireball_);
-
-            if(!attacking_  && imp_hp_ > 0){
-
-            if(phase_clock_.getElapsedTime().asMilliseconds() > phase_delta_){
-                phase_clock_.restart();
-                move_phase_++;
-            }
-
-            if(move_phase_ == 4){
-                move_phase_ = 0;
-            }
-
-            //marching left then right
-            if(move_phase_ == 0 || move_phase_ == 2){
-                sprite_.setTextureRect(rectangles_imp_idle_[rectangles_index_]);
-                }
-            else if(move_phase_ == 1){
-                facing_left_ = true;
-                sprite_.setPosition(Vector2f(sprite_.getPosition().x-0.00009f, sprite_.getPosition().y));
-                sprite_.setTextureRect(rectangles_imp_walk_left_[rectangles_index_walk_]);
-            }else if(move_phase_ == 3){
-                facing_left_ = false;
-                sprite_.setPosition(Vector2f(sprite_.getPosition().x+0.00009f, sprite_.getPosition().y));
-                sprite_.setTextureRect(rectangles_imp_walk_right_[rectangles_index_walk_]);
-            }
-
-            }
-
-            if(attacking_){
-                if(facing_left_){
-                    if(rectangles_index_attack_ < 2)
-                        fireball_sprite_.setPosition(sprite_.getPosition().x + 48, sprite_.getPosition().y + 20);
-                    else if(rectangles_index_attack_ == 2)
-                        fireball_sprite_.setPosition(sprite_.getPosition().x + -28, sprite_.getPosition().y + 20);
-                    else
-                        fireball_sprite_.move(Vector2f(-0.0015, 0.0));
-
-
-                    sprite_.setTextureRect(rectangles_imp_attack_left_[rectangles_index_attack_]);
-                    fireball_sprite_.setTextureRect(rectangles_imp_fireBall_left_[rectangles_index_attack_]);
-                }else{
-                    if(rectangles_index_attack_ < 2)
-                        fireball_sprite_.setPosition(sprite_.getPosition().x, sprite_.getPosition().y + 20);
-                    else if(rectangles_index_attack_ == 2)
-                        fireball_sprite_.setPosition(sprite_.getPosition().x + 28, sprite_.getPosition().y + 20);
-                    else
-                        fireball_sprite_.move(Vector2f(0.0015, 0.0));
-
-
-                    sprite_.setTextureRect(rectangles_imp_attack_right_[rectangles_index_attack_]);
-                    fireball_sprite_.setTextureRect(rectangles_imp_fireBall_right_[rectangles_index_attack_]);
-                    }
-            }
-
-            if(imp_hp_ <= 0){
-                    sprite_.setTextureRect(rectangles_imp_death_[5*(facing_left_) + rectangles_index_death_]);
-
-                if(rectangles_index_death_ == 5){
-                    break;
-                }
-
-            }
+            index_update(delta_time + 200, fireball_clock, 6, rectangles_index_fireball_);
 
         }//while
 
     }//IdleAnimation
-    Sprite sprite_;
-    Sprite fireball_sprite_;
+
     std::vector<IntRect> rectangles_imp_idle_;
     std::vector<IntRect> rectangles_imp_walk_right_;
     std::vector<IntRect> rectangles_imp_walk_left_;
@@ -155,19 +63,6 @@ public:
     int rectangles_index_death_;
     int rectangles_index_fireball_;
     int rectangles_index_dino_slam_;
-    double scale_;
-    double x_vel_;
-    double y_vel_;
-    double imp_hp_;
-    bool facing_left_;
-    bool attacking_;
-    int move_phase_;
-    Clock phase_clock_;
-    int phase_delta_;
-    bool fireball_attack_ind_;
-    bool laser_hit_ind_;
-    bool first_hit_shooting_;
-    bool enemy_dead_;
 
     //cleo parameters
     std::vector<IntRect> rectangles_cleo_idle_;
@@ -203,6 +98,7 @@ private:
         rectangles_index_attack_ = 0;
         rectangles_index_death_ = 0;
         rectangles_index_fireball_ = 0;
+
         rectangles_index_dino_slam_ = 0;
 
         for (int i = 0; i < 4; i++){

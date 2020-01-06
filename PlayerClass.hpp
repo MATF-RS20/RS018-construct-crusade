@@ -357,11 +357,6 @@ private:
         for(int i = 0; i < 4; i++)
             rectangles_shooting_.push_back(IntRect(80 - 25*i, 175, 20, 25));
 
-
-
-
-
-
     }
 };
 #endif // _PLAYER_CLASS_HPP

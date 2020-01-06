@@ -29,17 +29,17 @@ void draw_player_hp_mp(RenderWindow &window, PlayerClass &player, Sprite hp_spri
         window.draw(hp_sprite);
 }
 
-void draw_imp_hp(RenderWindow &window,EnemyClass &imp_1,Sprite hp_sprite){
+void draw_imp_hp(RenderWindow &window, RealEnemyClass &enemy,Sprite hp_sprite){
 
-        if(imp_1.imp_hp_ > 0){
-            hp_sprite.setTextureRect(IntRect(0, 65, 1 + 110*imp_1.imp_hp_/100.0, 8));
+        if(enemy.enemy_hp_ > 0){
+            hp_sprite.setTextureRect(IntRect(0, 65, 1 + 110*enemy.enemy_hp_/100.0, 8));
             hp_sprite.setScale(0.6, 1);
-            hp_sprite.setPosition(imp_1.sprite_.getPosition().x, imp_1.sprite_.getPosition().y - 20);
+            hp_sprite.setPosition(enemy.sprite_.getPosition().x, enemy.sprite_.getPosition().y - 20);
             window.draw(hp_sprite);
         }
         hp_sprite.setTextureRect(IntRect(0, 81, 112, 8));
         hp_sprite.setScale(0.6, 1);
-        hp_sprite.setPosition(imp_1.sprite_.getPosition().x, imp_1.sprite_.getPosition().y - 20);
+        hp_sprite.setPosition(enemy.sprite_.getPosition().x, enemy.sprite_.getPosition().y - 20);
         window.draw(hp_sprite);
 
 }

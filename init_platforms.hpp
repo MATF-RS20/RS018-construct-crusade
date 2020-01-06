@@ -1,26 +1,33 @@
 #ifndef INIT_PLATFORMS_HPP
 #define INIT_PLATFORMS_HPP
 
-void init_platforms(std::vector<BigPlatform> &big_platforms, PlayerClass &player, Sprite &platform_sprite, std::vector<EnemyClass> &imps, Sprite imp_sprite, Sprite fireball_sprite){
+void init_platforms(std::vector<BigPlatform> &big_platforms,
+                    PlayerClass &player,
+                    Sprite &platform_sprite,
+                    std::vector<RealEnemyClass> &imps,
+                    Sprite &imp_sprite, //added &
+                    Sprite &fireball_sprite){
 
     int platform_distance = 800;
     int fixed_platform_height = 500;
     int platform_height_offset = 140;
 
-    //imp initialization
-    imps.push_back(EnemyClass(imp_sprite, fireball_sprite, 0, 440));
-    imps.push_back(EnemyClass(imp_sprite, fireball_sprite, 50, 440));
-
     //level 0 - height 500 - width from -4800 to 4000
     for(int j = -6; j < 6; j++){
         big_platforms.push_back(BigPlatform(platform_distance*j, fixed_platform_height, 8 + rand() % 3, platform_sprite));
         player.num_of_platforms_++;
+        if(rand() % 101 < 40 && j != 0)
+            imps.push_back(RealEnemyClass(imp_sprite, fireball_sprite, big_platforms[player.num_of_platforms_-1].platform_right_ - 100, big_platforms[player.num_of_platforms_-1].platform_top_ - 60, big_platforms[player.num_of_platforms_-1].platform_left_, big_platforms[player.num_of_platforms_-1].platform_right_));
+
     }
 
     //stairs to level 1
     for(int j = 1; j < 6; j++){
         big_platforms.push_back(BigPlatform(6.3*platform_distance + platform_distance/2.5*(pow((-1),j)), fixed_platform_height - j*platform_height_offset , 7 + rand() % 3, platform_sprite));
         player.num_of_platforms_++;
+        if(rand() % 101 < 40)
+            imps.push_back(RealEnemyClass(imp_sprite, fireball_sprite, big_platforms[player.num_of_platforms_-1].platform_right_ - 100, big_platforms[player.num_of_platforms_-1].platform_top_ - 60, big_platforms[player.num_of_platforms_-1].platform_left_, big_platforms[player.num_of_platforms_-1].platform_right_));
+
     }
 
     //level 1 - height -200 - width from 4000 to 0
@@ -56,7 +63,7 @@ void init_platforms(std::vector<BigPlatform> &big_platforms, PlayerClass &player
     big_platforms.push_back(BigPlatform(platform_distance, level_2_height, 25, platform_sprite));
     player.num_of_platforms_++;
 
-    //TODO finis making platforms
+    //TODO finish making platforms
 
     std::cout << "plat num: " << player.num_of_platforms_ << std::endl;
 
