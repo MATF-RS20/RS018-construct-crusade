@@ -125,6 +125,11 @@ int main(){
 
     //inicijalizacije za NIVO 2
 
+    //Dinoo bambinooo
+    Texture dino;
+    dino.loadFromFile("assets/images/dinomooove.png");
+    Sprite dino_sprite(dino, IntRect(0,0,30,25));
+
     //Cleopatra initialization
     Texture cleo;
     cleo.loadFromFile("assets/images/cleopatra.png");
@@ -321,23 +326,27 @@ int main(){
         level_one(window, big_platforms, imp_1, player, hp_sprite);
 
         //prelaz iz nivoa 1 u nivo 2
-//        level = 2;
-//        player.sprite_.setPosition(0, -500);
-//        big_platforms.clear();
-//
-//        player.num_of_platforms_ = 0;
-//        init_platforms_level_2(big_platforms, player, platform_sprite);
-//
-//        player.platform_index_ = 6;
-//        player.platform_index_offset_ = 6;
+        level = 2;
+        player.sprite_.setPosition(0, -500);
+        big_platforms.clear();
+
+        player.num_of_platforms_ = 0;
+        init_platforms_level_2(big_platforms, player, platform_sprite);
+
+        player.platform_index_ = 6;
+        player.platform_index_offset_ = 6;
 
 
     }
     else if(level == 2){
 
         level_two(window, big_platforms, player);
-
         window.draw(cleopatra.sprite_);
+        //std::cout << imp_1.rectangles_index_dino_slam_ << std::endl;
+        dino_sprite.setTextureRect(imp_1.rectangles_dino_slam_[imp_1.rectangles_index_dino_slam_]);
+        dino_sprite.setScale(7,7);
+        dino_sprite.setPosition(400, -575);
+        window.draw(dino_sprite);
     }
 
     window.display();
