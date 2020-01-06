@@ -578,3 +578,53 @@
 1578232963 c:\users\ivana\desktop\rs project\constructcrusade\cleopatraclass.hpp
 	"GameObject.hpp"
 
+1578319581 source:c:\users\ivana\desktop\rs project\cc2\construct_crusade.cpp
+	<iostream>
+	<SFML/Audio.hpp>
+	<SFML/Graphics.hpp>
+	<vector>
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	"PlayerClass.hpp"
+	"EnemyClass.hpp"
+	"BigPlatform.hpp"
+	"DrawTrails.hpp"
+	"Bars.hpp"
+	"Level_one.hpp"
+	"Level_two.hpp"
+	"init_platforms.hpp"
+	"CleopatraClass.hpp"
+	"init_platforms_level_2.hpp"
+
+1578301592 c:\users\ivana\desktop\rs project\cc2\playerclass.hpp
+	"BigPlatform.hpp"
+
+1578056899 c:\users\ivana\desktop\rs project\cc2\bigplatform.hpp
+	"PlatformClass.hpp"
+
+1577901343 c:\users\ivana\desktop\rs project\cc2\platformclass.hpp
+	"GameObject.hpp"
+
+1577901343 c:\users\ivana\desktop\rs project\cc2\gameobject.hpp
+
+1578320488 c:\users\ivana\desktop\rs project\cc2\enemyclass.hpp
+	"GameObject.hpp"
+	"PlayerClass.hpp"
+
+1578056899 c:\users\ivana\desktop\rs project\cc2\drawtrails.hpp
+
+1578059679 c:\users\ivana\desktop\rs project\cc2\bars.hpp
+
+1578301592 c:\users\ivana\desktop\rs project\cc2\level_one.hpp
+
+1578174080 c:\users\ivana\desktop\rs project\cc2\level_two.hpp
+
+1578185034 c:\users\ivana\desktop\rs project\cc2\init_platforms.hpp
+
+1578314469 c:\users\ivana\desktop\rs project\cc2\cleopatraclass.hpp
+	"GameObject.hpp"
+
+1578301592 c:\users\ivana\desktop\rs project\cc2\init_platforms_level_2.hpp
+

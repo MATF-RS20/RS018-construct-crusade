@@ -105,8 +105,12 @@ int main(){
 
     Sprite imp_sprite(imp, IntRect(23, 377, 1, 1));
     Sprite fireball_sprite(imp, IntRect(10, 211, 18, 15));
-
     EnemyClass imp_1(imp_sprite, fireball_sprite, 1000, 440);
+
+    Texture cleo;
+    cleo.loadFromFile("assets/images/cleopatra.png");
+    Sprite cleo_sprite(cleo, IntRect(0,0,25,25));
+    EnemyClass cleopatra(cleo_sprite, fireball_sprite, 200, -500);
 
     //these threads do all the animation calculations - yes i said THREADS... IM A REAL PROGRAMMER!
     //create a thread asign a function and an object to the thread
@@ -125,16 +129,12 @@ int main(){
 
     //inicijalizacije za NIVO 2
 
-    //Cleopatra initialization
-    Texture cleo;
-    cleo.loadFromFile("assets/images/cleopatra.png");
-    Sprite cleo_sprite(cleo, IntRect(0,0,25,25));
+    //Cleopatra initialization must be before starting enemy thread
 
-    CleopatraClass cleopatra(cleo_sprite, 200, -500);
 
-    sf::Thread cleo_thread(&CleopatraClass::Animation, &cleopatra);
+    //sf::Thread cleo_thread(&CleopatraClass::Animation, &cleopatra);
     //start the thread
-    cleo_thread.launch();
+    //cleo_thread.launch();
 
     //start the main loop
     while (window.isOpen())
@@ -321,21 +321,24 @@ int main(){
         level_one(window, big_platforms, imp_1, player, hp_sprite);
 
         //prelaz iz nivoa 1 u nivo 2
-//        level = 2;
-//        player.sprite_.setPosition(0, -500);
-//        big_platforms.clear();
-//
-//        player.num_of_platforms_ = 0;
-//        init_platforms_level_2(big_platforms, player, platform_sprite);
-//
-//        player.platform_index_ = 6;
-//        player.platform_index_offset_ = 6;
+        level = 2;
+        player.sprite_.setPosition(0, -500);
+        big_platforms.clear();
+
+        player.num_of_platforms_ = 0;
+        init_platforms_level_2(big_platforms, player, platform_sprite);
+
+        player.platform_index_ = 6;
+        player.platform_index_offset_ = 6;
 
 
     }
     else if(level == 2){
 
         level_two(window, big_platforms, player);
+
+        cleopatra.sprite_.setTextureRect(imp_1.rectangles_cleo_walk_left_[imp_1.rectangles_index_walk_cleo_]);
+        cleopatra.sprite_.setPosition(Vector2f(cleopatra.sprite_.getPosition().x-0.1f, cleopatra.sprite_.getPosition().y));
 
         window.draw(cleopatra.sprite_);
     }
