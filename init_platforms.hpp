@@ -1,11 +1,15 @@
 #ifndef INIT_PLATFORMS_HPP
 #define INIT_PLATFORMS_HPP
 
-void init_platforms(std::vector<BigPlatform> &big_platforms, PlayerClass &player, Sprite &platform_sprite){
+void init_platforms(std::vector<BigPlatform> &big_platforms, PlayerClass &player, Sprite &platform_sprite, std::vector<EnemyClass> &imps, Sprite imp_sprite, Sprite fireball_sprite){
 
     int platform_distance = 800;
     int fixed_platform_height = 500;
     int platform_height_offset = 140;
+
+    //imp initialization
+    imps.push_back(EnemyClass(imp_sprite, fireball_sprite, 0, 440));
+    imps.push_back(EnemyClass(imp_sprite, fireball_sprite, 50, 440));
 
     //level 0 - height 500 - width from -4800 to 4000
     for(int j = -6; j < 6; j++){

@@ -18,15 +18,14 @@
 #include "init_platforms_level_2.hpp"
 
 using namespace sf;
-
 double window_height = 600;
 double window_width = 1200;
 bool RIP_construct = false;
 bool shooting = false;
-//so the fireball hits only once
-bool fireball_attack_ind = true;
+//so the laser hits only once
 bool laser_hit_ind = false;
 int level = 1;
+//Clock random_clock;
 
 int main(){
     //create the main window
@@ -62,7 +61,6 @@ int main(){
     Clock shooting_clock_main;
     float shooting_scaler = 0;
     Sprite shooting_sprite(construct_tex, IntRect(26, 152, 4, 4));
-    bool first_hit_shooting = true;
 
     //making a player object
     PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, 0, 400);
@@ -97,7 +95,6 @@ int main(){
     Sprite platform_sprite(platform_tex);
 
     std::vector<BigPlatform> big_platforms;
-    init_platforms(big_platforms, player, platform_sprite);
 
     //imp initialization
     Texture imp;
@@ -106,8 +103,11 @@ int main(){
     Sprite imp_sprite(imp, IntRect(23, 377, 1, 1));
     Sprite fireball_sprite(imp, IntRect(10, 211, 18, 15));
 
-    EnemyClass imp_1(imp_sprite, fireball_sprite, 1000, 440);
+    std::vector<EnemyClass> imps;
 
+    init_platforms(big_platforms, player, platform_sprite, imps, imp_sprite, fireball_sprite);
+
+    EnemyClass imp_1(imp_sprite, fireball_sprite, 1000, 440);
     //these threads do all the animation calculations - yes i said THREADS... IM A REAL PROGRAMMER!
     //create a thread asign a function and an object to the thread
     sf::Thread imp_thread(&EnemyClass::Animation, &imp_1);
@@ -167,6 +167,9 @@ int main(){
                         if(player.construct_mp_ == 100 && player.on_ground_){
                             player.laser_ = true;
                             laser_hit_ind = true;
+                            for(auto imp : imps){
+                                imp.laser_hit_ind_ = true;
+                            }
                             player.construct_mp_ = 0;
                             mana_thread.launch();
                         }
@@ -225,8 +228,8 @@ int main(){
             player.update(construct_move, big_platforms, uniform_time);
             uniform_move_clock.restart();
 
-            //here we center the view on the player
-            view.setCenter(Vector2f(player.sprite_.getPosition().x, player.sprite_.getPosition().y));
+            //here we center the view on the player - when we animate the raptor we might add the sin when he slams the ground
+            view.setCenter(Vector2f(player.sprite_.getPosition().x, player.sprite_.getPosition().y /*+ 4*sin(random_clock.getElapsedTime().asMilliseconds())*/));
             window.setView(view);
 
             //jumping animation
@@ -288,17 +291,16 @@ int main(){
                 shooting_sprite.move(pow(-1, player.facing_left_)*1500*shooting_scaler, 0);
                 shooting_clock_main.restart();
                 if(player.rectangles_index_shooting_ == 1){
-                    first_hit_shooting = true;
                     shooting_sprite.setPosition(player.sprite_.getPosition().x + 52 -(player.facing_left_)*60, player.sprite_.getPosition().y + 48);
                 }
                 shooting_sprite.setScale(4, 4);
                 window.draw(shooting_sprite);
 
-                //check for collision with the imp
-                if(shooting_sprite.getGlobalBounds().intersects(imp_1.sprite_.getGlobalBounds())){
-                    if(first_hit_shooting){
-                        imp_1.imp_hp_ -= 10;
-                        first_hit_shooting = false;
+                for(auto imp : imps){
+                    //check for collision with the imp
+                    if(imp.first_hit_shooting_ && shooting_sprite.getGlobalBounds().intersects(imp.sprite_.getGlobalBounds())){
+                            imp.imp_hp_ -= 10;
+                            imp.first_hit_shooting_ = false;
                     }
                 }
             }
@@ -318,7 +320,7 @@ int main(){
 
     //deo specifican za svaki nivo
     if(level == 1){
-        level_one(window, big_platforms, imp_1, player, hp_sprite);
+        level_one(window, big_platforms, imp_1, player, hp_sprite, imps, shooting_sprite);
 
         //prelaz iz nivoa 1 u nivo 2
 //        level = 2;

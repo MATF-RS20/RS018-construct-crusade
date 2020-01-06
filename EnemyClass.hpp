@@ -20,6 +20,13 @@ public:
         scale_ = 4;
         sprite_.setScale(scale_, scale_);
         fireball_sprite_.setScale(scale_, scale_);
+        fireball_attack_ind_ = true;
+        move_phase_ = 0;
+        phase_delta_ = 3000;
+        phase_clock_.restart();
+        laser_hit_ind_ = true;
+        first_hit_shooting_ = true;
+        enemy_dead_ = false;
 
         init_rectangles();
     }
@@ -36,10 +43,10 @@ public:
         Clock fireball_clock;
 
         //phase change paramaters
-        Clock phase_clock;
+        //Clock phase_clock;
         //movement animations: 0,2 - idle, 1 - walk left, 3 - walk right
         move_phase_ = 0;
-        int phase_delta = 3000;
+        //int phase_delta = 3000;
 
         while(true){
 
@@ -49,16 +56,16 @@ public:
 
             index_update(delta_time, attack_clock, 5, rectangles_index_attack_);
 
-            if(imp_hp_ <= 0)
-                index_update(delta_time, death_clock, 6, rectangles_index_death_);
+
+            index_update(delta_time, death_clock, 6, rectangles_index_death_);
 
             if(attacking_)
                 index_update(delta_time + 200, fireball_clock, 6, rectangles_index_fireball_);
 
             if(!attacking_  && imp_hp_ > 0){
 
-            if(phase_clock.getElapsedTime().asMilliseconds() > phase_delta){
-                phase_clock.restart();
+            if(phase_clock_.getElapsedTime().asMilliseconds() > phase_delta_){
+                phase_clock_.restart();
                 move_phase_++;
             }
 
@@ -142,6 +149,12 @@ public:
     bool facing_left_;
     bool attacking_;
     int move_phase_;
+    Clock phase_clock_;
+    int phase_delta_;
+    bool fireball_attack_ind_;
+    bool laser_hit_ind_;
+    bool first_hit_shooting_;
+    bool enemy_dead_;
 
 private:
     void index_update(int delta_time, Clock &clock, int iters, int &index){
