@@ -48,7 +48,7 @@ public:
         y_vel_ = VEL*uniform_time;
         //this is here because when you move a window everything is paused on screen(but the clocks are working)
         //so the uniform_time because huge - and we get catapulted down - this is my fix
-        if(y_vel_ > 50){
+        if(y_vel_ > 3){
             y_vel_ = 1;
         }
         if(!(construct_move & 1 || construct_move & 2)){

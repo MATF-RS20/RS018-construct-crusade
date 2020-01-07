@@ -105,7 +105,7 @@ void level_one(sf::RenderWindow &window,
         if(player.laser_){
                 if(imp.first_hit_laser_ && player.laser_sprite_.getGlobalBounds().intersects(imp.sprite_.getGlobalBounds())){
                         //if we hit the imp reduce his hp
-                        imp.enemy_hp_ -= 100;
+                        imp.enemy_hp_ -= 30;
                         enemy.rectangles_index_death_ = 0;
                         imp.first_hit_laser_ = false;
                 }
@@ -118,6 +118,7 @@ void level_one(sf::RenderWindow &window,
                 //check for collision with the imp
                 if(imp.first_hit_shooting_ && shooting_sprite.getGlobalBounds().intersects(imp.sprite_.getGlobalBounds())){
                         imp.enemy_hp_ -= 10;
+                        enemy.rectangles_index_death_ = 0;
                         imp.first_hit_shooting_ = false;
                 }
             }

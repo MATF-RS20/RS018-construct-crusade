@@ -16,7 +16,7 @@ void init_platforms(std::vector<BigPlatform> &big_platforms,
     for(int j = -6; j < 6; j++){
         big_platforms.push_back(BigPlatform(platform_distance*j, fixed_platform_height, 8 + rand() % 3, platform_sprite));
         player.num_of_platforms_++;
-        if(rand() % 101 < 40 && j != 0)
+        if(rand() % 101 < 40 && j != 0 && j != -1)
             imps.push_back(RealEnemyClass(imp_sprite, fireball_sprite, big_platforms[player.num_of_platforms_-1].platform_right_ - 100, big_platforms[player.num_of_platforms_-1].platform_top_ - 60, big_platforms[player.num_of_platforms_-1].platform_left_, big_platforms[player.num_of_platforms_-1].platform_right_));
 
     }

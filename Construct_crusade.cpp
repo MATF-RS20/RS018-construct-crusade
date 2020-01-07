@@ -282,7 +282,7 @@ int main(){
                 }
             }
 
-            if(shooting){
+            if(shooting && player.construct_hp_ > 0){
                 //draw the cunstruct while shooting - specail case left or right
                 player.sprite_.setTextureRect(player.rectangles_shooting_[4*(player.facing_left_) + player.rectangles_index_shooting_]);
                 //draw and move the plasma bullet
@@ -320,7 +320,7 @@ int main(){
     //deo specifican za svaki nivo
     if(level == 1){
         level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite);
-
+        if(player.sprite_.getPosition().y < -500){
         //prelaz iz nivoa 1 u nivo 2
         level = 2;
         player.sprite_.setPosition(0, -500);
@@ -331,6 +331,7 @@ int main(){
 
         player.platform_index_ = 6;
         player.platform_index_offset_ = 6;
+        }
 
 
     }
