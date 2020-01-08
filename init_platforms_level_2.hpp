@@ -87,6 +87,42 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms, PlayerClass
     big_platforms.push_back(BigPlatform(750, -3300, 15, platform_sprite));
     player.num_of_platforms_++;
 
+    //Another part of level 2
+
+    platform_height = -3300;
+    for(int i = 0; i < 2; i++)
+    {
+        big_platforms.push_back(BigPlatform((platform_distance-550)+(i*1040), platform_height-200, 5, platform_sprite));
+        player.num_of_platforms_++;
+    }
+
+    platform_height = -3500;
+    for(int i = 0; i < 2; i++)
+    {
+        big_platforms.push_back(BigPlatform(250+(i*1400), platform_height-200, 5, platform_sprite));
+        player.num_of_platforms_++;
+    }
+
+    platform_height = -3700;
+    for(int i = 0; i < 2; i++)
+    {
+        big_platforms.push_back(BigPlatform(0+(i*1950), platform_height-200, 4, platform_sprite));
+        player.num_of_platforms_++;
+    }
+
+    platform_height = -3900;
+    for(int i = 0; i < 2; i++)
+    {
+        big_platforms.push_back(BigPlatform(350+(i*1000), platform_height-200, 8, platform_sprite));
+        player.num_of_platforms_++;
+    }
+
+    big_platforms.push_back(BigPlatform(920, -4300, 4, platform_sprite));
+    player.num_of_platforms_++;
+
+
+
+
 
     std::cout << "plat num: " << player.num_of_platforms_ << std::endl;
 

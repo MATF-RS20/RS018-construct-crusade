@@ -124,7 +124,7 @@ int main(){
     Texture cleo;
     cleo.loadFromFile("assets/images/cleopatra.png");
     Sprite cleo_sprite(cleo, IntRect(0,0,25,25));
-    RealEnemyClass cleopatra(cleo_sprite, fireball_sprite, 200, -500, 200, 200);
+    RealEnemyClass cleopatra(cleo_sprite, fireball_sprite, 200, -500, 200, 500);
 
     //these threads do all the animation calculations - yes i said THREADS... IM A REAL PROGRAMMER!
     //create a thread asign a function and an object to the thread
@@ -144,9 +144,11 @@ int main(){
 
 
     //Dinoo bambinooo
-    Texture dino;
-    dino.loadFromFile("assets/images/dinomooove.png");
-    Sprite dino_sprite(dino, IntRect(0,0,30,25));
+    Texture dino_tex;
+    dino_tex.loadFromFile("assets/images/dinoWalk.png");
+    Sprite dino_sprite(dino_tex, IntRect(0,0,30,25));
+
+    RealEnemyClass dino(dino_sprite, dino_sprite, 400, -575, 200, 200);
 
     //start the main loop
     while (window.isOpen())
@@ -337,7 +339,9 @@ int main(){
     if(level == 1){
         level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches);
 
-        if(player.sprite_.getPosition().y < -500){
+
+    //    if(player.sprite_.getPosition().y < -500){
+
 
             //prelaz iz nivoa 1 u nivo 2
             level = 2;
@@ -349,13 +353,15 @@ int main(){
 
             player.platform_index_ = 6;
             player.platform_index_offset_ = 6;
-        }
+
+        //}
+
 
 
     }
     else if(level == 2){
 
-        level_two(window, big_platforms, player, enemy, cleopatra, dino_sprite);
+        level_two(window, big_platforms, player, enemy, cleopatra, dino);
 
     }
 
