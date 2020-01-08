@@ -53,7 +53,7 @@ void level_two(sf::RenderWindow &window,
                PlayerClass &player,
                EnemyClass &enemy,
                RealEnemyClass &cleopatra,
-               Sprite &dino_sprite)
+               RealEnemyClass &dino)
 {
 
     //iscrtaj platforme za nivo 2
@@ -66,10 +66,10 @@ void level_two(sf::RenderWindow &window,
     window.draw(cleopatra.sprite_);
 
     //draw dino
-    dino_sprite.setTextureRect(enemy.rectangles_dino_slam_[enemy.rectangles_index_dino_slam_]);
-    dino_sprite.setScale(7,7);
-    dino_sprite.setPosition(400, -575);
-    window.draw(dino_sprite);
+    dino.sprite_.setTextureRect(enemy.rectangles_dino_walk_left_[enemy.rectangles_index_dino_walk_]);
+    dino.sprite_.setScale(7,7);
+    dino.sprite_.setPosition(400, -575);
+    window.draw(dino.sprite_);
 
 
 }

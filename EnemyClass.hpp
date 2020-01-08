@@ -22,7 +22,10 @@ public:
         Clock attack_clock;
         Clock death_clock;
         Clock fireball_clock;
+
+        //dino
         Clock dino_slam_clock;
+        Clock dino_walk_clock;
 
         //cleo
         Clock cleo_idle_clock;
@@ -59,6 +62,7 @@ public:
 
             //dino
             index_update(140, dino_slam_clock, 4, rectangles_index_dino_slam_);
+            index_update(delta_time, dino_walk_clock, 6, rectangles_index_dino_walk_);
 
             //witch
             index_update(delta_time, witch_idle_clock, 4, rectangles_index_witch_idle_);
@@ -88,8 +92,13 @@ public:
 
     //dino parameters
     std::vector<IntRect> rectangles_dino_slam_;
+    std::vector<IntRect> rectangles_dino_walk_left_;
+    std::vector<IntRect> rectangles_dino_walk_right_;
+
 
     int rectangles_index_dino_slam_;
+    int rectangles_index_dino_walk_;
+
 
     //cleo parameters
     std::vector<IntRect> rectangles_cleo_idle_;
@@ -143,6 +152,7 @@ private:
 
         //dino indices
         rectangles_index_dino_slam_ = 0;
+        rectangles_index_dino_walk_ = 0;
 
         //witch indices
         rectangles_index_witch_idle_ = 0;
@@ -152,9 +162,16 @@ private:
         rectangles_index_witch_broom_ = 0;
 
         for (int i = 0; i < 4; i++){
-            rectangles_dino_slam_.push_back(IntRect(0 , 0+25*i, 33, 25));
+            rectangles_dino_slam_.push_back(IntRect(0 , 25*i, 33, 25));
         }
 
+        for (int i = 0; i < 6; i++){
+            rectangles_dino_walk_left_.push_back(IntRect(0 , 25*i, 33, 25));
+        }
+
+        for (int i = 0; i < 6; i++){
+            rectangles_dino_walk_right_.push_back(IntRect(50 , 25*i, 33, 25));
+        }
 
         //Cleopatra rectangles
         for (int i = 0; i < 3; i++){
