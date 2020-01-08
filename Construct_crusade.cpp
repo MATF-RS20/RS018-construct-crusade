@@ -140,7 +140,6 @@ int main(){
     music.setVolume(0.3f);
     music.setLoop(true);
     music.play();
-
     //inicijalizacije za NIVO 2
 
 
@@ -179,9 +178,13 @@ int main(){
                     }if(event.key.code == sf::Keyboard::E){
                         if(player.construct_mp_ == 100 && player.on_ground_){
                             player.laser_ = true;
-                            for(auto imp : imps){
+                            for(auto &witch : witches){
+                                witch.first_hit_laser_ = true;
+                            }
+                            for(auto &imp : imps){
                                 imp.first_hit_laser_ = true;
                             }
+
                             player.construct_mp_ = 0;
                             mana_thread.launch();
                         }
@@ -353,7 +356,6 @@ int main(){
     else if(level == 2){
 
         level_two(window, big_platforms, player, enemy, cleopatra, dino_sprite);
-
 
     }
 

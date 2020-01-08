@@ -44,11 +44,31 @@ void patroling(RealEnemyClass &deviant,
 
 void handle_witch(RealEnemyClass &witch, EnemyClass &enemy, PlayerClass &player, sf::RenderWindow &window){
 
+    if(witch.enemy_hp_ > 0 && player.sprite_.getPosition().x > witch.sprite_.getPosition().x - 400 && player.sprite_.getPosition().x < witch.sprite_.getPosition().x + 400){
+        //facing left can only be updated on te first frame of the animation
+        if(enemy.rectangles_index_attack_ == 0)
+            witch.facing_left_ = player.sprite_.getPosition().x < witch.sprite_.getPosition().x;
+        witch.attacking_ = true;
 
+    }else{
+        witch.attacking_ = false;
+    }
+
+    if(!witch.attacking_ && witch.enemy_hp_ > 0)
         patroling(witch, enemy.rectangles_witch_idle_, enemy.rectangles_witch_walk_left_, enemy.rectangles_witch_walk_right_,
-                   enemy.rectangles_index_witch_idle_, enemy.rectangles_index_witch_walk_);
-//        witch.facing_left_ = false;
-//        witch.sprite_.setTextureRect(enemy.rectangles_witch_death_[10*witch.facing_left_ + enemy.rectangles_index_witch_death_]);
+                  enemy.rectangles_index_witch_idle_, enemy.rectangles_index_witch_walk_);
+
+    if(witch.attacking_){
+        witch.sprite_.setTextureRect(enemy.rectangles_witch_attack_[8*witch.facing_left_ + enemy.rectangles_index_witch_attack_]);
+    }
+
+    if(witch.enemy_hp_ <= 0){
+        witch.sprite_.setTextureRect(enemy.rectangles_witch_death_[10*witch.facing_left_ + enemy.rectangles_index_witch_death_]);
+        if(enemy.rectangles_index_witch_death_ == 9){
+            witch.enemy_dead_ = true;
+        }
+    }
+
 
 }
 
@@ -173,30 +193,32 @@ void level_one(sf::RenderWindow &window,
     for(RealEnemyClass &witch : witches){
 
         if(!witch.enemy_dead_){
-            /*//laser collision
+            //laser collision
             if(player.laser_){
-                    if(imp.first_hit_laser_ && player.laser_sprite_.getGlobalBounds().intersects(imp.sprite_.getGlobalBounds())){
-                            //if we hit the imp reduce his hp
-                            imp.enemy_hp_ -= 30;
-                            enemy.rectangles_index_death_ = 0;
-                            imp.first_hit_laser_ = false;
+
+                    if(witch.first_hit_laser_ && player.laser_sprite_.getGlobalBounds().intersects(witch.sprite_.getGlobalBounds())){
+                            //if we hit the witch reduce her hp
+                            witch.enemy_hp_ -= 30;
+                            enemy.rectangles_index_witch_death_ = 0;
+                            witch.first_hit_laser_ = false;
                     }
                 }
                 if(shooting){
                     if(player.rectangles_index_shooting_ == 1){
-                            imp.first_hit_shooting_ = true;
+                            witch.first_hit_shooting_ = true;
                     }
 
-                    //check for collision with the imp
-                    if(imp.first_hit_shooting_ && shooting_sprite.getGlobalBounds().intersects(imp.sprite_.getGlobalBounds())){
-                            imp.enemy_hp_ -= 10;
-                            enemy.rectangles_index_death_ = 0;
-                            imp.first_hit_shooting_ = false;
+                    //check for collision with the witch
+                    if(witch.first_hit_shooting_ && shooting_sprite.getGlobalBounds().intersects(witch.sprite_.getGlobalBounds())){
+                            witch.enemy_hp_ -= 10;
+                            enemy.rectangles_index_witch_death_ = 0;
+                            witch.first_hit_shooting_ = false;
                     }
-                }*/
+                }
+            handle_witch(witch, enemy, player, window);
         }
 
-        handle_witch(witch, enemy, player, window);
+
         draw_imp_hp(window, witch, hp_sprite);
         window.draw(witch.sprite_);
     }
