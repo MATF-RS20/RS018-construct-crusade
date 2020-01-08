@@ -104,9 +104,22 @@ int main(){
 
     std::vector<RealEnemyClass> imps;
 
-    init_platforms(big_platforms, player, platform_sprite, imps, imp_sprite, fireball_sprite);
+    //witch initialization
+    Texture witch_tex;
+    witch_tex.loadFromFile("assets/images/witch.png");
 
-    EnemyClass enemy(1);
+    Sprite witch_sprite(witch_tex, IntRect(4, 8, 22, 23));
+
+    RealEnemyClass witch(witch_sprite, fireball_sprite, 0, 392, 0, 450);
+
+    std::vector<RealEnemyClass> witches;
+
+    witches.push_back(witch);
+
+    //create the level
+    init_platforms_and_enemies(big_platforms, player, platform_sprite, imps, imp_sprite, fireball_sprite);
+
+    EnemyClass enemy{};
 
     Texture cleo;
     cleo.loadFromFile("assets/images/cleopatra.png");
@@ -319,36 +332,29 @@ int main(){
 
     //deo specifican za svaki nivo
     if(level == 1){
-        level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite);
+        level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches);
+
         if(player.sprite_.getPosition().y < -500){
-        //prelaz iz nivoa 1 u nivo 2
-        level = 2;
-        player.sprite_.setPosition(0, -500);
-        big_platforms.clear();
 
-        player.num_of_platforms_ = 0;
-        init_platforms_level_2(big_platforms, player, platform_sprite);
+            //prelaz iz nivoa 1 u nivo 2
+            level = 2;
+            player.sprite_.setPosition(0, -500);
+            big_platforms.clear();
 
-        player.platform_index_ = 6;
-        player.platform_index_offset_ = 6;
+            player.num_of_platforms_ = 0;
+            init_platforms_level_2(big_platforms, player, platform_sprite);
+
+            player.platform_index_ = 6;
+            player.platform_index_offset_ = 6;
         }
 
 
     }
     else if(level == 2){
 
-        level_two(window, big_platforms, player);
+        level_two(window, big_platforms, player, enemy, cleopatra, dino_sprite);
 
-        cleopatra.sprite_.setTextureRect(enemy.rectangles_cleo_walk_left_[enemy.rectangles_index_walk_cleo_]);
-        cleopatra.sprite_.setPosition(Vector2f(cleopatra.sprite_.getPosition().x-0.1f, cleopatra.sprite_.getPosition().y));
 
-        window.draw(cleopatra.sprite_);
-
-        //draw dino
-        dino_sprite.setTextureRect(enemy.rectangles_dino_slam_[enemy.rectangles_index_dino_slam_]);
-        dino_sprite.setScale(7,7);
-        dino_sprite.setPosition(400, -575);
-        window.draw(dino_sprite);
     }
 
     window.display();

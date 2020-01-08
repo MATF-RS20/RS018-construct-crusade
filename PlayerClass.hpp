@@ -14,11 +14,11 @@ public:
     PlayerClass(Sprite laser_sprite, Sprite plasma_sprite, Sprite sprite, double x_pos, double y_pos)
      : GameObject(x_pos, y_pos), sprite_(sprite), plasma_sprite_(plasma_sprite), laser_sprite_(laser_sprite){
         sprite_.setPosition(GameObject::x_pos_, GameObject::y_pos_);
+
         construct_hp_ = 100.0;
         construct_mp_ = 100.0;
         laser_ = false;
         facing_left_ = false;
-        jump_time_ = 0;
         scale_ = 4;
         sprite_.setScale(scale_, scale_);
         plasma_sprite.setScale(scale_, scale_);
@@ -54,16 +54,16 @@ public:
         if(!(construct_move & 1 || construct_move & 2)){
             x_vel_ = 0;
         }
-        if(construct_move & 1){
+        if(construct_hp_ > 0 && construct_move & 1){
             x_vel_ = -VEL*uniform_time;
             facing_left_ = true;
         }
-        if(construct_move & 2){
+        if(construct_hp_ > 0 && construct_move & 2){
             x_vel_ = VEL*uniform_time;
             facing_left_ = false;
         }
         //std::cout << big_time_.getElapsedTime().asMilliseconds() << std::endl;
-        if(!on_ground_ && big_time_.getElapsedTime().asMilliseconds() < delta_time){
+        if(!on_ground_ && construct_hp_ > 0 && big_time_.getElapsedTime().asMilliseconds() < delta_time){
             y_vel_ = -VEL*uniform_time;
         }
         else if(on_ground_){
@@ -73,6 +73,7 @@ public:
             x_vel_ = 0;
             on_ground_ = true;
         }
+
         //move the sprite
         if(!left_collide_)
             sprite_.move(Vector2f(x_vel_, 0));
@@ -80,6 +81,8 @@ public:
 
         sprite_.move(Vector2f(0, y_vel_));
         collision(0, y_vel_, platforms);
+
+        //std::cout << sprite_.getPosition().y << std::endl;
 
     }
 
@@ -215,7 +218,6 @@ public:
     double scale_;
     double x_vel_;
     double y_vel_;
-    int jump_time_;
     bool laser_;
     bool left_collide_ = false;
     bool facing_left_;
