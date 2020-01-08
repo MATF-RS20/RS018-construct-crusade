@@ -124,7 +124,7 @@ int main(){
     Texture cleo;
     cleo.loadFromFile("assets/images/cleopatra.png");
     Sprite cleo_sprite(cleo, IntRect(0,0,25,25));
-    RealEnemyClass cleopatra(cleo_sprite, fireball_sprite, 200, -500, 200, 200);
+    RealEnemyClass cleopatra(cleo_sprite, fireball_sprite, 200, -500, 200, 500);
 
     //these threads do all the animation calculations - yes i said THREADS... IM A REAL PROGRAMMER!
     //create a thread asign a function and an object to the thread
@@ -334,7 +334,7 @@ int main(){
     if(level == 1){
         level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches);
 
-        if(player.sprite_.getPosition().y < -500){
+    //    if(player.sprite_.getPosition().y < -500){
 
             //prelaz iz nivoa 1 u nivo 2
             level = 2;
@@ -346,7 +346,7 @@ int main(){
 
             player.platform_index_ = 6;
             player.platform_index_offset_ = 6;
-        }
+      //  }
 
 
     }
