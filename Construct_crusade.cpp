@@ -16,7 +16,8 @@
 #include "Level_two.hpp"
 #include "init_platforms.hpp"
 #include "init_platforms_level_2.hpp"
-
+#include "ImpEnemyClass.hpp"
+#include "WitchEnemyClass.hpp"
 
 using namespace sf;
 double window_height = 600;
@@ -96,35 +97,36 @@ int main(){
     std::vector<BigPlatform> big_platforms;
 
     //imp initialization
-    Texture imp;
-    imp.loadFromFile("assets/images/imp.png");
+    Texture imp_tex;
+    imp_tex.loadFromFile("assets/images/imp.png");
 
-    Sprite imp_sprite(imp, IntRect(23, 377, 1, 1));
-    Sprite fireball_sprite(imp, IntRect(10, 211, 18, 15));
+    Sprite imp_sprite(imp_tex, IntRect(23, 377, 1, 1));
+    Sprite fireball_sprite(imp_tex, IntRect(10, 211, 18, 15));
 
-    std::vector<RealEnemyClass> imps;
+    std::vector<ImpEnemyClass> imps;
 
     //witch initialization
     Texture witch_tex;
     witch_tex.loadFromFile("assets/images/witch.png");
 
-    Sprite witch_sprite(witch_tex, IntRect(4, 8, 22, 23));
+    Sprite witch_sprite(witch_tex, IntRect(4, 4, 22, 27));
 
-    RealEnemyClass witch(witch_sprite, fireball_sprite, 0, 392, 0, 450);
+    Texture poison_tex_;
+    poison_tex_.loadFromFile("assets/images/poison.png");
 
-    std::vector<RealEnemyClass> witches;
+    Sprite poison_sprite(poison_tex_);
 
-    witches.push_back(witch);
+    std::vector<WitchEnemyClass> witches;
 
     //create the level
-    init_platforms_and_enemies(big_platforms, player, platform_sprite, imps, imp_sprite, fireball_sprite);
+    init_platforms_and_enemies(big_platforms, player, platform_sprite, imps, witches, imp_sprite, fireball_sprite, witch_sprite, poison_sprite);
 
     EnemyClass enemy{};
 
     Texture cleo;
     cleo.loadFromFile("assets/images/cleopatra.png");
     Sprite cleo_sprite(cleo, IntRect(0,0,25,25));
-    RealEnemyClass cleopatra(cleo_sprite, fireball_sprite, 200, -500, 200, 500);
+    RealEnemyClass cleopatra(cleo_sprite, 200, -500, 200, 500);
 
     //these threads do all the animation calculations - yes i said THREADS... IM A REAL PROGRAMMER!
     //create a thread asign a function and an object to the thread
@@ -148,7 +150,7 @@ int main(){
     dino_tex.loadFromFile("assets/images/dinoWalk.png");
     Sprite dino_sprite(dino_tex, IntRect(0,0,30,25));
 
-    RealEnemyClass dino(dino_sprite, dino_sprite, 400, -575, 200, 200);
+    RealEnemyClass dino(dino_sprite, 400, -575, 200, 200);
 
     //start the main loop
     while (window.isOpen())
@@ -340,21 +342,19 @@ int main(){
         level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches);
 
 
-    //    if(player.sprite_.getPosition().y < -500){
 
-
-            //prelaz iz nivoa 1 u nivo 2
-            level = 2;
-            player.sprite_.setPosition(0, -500);
-            big_platforms.clear();
-
-            player.num_of_platforms_ = 0;
-            init_platforms_level_2(big_platforms, player, platform_sprite);
-
-            player.platform_index_ = 6;
-            player.platform_index_offset_ = 6;
-
-        //}
+//          if(player.sprite_.getPosition().y < -500){
+//            //prelaz iz nivoa 1 u nivo 2
+//            level = 2;
+//            player.sprite_.setPosition(0, -500);
+//            big_platforms.clear();
+//
+//            player.num_of_platforms_ = 0;
+//            init_platforms_level_2(big_platforms, player, platform_sprite);
+//
+//            player.platform_index_ = 6;
+//            player.platform_index_offset_ = 6;
+//          }
 
 
 

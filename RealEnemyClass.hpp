@@ -8,13 +8,12 @@ using namespace sf;
 //Real Enemy class where we store all the relevant information on enemies
 class RealEnemyClass : public GameObject{
 public:
-    RealEnemyClass(Sprite sprite, Sprite fireball_sprite, double x_pos, double y_pos, int plat_left, int plat_right)
-     : GameObject(x_pos, y_pos), sprite_(sprite), fireball_sprite_(fireball_sprite), platform_left_(plat_left), platform_right_(plat_right){
+    RealEnemyClass(Sprite sprite, double x_pos, double y_pos, int plat_left, int plat_right)
+     : GameObject(x_pos, y_pos), sprite_(sprite), platform_left_(plat_left), platform_right_(plat_right){
 
         sprite_.setPosition(x_pos_, y_pos_);
         scale_ = 4;
         sprite_.setScale(scale_, scale_);
-        fireball_sprite_.setScale(scale_, scale_);
 
         enemy_hp_ = 100;
         facing_left_ = true;
@@ -26,7 +25,6 @@ public:
         phase_delta_ = 3000;
 
         //when two sprites intersect that connection lasts - so one hit can deal -80 damage witch we dont want
-        first_hit_fireball_ = true;
         first_hit_laser_ = true;
         first_hit_shooting_ = true;
 
@@ -34,7 +32,6 @@ public:
      }
 
     Sprite sprite_;
-    Sprite fireball_sprite_;
     double scale_;
     double x_vel_;
     double y_vel_;
@@ -47,7 +44,6 @@ public:
     Clock phase_clock_;
     int move_phase_;
     int phase_delta_;
-    bool first_hit_fireball_;
     bool first_hit_laser_;
     bool first_hit_shooting_;
     bool enemy_dead_;

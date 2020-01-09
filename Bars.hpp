@@ -8,10 +8,12 @@ extern double window_width;
 void draw_player_hp_mp(RenderWindow &window, PlayerClass &player, Sprite hp_sprite){
 
         //we draw the hp bar propartionally to the amount of hp left
-        hp_sprite.setTextureRect(IntRect(8, 14, 64*player.construct_hp_/100.0, 9));
-        hp_sprite.setScale(2, 2);
-        hp_sprite.setPosition(player.sprite_.getPosition().x - window_width/2 + 16, player.sprite_.getPosition().y - 0.495*window_height);
-        window.draw(hp_sprite);
+        if(player.construct_hp_ > 0){
+            hp_sprite.setTextureRect(IntRect(8, 14, 64*player.construct_hp_/100.0, 9));
+            hp_sprite.setScale(2, 2);
+            hp_sprite.setPosition(player.sprite_.getPosition().x - window_width/2 + 16, player.sprite_.getPosition().y - 0.495*window_height);
+            window.draw(hp_sprite);
+        }
 
         hp_sprite.setTextureRect(IntRect(8, 0, 64*player.construct_mp_/100.0, 9));
         hp_sprite.setScale(2, 2);

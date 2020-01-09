@@ -7,7 +7,7 @@ using namespace sf;
 class EnemyClass{
 public:
 
-    EnemyClass(){//int value_that_has_no_value_you_are_here_because_i_desire_you_to_be){
+    EnemyClass(){
 
         init_rectangles();
     }
@@ -176,7 +176,6 @@ private:
         //Cleopatra rectangles
         for (int i = 0; i < 3; i++){
             rectangles_cleo_idle_.push_back(IntRect(i*25, 0, 25, 25));
-            std::cout << "aloha " << std::endl;
         }
         rectangles_cleo_idle_.push_back(IntRect(25, 0, 25, 25));
 
@@ -278,12 +277,12 @@ private:
         //broom
         //right
         for (int i = 0; i < 4; i++){
-            rectangles_witch_broom_.push_back(IntRect(4 + i*32, 8, 22, 27));
+            rectangles_witch_broom_.push_back(IntRect(1 + i*32, 163, 28, 27));
         }
 
         //left
-        for (int i = 3; i >= 0; i--){
-            rectangles_witch_broom_.push_back(IntRect(4 + i*32, 8, 22, 27));
+        for (int i = 0; i < 4; i++){
+            rectangles_witch_broom_.push_back(IntRect(291 - i*32, 354, 28, 27));
         }
 
 

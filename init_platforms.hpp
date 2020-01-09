@@ -4,20 +4,30 @@
 void init_platforms_and_enemies(std::vector<BigPlatform> &big_platforms,
                     PlayerClass &player,
                     Sprite &platform_sprite,
-                    std::vector<RealEnemyClass> &imps,
-                    Sprite &imp_sprite, //added &
-                    Sprite &fireball_sprite){
+                    std::vector<ImpEnemyClass> &imps,
+                    std::vector<WitchEnemyClass> &witches,
+                    Sprite &imp_sprite,
+                    Sprite &fireball_sprite,
+                    Sprite &witch_sprite,
+                    Sprite &poison_sprite
+                    ){
 
     int platform_distance = 800;
     int fixed_platform_height = 500;
     int platform_height_offset = 140;
 
     //level 0 - height 500 - width from -4800 to 4000
-    for(int j = -6; j < 6; j++){
+    for(int j = -3; j < 6; j++){
         big_platforms.push_back(BigPlatform(platform_distance*j, fixed_platform_height, 8 + rand() % 3, platform_sprite));
         player.num_of_platforms_++;
-        if(rand() % 101 < 30 && j != 0 && j != -1)
-            imps.push_back(RealEnemyClass(imp_sprite, fireball_sprite, big_platforms[player.num_of_platforms_-1].platform_right_ - 100, big_platforms[player.num_of_platforms_-1].platform_top_ - 60, big_platforms[player.num_of_platforms_-1].platform_left_, big_platforms[player.num_of_platforms_-1].platform_right_));
+
+        if(rand() % 101 < 30 && j > 1)
+            imps.push_back(ImpEnemyClass(fireball_sprite,
+                                          imp_sprite,
+                                           big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
+                                            big_platforms[player.num_of_platforms_-1].platform_top_ - 60,
+                                             big_platforms[player.num_of_platforms_-1].platform_left_,
+                                              big_platforms[player.num_of_platforms_-1].platform_right_));
 
     }
 
@@ -26,7 +36,7 @@ void init_platforms_and_enemies(std::vector<BigPlatform> &big_platforms,
         big_platforms.push_back(BigPlatform(6.3*platform_distance + platform_distance/2.5*(pow((-1),j)), fixed_platform_height - j*platform_height_offset , 7 + rand() % 3, platform_sprite));
         player.num_of_platforms_++;
         if(rand() % 101 < 40)
-            imps.push_back(RealEnemyClass(imp_sprite, fireball_sprite, big_platforms[player.num_of_platforms_-1].platform_right_ - 100, big_platforms[player.num_of_platforms_-1].platform_top_ - 60, big_platforms[player.num_of_platforms_-1].platform_left_, big_platforms[player.num_of_platforms_-1].platform_right_));
+            imps.push_back(ImpEnemyClass(fireball_sprite, imp_sprite, big_platforms[player.num_of_platforms_-1].platform_right_ - 100, big_platforms[player.num_of_platforms_-1].platform_top_ - 60, big_platforms[player.num_of_platforms_-1].platform_left_, big_platforms[player.num_of_platforms_-1].platform_right_));
 
     }
 
@@ -47,6 +57,13 @@ void init_platforms_and_enemies(std::vector<BigPlatform> &big_platforms,
     big_platforms.push_back(BigPlatform(platform_distance*(-7), fixed_platform_height, 25, platform_sprite));
     player.num_of_platforms_++;
 
+    witches.push_back(WitchEnemyClass(witch_sprite,
+                                      poison_sprite,
+                                       big_platforms[player.num_of_platforms_-1].platform_left_ + 100,
+                                        big_platforms[player.num_of_platforms_-1].platform_top_ - 108,
+                                         big_platforms[player.num_of_platforms_-1].platform_left_,
+                                          big_platforms[player.num_of_platforms_-1].platform_right_));
+
     //stairs to level 2
     for(int j = 0 ; j > -6; j--){
         big_platforms.push_back(BigPlatform(platform_distance*j,level_1_height + j*platform_height_offset, 8 + rand() % 3, platform_sprite));
@@ -62,6 +79,13 @@ void init_platforms_and_enemies(std::vector<BigPlatform> &big_platforms,
     int level_2_height = level_1_height - 10*platform_height_offset;
     big_platforms.push_back(BigPlatform(platform_distance, level_2_height, 25, platform_sprite));
     player.num_of_platforms_++;
+
+    witches.push_back(WitchEnemyClass(witch_sprite,
+                                      poison_sprite,
+                                       big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
+                                        big_platforms[player.num_of_platforms_-1].platform_top_ - 108,
+                                         big_platforms[player.num_of_platforms_-1].platform_left_,
+                                          big_platforms[player.num_of_platforms_-1].platform_right_));
 
     //TODO finish making platforms
 
