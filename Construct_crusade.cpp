@@ -26,6 +26,7 @@ bool RIP_construct = false;
 bool shooting = false;
 int level = 1;
 //Clock random_clock;
+Clock witch_uniform_clock;
 
 int main(){
     //create the main window
@@ -63,7 +64,7 @@ int main(){
     Sprite shooting_sprite(construct_tex, IntRect(26, 152, 4, 4));
 
     //making a player object
-    PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, 0, 400);
+    PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, 1000, -1700);
 
     //health and mana bars
     Texture hp_tex;

@@ -26,7 +26,7 @@ public:
         on_ground_ = true;
 
         //these help us keep track of platforms that are closest to our construct
-        platform_index_ = 3;
+        platform_index_ = 30;
         platform_index_offset_ = 8;
         num_of_platforms_ = 0;
 

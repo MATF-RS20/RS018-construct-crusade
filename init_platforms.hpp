@@ -59,7 +59,7 @@ void init_platforms_and_enemies(std::vector<BigPlatform> &big_platforms,
 
     witches.push_back(WitchEnemyClass(witch_sprite,
                                       poison_sprite,
-                                       big_platforms[player.num_of_platforms_-1].platform_left_ + 100,
+                                       big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
                                         big_platforms[player.num_of_platforms_-1].platform_top_ - 108,
                                          big_platforms[player.num_of_platforms_-1].platform_left_,
                                           big_platforms[player.num_of_platforms_-1].platform_right_));
