@@ -1,7 +1,15 @@
 #ifndef INIT_PLATFORMS_LEVEL_2_HPP
 #define INIT_PLATFORMS_LEVEL_2_HPP
 
-void init_platforms_level_2(std::vector<BigPlatform> &big_platforms, PlayerClass &player, Sprite &platform_sprite){
+
+void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
+                            PlayerClass &player,
+                            Sprite &platform_sprite,
+                            std::vector<CleopatraEnemyClass> &cleopatras,
+                            Sprite &cleo_sprite,
+                            Sprite &heart_sprite
+                            ){
+    int probability = 40;
 
     int platform_distance = 1000;
     int platform_height = -400;
@@ -11,12 +19,28 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms, PlayerClass
     big_platforms.push_back(BigPlatform(0, platform_height, 10, platform_sprite));
     player.num_of_platforms_++;
 
+    if(rand() % 101 < probability)
+            cleopatras.push_back(CleopatraEnemyClass(cleo_sprite,
+                                                     heart_sprite,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_top_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_left_,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_));
+
     //heights = -1200, -1800
     platform_height -= 800;
     for(int i = 1; i < 3; i++){
         big_platforms.push_back(BigPlatform(300, platform_height, 7, platform_sprite));
         platform_height -= 600;
         player.num_of_platforms_++;
+
+        if(rand() % 101 < probability && i > 1)
+            cleopatras.push_back(CleopatraEnemyClass(cleo_sprite,
+                                                     heart_sprite,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_top_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_left_,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_));
     }
 
     //heights -400, -800, .. , -1600
@@ -30,6 +54,15 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms, PlayerClass
             big_platforms.push_back(BigPlatform(platform_distance*2.4, platform_height*i, 6, platform_sprite));
             player.num_of_platforms_++;
         }
+
+        if(rand() % 101 < probability && i > 1)
+            cleopatras.push_back(CleopatraEnemyClass(cleo_sprite,
+                                                     heart_sprite,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_top_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_left_,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_));
+
     }
 
     //heights = -600, -1000, -1400
@@ -39,6 +72,15 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms, PlayerClass
         big_platforms.push_back(BigPlatform(platform_distance*1.8, platform_height, 7, platform_sprite));
         platform_height -= 200;
         player.num_of_platforms_++;
+
+        if(rand() % 101 < probability && i > 1)
+            cleopatras.push_back(CleopatraEnemyClass(cleo_sprite,
+                                                     heart_sprite,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_top_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_left_,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_));
+
     }
 
     //middle platform
@@ -47,6 +89,14 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms, PlayerClass
     big_platforms.push_back(BigPlatform(platform_distance, platform_height-400, 10, platform_sprite));
     player.num_of_platforms_++;
 
+    if(rand() % 101 < probability)
+            cleopatras.push_back(CleopatraEnemyClass(cleo_sprite,
+                                                     heart_sprite,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_top_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_left_,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_));
+
 
     platform_height = -2200;
     //width = 500, 1500
@@ -54,6 +104,15 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms, PlayerClass
     {
         big_platforms.push_back(BigPlatform(platform_distance*(i+0.6), platform_height, 7, platform_sprite));
         player.num_of_platforms_++;
+
+        if(rand() % 101 < probability && i > 1)
+            cleopatras.push_back(CleopatraEnemyClass(cleo_sprite,
+                                                     heart_sprite,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_top_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_left_,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_));
+
     }
 
     platform_height = -2420;
@@ -64,6 +123,15 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms, PlayerClass
         big_platforms.push_back(BigPlatform(platform_distance+100, platform_height, 6, platform_sprite));
         platform_height -= 400;
         player.num_of_platforms_++;
+
+        if(rand() % 101 < probability && i > 1)
+            cleopatras.push_back(CleopatraEnemyClass(cleo_sprite,
+                                                     heart_sprite,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_top_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_left_,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_));
+
     }
 
 
@@ -72,21 +140,61 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms, PlayerClass
     {
         big_platforms.push_back(BigPlatform(platform_distance*(i+0.6), platform_height, 7, platform_sprite));
         player.num_of_platforms_++;
+
+        if(rand() % 101 < probability && i > 1)
+            cleopatras.push_back(CleopatraEnemyClass(cleo_sprite,
+                                                     heart_sprite,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_top_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_left_,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_));
+
     }
 
     big_platforms.push_back(BigPlatform(platform_distance*2.3, platform_height-130, 7, platform_sprite));
     player.num_of_platforms_++;
 
+    if(rand() % 101 < probability)
+            cleopatras.push_back(CleopatraEnemyClass(cleo_sprite,
+                                                     heart_sprite,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_top_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_left_,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_));
+
     //Special path that leads to the gate
     big_platforms.push_back(BigPlatform(700, -3000 , 4, platform_sprite));
     player.num_of_platforms_++;
 
+    if(rand() % 101 < probability)
+            cleopatras.push_back(CleopatraEnemyClass(cleo_sprite,
+                                                     heart_sprite,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_top_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_left_,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_));
+
     big_platforms.push_back(BigPlatform(200, -3150, 5, platform_sprite));
     player.num_of_platforms_++;
+
+    if(rand() % 101 < probability)
+            cleopatras.push_back(CleopatraEnemyClass(cleo_sprite,
+                                                     heart_sprite,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_top_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_left_,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_));
 
     big_platforms.push_back(BigPlatform(750, -3300, 15, platform_sprite));
     player.num_of_platforms_++;
 
+    if(rand() % 101 < probability)
+            cleopatras.push_back(CleopatraEnemyClass(cleo_sprite,
+                                                     heart_sprite,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_top_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_left_,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_));
     //Another part of level 2
 
     platform_height = -3300;
@@ -94,6 +202,15 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms, PlayerClass
     {
         big_platforms.push_back(BigPlatform((platform_distance-550)+(i*1040), platform_height-200, 5, platform_sprite));
         player.num_of_platforms_++;
+
+        if(rand() % 101 < probability && i > 1)
+            cleopatras.push_back(CleopatraEnemyClass(cleo_sprite,
+                                                     heart_sprite,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_top_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_left_,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_));
+
     }
 
     platform_height = -3500;
@@ -101,6 +218,15 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms, PlayerClass
     {
         big_platforms.push_back(BigPlatform(250+(i*1400), platform_height-200, 5, platform_sprite));
         player.num_of_platforms_++;
+
+        if(rand() % 101 < probability && i > 1)
+            cleopatras.push_back(CleopatraEnemyClass(cleo_sprite,
+                                                     heart_sprite,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_top_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_left_,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_));
+
     }
 
     platform_height = -3700;
@@ -108,6 +234,15 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms, PlayerClass
     {
         big_platforms.push_back(BigPlatform(0+(i*1950), platform_height-200, 4, platform_sprite));
         player.num_of_platforms_++;
+
+        if(rand() % 101 < probability && i > 1)
+            cleopatras.push_back(CleopatraEnemyClass(cleo_sprite,
+                                                     heart_sprite,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_top_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_left_,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_));
+
     }
 
     platform_height = -3900;
@@ -115,10 +250,28 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms, PlayerClass
     {
         big_platforms.push_back(BigPlatform(350+(i*1000), platform_height-200, 8, platform_sprite));
         player.num_of_platforms_++;
+
+        if(rand() % 101 < probability && i > 1)
+            cleopatras.push_back(CleopatraEnemyClass(cleo_sprite,
+                                                     heart_sprite,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_top_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_left_,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_));
+
     }
 
     big_platforms.push_back(BigPlatform(920, -4300, 4, platform_sprite));
     player.num_of_platforms_++;
+
+    if(rand() % 101 < probability)
+            cleopatras.push_back(CleopatraEnemyClass(cleo_sprite,
+                                                     heart_sprite,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_top_ - 100,
+                                                     big_platforms[player.num_of_platforms_-1].platform_left_,
+                                                     big_platforms[player.num_of_platforms_-1].platform_right_));
+
 
 
 

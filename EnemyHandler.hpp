@@ -3,6 +3,7 @@
 
 #include "WitchEnemyClass.hpp"
 #include "ImpEnemyClass.hpp"
+#include "CleopatraEnemyClass.hpp"
 
 using namespace sf;
 
@@ -280,12 +281,54 @@ void handle_imp(EnemyClass &enemy, ImpEnemyClass &imp, PlayerClass &player, sf::
     }
 }
 //MIMI MERCEDEZ
-void handle_cleo(RealEnemyClass &cleo, EnemyClass &enemy, PlayerClass &player, sf::RenderWindow &window){
+void handle_cleo(CleopatraEnemyClass &cleo, EnemyClass &enemy, PlayerClass &player, sf::RenderWindow &window){
+
+        //attack phase checker - if the construct is near enough we switch to attack phase
+    if(cleo.enemy_hp_ > 0 && player.sprite_.getPosition().x > cleo.sprite_.getPosition().x - 400 && player.sprite_.getPosition().x < cleo.sprite_.getPosition().x + 400){
+        //facing left can only be updated on te first frame of the animation
+        if(enemy.rectangles_index_cleo_attack_ == 0)
+            cleo.facing_left_ = player.sprite_.getPosition().x < cleo.sprite_.getPosition().x;
+            //std::cout << cleo.facing_left_ << std::endl;
+        cleo.attacking_ = true;
+
+    }else{
+        cleo.attacking_ = false;
+    }
+
+        if(!cleo.attacking_ && cleo.enemy_hp_ > 0){
+            patrolling(cleo, enemy.rectangles_cleo_idle_, enemy.rectangles_cleo_walk_left_, enemy.rectangles_cleo_walk_right_,
+                       enemy.rectangles_index_cleo_idle_, enemy.rectangles_index_cleo_walk_);
+        }
+
+        if(cleo.attacking_){
+            if(enemy.rectangles_index_cleo_attack_ == 0){
+                cleo.heart_sprite_.setPosition(cleo.sprite_.getPosition().x, cleo.sprite_.getPosition().y);
+            }
+            //std::cout << cleo.facing_left_ << std::endl;
+            if(cleo.facing_left_){
+                cleo.heart_sprite_.move(Vector2f(-1, 0.0));
 
 
-        patrolling(cleo, enemy.rectangles_cleo_idle_, enemy.rectangles_cleo_walk_left_, enemy.rectangles_cleo_walk_right_,
-                   enemy.rectangles_index_cleo_idle_, enemy.rectangles_index_cleo_walk_);
+                cleo.sprite_.setTextureRect(enemy.rectangles_cleo_attack_[2 + enemy.rectangles_index_cleo_attack_]);
+                cleo.heart_sprite_.setTextureRect(enemy.rectangles_cleo_attack_[4 + enemy.rectangles_index_cleo_attack_]);
+            }else{
+                cleo.heart_sprite_.move(Vector2f(1, 0.0));
 
+
+                cleo.sprite_.setTextureRect(enemy.rectangles_cleo_attack_[enemy.rectangles_index_cleo_attack_]);
+                cleo.heart_sprite_.setTextureRect(enemy.rectangles_cleo_attack_[4 + enemy.rectangles_index_cleo_attack_]);
+            }
+        window.draw(cleo.heart_sprite_);
+    }
+
+    if(!cleo.enemy_dead_ && cleo.enemy_hp_ <= 0){
+            cleo.sprite_.setTextureRect(enemy.rectangles_cleo_death_[6*(cleo.facing_left_) + enemy.rectangles_index_cleo_death_]);
+
+        if(enemy.rectangles_index_cleo_death_ == 6){
+            cleo.enemy_dead_ = true;
+        }
+
+    }
 }
 
 

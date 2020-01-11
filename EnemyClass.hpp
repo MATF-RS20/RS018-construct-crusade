@@ -30,6 +30,7 @@ public:
         //cleo
         Clock cleo_idle_clock;
         Clock cleo_walk_clock;
+        Clock cleo_attack_clock;
         Clock cleo_death_clock;
 
         //witch
@@ -50,12 +51,14 @@ public:
 
             index_update(delta_time, death_clock, 6, rectangles_index_death_);
 
-            index_update(delta_time + 200, fireball_clock, 6, rectangles_index_fireball_);
+            index_update(delta_time + 200, fireball_clock, 6, rectangles_index_heart_);
 
             //cleopatra
             index_update(delta_time, cleo_idle_clock, 4, rectangles_index_cleo_idle_);
 
             index_update(delta_time, cleo_walk_clock, 4, rectangles_index_cleo_walk_);
+
+            index_update(delta_time + 200, cleo_attack_clock, 2, rectangles_index_cleo_attack_);
 
             index_update(delta_time, cleo_death_clock, 6, rectangles_index_cleo_death_);
 
@@ -104,13 +107,13 @@ public:
     std::vector<IntRect> rectangles_cleo_idle_;
     std::vector<IntRect> rectangles_cleo_walk_right_;
     std::vector<IntRect> rectangles_cleo_walk_left_;
+    std::vector<IntRect> rectangles_cleo_attack_;
     std::vector<IntRect> rectangles_cleo_death_;
     int rectangles_index_cleo_idle_;
     int rectangles_index_cleo_walk_;
+    int rectangles_index_cleo_attack_;
+    int rectangles_index_heart_;
     int rectangles_index_cleo_death_;
-//    std::vector<IntRect> rectangles_cleo_attack_left_;
-//    std::vector<IntRect> rectangles_cleo_attack_right_;
-//    int rectangles_index_attack_cleo_;
 
     //witch parameters
     std::vector<IntRect> rectangles_witch_idle_;
@@ -141,6 +144,7 @@ private:
         //Cleopatra indices
         rectangles_index_cleo_idle_ = 0;
         rectangles_index_cleo_walk_ = 0;
+        rectangles_index_cleo_attack_ = 0;
         rectangles_index_cleo_death_ = 0;
 
         //imp indices
@@ -183,14 +187,27 @@ private:
             rectangles_cleo_walk_left_.push_back(IntRect(i*25, 75, 25, 25));
         }
 
-
         for (int i = 0; i < 4; i++){
             rectangles_cleo_walk_right_.push_back(IntRect(i*25, 50, 25, 25));
         }
 
+        //attack
+        for (int i = 0; i < 4; i++){
+            rectangles_cleo_attack_.push_back(IntRect(i*25, 25, 25, 25));
+        }
+
+        rectangles_cleo_attack_.push_back(IntRect(106, 10, 38, 38));
+        rectangles_cleo_attack_.push_back(IntRect(156, 10, 38, 38));
+
+
+        //death
         for (int i = 0; i < 6; i++){
             rectangles_cleo_death_.push_back(IntRect(i*25, 150, 25, 25));
         }
+        for (int i = 5; i >= 1; i--){
+            rectangles_cleo_death_.push_back(IntRect(i*25, 175, 25, 25));
+        }
+
 
         //Imp rectangles
         for (int i = 0; i < 7; i++){

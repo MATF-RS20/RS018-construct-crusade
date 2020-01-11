@@ -18,6 +18,7 @@
 #include "init_platforms_level_2.hpp"
 #include "ImpEnemyClass.hpp"
 #include "WitchEnemyClass.hpp"
+#include "CleopatraEnemyClass.hpp"
 
 using namespace sf;
 double window_height = 600;
@@ -125,8 +126,13 @@ int main(){
 
     Texture cleo;
     cleo.loadFromFile("assets/images/cleopatra.png");
+
     Sprite cleo_sprite(cleo, IntRect(0,0,25,25));
-    RealEnemyClass cleopatra(cleo_sprite, 200, -500, 200, 500);
+    Sprite heart_sprite(cleo, IntRect(75, 0, 75, 75));
+
+    //CleopatraEnemyClass cleopatra(cleo_sprite, heart_sprite, 200, -500, 200, 500);
+
+     std::vector<CleopatraEnemyClass> cleopatras;
 
     //these threads do all the animation calculations - yes i said THREADS... IM A REAL PROGRAMMER!
     //create a thread asign a function and an object to the thread
@@ -187,6 +193,9 @@ int main(){
                             }
                             for(auto &imp : imps){
                                 imp.first_hit_laser_ = true;
+                            }
+                            for(auto &cleopatra : cleopatras){
+                                cleopatra.first_hit_laser_ = true;
                             }
 
                             player.construct_mp_ = 0;
@@ -322,6 +331,14 @@ int main(){
                             imp.first_hit_shooting_ = false;
                     }
                 }
+
+                for(auto cleopatra : cleopatras){
+                    //check for collision with the cleopatra
+                    if(cleopatra.first_hit_shooting_ && shooting_sprite.getGlobalBounds().intersects(cleopatra.sprite_.getGlobalBounds())){
+                            cleopatra.enemy_hp_ -= 10;
+                            cleopatra.first_hit_shooting_ = false;
+                    }
+                }
             }
 
             window.draw(player.sprite_);
@@ -342,18 +359,18 @@ int main(){
         level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches);
 
 
-
+//
 //          if(player.sprite_.getPosition().y < -500){
-//            //prelaz iz nivoa 1 u nivo 2
-//            level = 2;
-//            player.sprite_.setPosition(0, -500);
-//            big_platforms.clear();
-//
-//            player.num_of_platforms_ = 0;
-//            init_platforms_level_2(big_platforms, player, platform_sprite);
-//
-//            player.platform_index_ = 6;
-//            player.platform_index_offset_ = 6;
+            //prelaz iz nivoa 1 u nivo 2
+            level = 2;
+            player.sprite_.setPosition(0, -500);
+            big_platforms.clear();
+
+            player.num_of_platforms_ = 0;
+            init_platforms_level_2(big_platforms, player, platform_sprite, cleopatras, cleo_sprite, heart_sprite);
+
+            player.platform_index_ = 6;
+            player.platform_index_offset_ = 6;
 //          }
 
 
@@ -361,7 +378,13 @@ int main(){
     }
     else if(level == 2){
 
-        level_two(window, big_platforms, player, enemy, cleopatra, dino);
+        level_two(window, big_platforms, player, enemy, shooting_sprite, hp_sprite, cleopatras, dino);
+
+        //cleopatra.heart_sprite_.move(-1, 0);
+        //cleopatra.heart_sprite_.setTextureRect(enemy.rectangles_cleo_attack_[4 + enemy.rectangles_index_cleo_attack_]);
+        //window.draw(cleopatra.heart_sprite_);
+        //cleopatra.sprite_.setTextureRect(enemy.rectangles_cleo_attack_[2 + enemy.rectangles_index_cleo_attack_]);
+        //window.draw(cleopatra.sprite_);
 
     }
 
