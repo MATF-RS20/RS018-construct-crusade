@@ -91,7 +91,8 @@ public:
     int rectangles_index_fireball_;
 
     //dino parameters
-    std::vector<IntRect> rectangles_dino_slam_;
+    std::vector<IntRect> rectangles_dino_slam_left;
+    std::vector<IntRect> rectangles_dino_slam_right;
     std::vector<IntRect> rectangles_dino_walk_left_;
     std::vector<IntRect> rectangles_dino_walk_right_;
 
@@ -162,7 +163,11 @@ private:
         rectangles_index_witch_broom_ = 0;
 
         for (int i = 0; i < 4; i++){
-            rectangles_dino_slam_.push_back(IntRect(0 , 25*i, 33, 25));
+            rectangles_dino_slam_left.push_back(IntRect(150 , 25*i, 33, 25));
+        }
+
+        for (int i = 0; i < 4; i++){
+            rectangles_dino_slam_right.push_back(IntRect(200 , 25*i, 33, 25));
         }
 
         for (int i = 0; i < 6; i++){

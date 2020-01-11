@@ -3,6 +3,7 @@
 
 #include "WitchEnemyClass.hpp"
 #include "ImpEnemyClass.hpp"
+#include "DinoEnemyClass.hpp"
 
 using namespace sf;
 
@@ -287,6 +288,17 @@ void handle_cleo(RealEnemyClass &cleo, EnemyClass &enemy, PlayerClass &player, s
                    enemy.rectangles_index_cleo_idle_, enemy.rectangles_index_cleo_walk_);
 
 }
+
+//DINO BAMBINO
+void handle_dino(DinoEnemyClass &dino, EnemyClass &enemy, PlayerClass &player, sf::RenderWindow &window){
+
+
+        patrolling(dino, enemy.rectangles_dino_slam_left, enemy.rectangles_dino_walk_left_, enemy.rectangles_dino_walk_right_,
+                   enemy.rectangles_index_dino_slam_, enemy.rectangles_index_dino_walk_);
+
+
+}
+
 
 
 #endif // _ENEMY_HANDLER_HPP

@@ -18,6 +18,9 @@
 #include "init_platforms_level_2.hpp"
 #include "ImpEnemyClass.hpp"
 #include "WitchEnemyClass.hpp"
+#include "DinoEnemyClass.hpp"
+
+#include "Menu.hpp"
 
 using namespace sf;
 double window_height = 600;
@@ -25,13 +28,19 @@ double window_width = 1200;
 bool RIP_construct = false;
 bool shooting = false;
 int level = 1;
-//Clock random_clock;
+bool shaking = true;
+
+Clock random_clock;
+Clock shaking_clock;
 Clock witch_uniform_clock;
 
+
 int main(){
+
     //create the main window
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Construct Crusade!");
 
+    Menu menu(window.getSize().x, window.getSize().y);
     //define a view
     sf::View view(sf::FloatRect(0.0, 0.0, window_width, window_height));
 
@@ -64,7 +73,7 @@ int main(){
     Sprite shooting_sprite(construct_tex, IntRect(26, 152, 4, 4));
 
     //making a player object
-    PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, 1000, -1700);
+    PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, -4800, 500);
 
     //health and mana bars
     Texture hp_tex;
@@ -136,6 +145,7 @@ int main(){
     enemy_thread.launch();
 
     //a little audio for our little game
+
     sf::Music music;
     if (!music.openFromFile("assets/music/bg_fa.ogg")){
         std::cout << "we have failed at music" << std::endl; // error
@@ -143,15 +153,18 @@ int main(){
     music.setVolume(0.3f);
     music.setLoop(true);
     music.play();
+
     //inicijalizacije za NIVO 2
 
 
     //Dinoo bambinooo
     Texture dino_tex;
-    dino_tex.loadFromFile("assets/images/dinoWalk.png");
+    dino_tex.loadFromFile("assets/images/dinoWalkKljokRock.png");
     Sprite dino_sprite(dino_tex, IntRect(0,0,30,25));
 
-    RealEnemyClass dino(dino_sprite, 400, -575, 200, 200);
+    DinoEnemyClass dino(dino_sprite, 400, -575, 0, 400);
+
+    std::vector<DinoEnemyClass> dinos;
 
     //start the main loop
     while (window.isOpen())
@@ -249,8 +262,9 @@ int main(){
             uniform_move_clock.restart();
 
             //here we center the view on the player - when we animate the raptor we might add the sin when he slams the ground
-            view.setCenter(Vector2f(player.sprite_.getPosition().x, player.sprite_.getPosition().y /*+ 4*sin(random_clock.getElapsedTime().asMilliseconds())*/));
+            view.setCenter(Vector2f(player.sprite_.getPosition().x, player.sprite_.getPosition().y + 4*sin(random_clock.getElapsedTime().asMilliseconds()) * shaking));
             window.setView(view);
+
 
             //jumping animation
             if(!player.on_ground_ && (construct_move & 1) && !shooting){
@@ -345,27 +359,40 @@ int main(){
 
 
 //          if(player.sprite_.getPosition().y < -500){
-//            //prelaz iz nivoa 1 u nivo 2
-//            level = 2;
-//            player.sprite_.setPosition(0, -500);
-//            big_platforms.clear();
-//
-//            player.num_of_platforms_ = 0;
-//            init_platforms_level_2(big_platforms, player, platform_sprite);
-//
-//            player.platform_index_ = 6;
-//            player.platform_index_offset_ = 6;
-//          }
+            //prelaz iz nivoa 1 u nivo 2
+            level = 2;
 
+            if (!music.openFromFile("assets/music/end.ogg")){
+                std::cout << "we have failed at music" << std::endl; // error
+            }
+            music.setVolume(30);
+            music.setPlayingOffset(sf::seconds(2.f));
+            music.setLoop(true);
+            music.play();
+
+            player.sprite_.setPosition(0, -500);
+            big_platforms.clear();
+
+            player.num_of_platforms_ = 0;
+            init_platforms_level_2(big_platforms, player, platform_sprite, dinos, dino_sprite);
+
+            player.platform_index_ = 6;
+            player.platform_index_offset_ = 6;
+//          }
 
 
     }
     else if(level == 2){
 
-        level_two(window, big_platforms, player, enemy, cleopatra, dino);
+        level_two(window, big_platforms, player, enemy, cleopatra, dinos, dino);
 
     }
 
+
+//    window.clear(Color(255, 179, 179));
+//
+//    menu.draw(window);
+//
     window.display();
 
     }//while loop
