@@ -83,6 +83,13 @@ int main(){
     Sprite backgroundSprite_2(background_2);
     backgroundSprite_2.setScale(1, window_height/backgroundSprite.getLocalBounds().height);
 
+    Texture background_level_2;
+    background_level_2.loadFromFile("assets/images/mountain.png");
+
+    Sprite backgroundSprite_level_2(background_level_2);
+    backgroundSprite_level_2.setScale(1, window_height/backgroundSprite_level_2.getLocalBounds().height);
+
+
     //platform initialization
     Texture platform_tex;
     platform_tex.loadFromFile("assets/images/tileset.png");
@@ -232,19 +239,24 @@ int main(){
 
         }
         window.clear(Color(161, 242, 236));
-
-        //drawing the background - if follows the player
-        for(int i = 0; i < window_width/backgroundSprite.getGlobalBounds().width; i++){
-                backgroundSprite.setPosition(i*backgroundSprite.getGlobalBounds().width + (player.sprite_.getPosition().x - window_width/2), player.sprite_.getPosition().y - window_height/2);
-                window.draw(backgroundSprite);
+        if(level == 1){
+            for(int i = 0; i < window_width/backgroundSprite.getGlobalBounds().width; i++){
+                    backgroundSprite.setPosition(i*backgroundSprite.getGlobalBounds().width + (player.sprite_.getPosition().x - window_width/2), player.sprite_.getPosition().y - window_height/2);
+                    window.draw(backgroundSprite);
+            }
+            for(int i = 0; i < window_width/backgroundSprite.getGlobalBounds().width; i++){
+                    backgroundSprite_2.setPosition(i*backgroundSprite_2.getGlobalBounds().width + (player.sprite_.getPosition().x - window_width/2), player.sprite_.getPosition().y + window_height/2);
+                    window.draw(backgroundSprite_2);
+            }
         }
-        for(int i = 0; i < window_width/backgroundSprite.getGlobalBounds().width; i++){
-                backgroundSprite_2.setPosition(i*backgroundSprite_2.getGlobalBounds().width + (player.sprite_.getPosition().x - window_width/2), player.sprite_.getPosition().y + window_height/2);
-                window.draw(backgroundSprite_2);
+        else if(level == 2){
+
+            for(int i = 0; i < window_width/backgroundSprite_level_2.getGlobalBounds().width; i++){
+                    backgroundSprite_level_2.setPosition(i*backgroundSprite_level_2.getGlobalBounds().width + (player.sprite_.getPosition().x - window_width/2), player.sprite_.getPosition().y - window_height/2);
+                    window.draw(backgroundSprite_level_2);
+            }
+
         }
-
-
-
         //draw construct based on the keys pressed - draw the corresponding animation
         if(!RIP_construct){
 
