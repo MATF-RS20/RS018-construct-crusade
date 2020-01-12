@@ -13,6 +13,7 @@ public:
 
     PlayerClass(Sprite laser_sprite, Sprite plasma_sprite, Sprite sprite, double x_pos, double y_pos)
      : GameObject(x_pos, y_pos), sprite_(sprite), plasma_sprite_(plasma_sprite), laser_sprite_(laser_sprite){
+
         sprite_.setPosition(GameObject::x_pos_, GameObject::y_pos_);
 
         construct_hp_ = 100.0;
@@ -26,7 +27,7 @@ public:
         on_ground_ = true;
 
         //these help us keep track of platforms that are closest to our construct
-        platform_index_ = 30;
+        platform_index_ = 3;
         platform_index_offset_ = 8;
         num_of_platforms_ = 0;
 

@@ -21,19 +21,19 @@ public:
 
         //middle platforms
         sprite_.setTextureRect(rectangles_[1]);
-        for(int i = 1; i < platform_length; i++){
+        for(int i = 1; i < platform_length - 1; i++){
             platforms_.push_back(PlatformClass(sprite_, x_pos_ + platform_width * i, y_pos_));
         }
 
         //right platform
         sprite_.setTextureRect(rectangles_[2]);
-        platforms_.push_back(PlatformClass(sprite_, x_pos_ + platform_length_ * platform_width, y_pos_));
+        platforms_.push_back(PlatformClass(sprite_, x_pos_ + (platform_length_ - 1)* platform_width, y_pos_));
 
         //set bounding parameters
         platform_top_ = y_pos_;
         platform_bot_ = y_pos_ + platforms_[0].sprite_.getGlobalBounds().height;
         platform_left_ = x_pos_;
-        platform_right_ = x_pos_ + (platform_length_ + 1)* platform_width;
+        platform_right_ = x_pos_ + platform_length_* platform_width;
     }
 
     //number of little platforms encapsulated in it - 2

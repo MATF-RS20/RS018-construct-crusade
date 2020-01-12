@@ -15,8 +15,16 @@ void level_one(sf::RenderWindow &window,
                Sprite &hp_sprite,
                std::vector<ImpEnemyClass> &imps,
                Sprite &shooting_sprite,
-               std::vector<WitchEnemyClass> &witches
+               std::vector<WitchEnemyClass> &witches,
+               Sprite &minotaur_sprite
                  ){
+
+    minotaur_sprite.setScale(4, 4);
+
+    minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_idle_[enemy.rectangles_index_minotaur_idle_]);
+    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_walk_right_[enemy.rectangles_index_minotaur_walk_]);
+    minotaur_sprite.setPosition(0, 500 - 176);
+    window.draw(minotaur_sprite);
 
     //draw platforms that are in the constructs area
     for(int i = player.platform_index_ - player.platform_index_offset_; i <= player.platform_index_ + player.platform_index_offset_; i++){

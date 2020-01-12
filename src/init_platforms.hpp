@@ -21,7 +21,7 @@ void init_platforms_and_enemies(std::vector<BigPlatform> &big_platforms,
         big_platforms.push_back(BigPlatform(platform_distance*j, fixed_platform_height, 8 + rand() % 3, platform_sprite));
         player.num_of_platforms_++;
 
-        if(rand() % 101 < 30 && j > 1)
+        if(rand() % 101 < 35 && j > 1)
             imps.push_back(ImpEnemyClass(fireball_sprite,
                                           imp_sprite,
                                            big_platforms[player.num_of_platforms_-1].platform_right_ - 100,

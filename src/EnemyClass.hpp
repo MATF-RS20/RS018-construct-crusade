@@ -39,6 +39,12 @@ public:
         Clock witch_death_clock;
         Clock witch_broom_clock;
 
+        //minotaur
+        Clock minotaur_idle_clock;
+        Clock minotaur_walk_clock;
+        Clock minotaur_attack_clock;
+        Clock minotaur_death_clock;
+
         while(true){
 
             //imp
@@ -70,6 +76,10 @@ public:
             index_update(delta_time, witch_attack_clock, 8, rectangles_index_witch_attack_);
             index_update(delta_time, witch_death_clock, 10, rectangles_index_witch_death_);
             index_update(delta_time, witch_broom_clock, 4, rectangles_index_witch_broom_);
+
+            //minotaur
+            index_update(delta_time, minotaur_idle_clock, 5, rectangles_index_minotaur_idle_);
+            index_update(delta_time, minotaur_walk_clock, 8, rectangles_index_minotaur_walk_);
 
         }//while
 
@@ -126,6 +136,27 @@ public:
     int rectangles_index_witch_death_;
     int rectangles_index_witch_broom_;
 
+    //minotaur parameters
+    std::vector<IntRect> rectangles_minotaur_idle_;
+    std::vector<IntRect> rectangles_minotaur_walk_left_;
+    std::vector<IntRect> rectangles_minotaur_walk_right_;
+    std::vector<IntRect> rectangles_minotaur_taunt_;
+    std::vector<IntRect> rectangles_minotaur_attack_1_;
+    std::vector<IntRect> rectangles_minotaur_attack_2_;
+    std::vector<IntRect> rectangles_minotaur_attack_3_;
+    std::vector<IntRect> rectangles_minotaur_attack_4_;
+    std::vector<IntRect> rectangles_minotaur_death_;
+
+
+    int rectangles_index_minotaur_idle_;
+    int rectangles_index_minotaur_walk_;
+    int rectangles_index_minotaur_taunt_;
+    int rectangles_index_minotaur_attack_1_;
+    int rectangles_index_minotaur_attack_2_;
+    int rectangles_index_minotaur_attack_3_;
+    int rectangles_index_minotaur_attack_4_;
+    int rectangles_index_minotaur_death_;
+
 private:
     void index_update(int delta_time, Clock &clock, int iters, int &index){
 
@@ -160,6 +191,16 @@ private:
         rectangles_index_witch_attack_ = 0;
         rectangles_index_witch_death_ = 0;
         rectangles_index_witch_broom_ = 0;
+
+        //minotaur indices
+        rectangles_index_minotaur_idle_ = 0;
+        rectangles_index_minotaur_walk_ = 0;
+        rectangles_index_minotaur_taunt_ = 0;
+        rectangles_index_minotaur_attack_1_ = 0;
+        rectangles_index_minotaur_attack_2_ = 0;
+        rectangles_index_minotaur_attack_3_ = 0;
+        rectangles_index_minotaur_attack_4_ = 0;
+        rectangles_index_minotaur_death_ = 0;
 
         for (int i = 0; i < 4; i++){
             rectangles_dino_slam_.push_back(IntRect(0 , 25*i, 33, 25));
@@ -283,6 +324,16 @@ private:
         //left
         for (int i = 0; i < 4; i++){
             rectangles_witch_broom_.push_back(IntRect(291 - i*32, 354, 28, 27));
+        }
+
+        //Minotaur idle
+        for (int i = 0; i < 5; i++){
+            rectangles_minotaur_idle_.push_back(IntRect(27 + i*96, 20, 53, 44));
+        }
+
+        //Minotaur walk right
+        for (int i = 0; i < 8; i++){
+            rectangles_minotaur_walk_right_.push_back(IntRect(25 + i*96, 116, 56, 44));
         }
 
 

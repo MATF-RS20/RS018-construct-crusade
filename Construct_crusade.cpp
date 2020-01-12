@@ -1,23 +1,5 @@
 #include <iostream>
-#include <SFML/Audio.hpp>
-#include <SFML/Graphics.hpp>
-#include <vector>
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include "PlayerClass.hpp"
-#include "EnemyClass.hpp"
-#include "RealEnemyClass.hpp"
-#include "BigPlatform.hpp"
-#include "DrawTrails.hpp"
-#include "Bars.hpp"
-#include "Level_one.hpp"
-#include "Level_two.hpp"
-#include "init_platforms.hpp"
-#include "init_platforms_level_2.hpp"
-#include "ImpEnemyClass.hpp"
-#include "WitchEnemyClass.hpp"
+#include "BigHeader.hpp"
 
 using namespace sf;
 double window_height = 600;
@@ -64,7 +46,7 @@ int main(){
     Sprite shooting_sprite(construct_tex, IntRect(26, 152, 4, 4));
 
     //making a player object
-    PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, 1000, -1700);
+    PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, 0, 400);
 
     //health and mana bars
     Texture hp_tex;
@@ -119,15 +101,15 @@ int main(){
 
     std::vector<WitchEnemyClass> witches;
 
+    Texture minotaur_tex;
+    minotaur_tex.loadFromFile("assets/images/minotaur.png");
+
+    Sprite minotaur_sprite(minotaur_tex, IntRect(27, 22, 53, 42));
+
     //create the level
     init_platforms_and_enemies(big_platforms, player, platform_sprite, imps, witches, imp_sprite, fireball_sprite, witch_sprite, poison_sprite);
 
     EnemyClass enemy{};
-
-    Texture cleo;
-    cleo.loadFromFile("assets/images/cleopatra.png");
-    Sprite cleo_sprite(cleo, IntRect(0,0,25,25));
-    RealEnemyClass cleopatra(cleo_sprite, 200, -500, 200, 500);
 
     //these threads do all the animation calculations - yes i said THREADS... IM A REAL PROGRAMMER!
     //create a thread asign a function and an object to the thread
@@ -138,13 +120,18 @@ int main(){
     //a little audio for our little game
     sf::Music music;
     if (!music.openFromFile("assets/music/bg_fa.ogg")){
-        std::cout << "we have failed at music" << std::endl; // error
+        std::cout << "we have failed at music" << std::endl;
     }
     music.setVolume(0.3f);
     music.setLoop(true);
     music.play();
+
     //inicijalizacije za NIVO 2
 
+    Texture cleo;
+    cleo.loadFromFile("assets/images/cleopatra.png");
+    Sprite cleo_sprite(cleo, IntRect(0,0,25,25));
+    RealEnemyClass cleopatra(cleo_sprite, 200, -500, 200, 500);
 
     //Dinoo bambinooo
     Texture dino_tex;
@@ -340,11 +327,12 @@ int main(){
 
     //deo specifican za svaki nivo
     if(level == 1){
-        level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches);
+
+        level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches, minotaur_sprite);
 
 
 
-//          if(player.sprite_.getPosition().y < -500){
+
 //            //prelaz iz nivoa 1 u nivo 2
 //            level = 2;
 //            player.sprite_.setPosition(0, -500);
@@ -355,7 +343,7 @@ int main(){
 //
 //            player.platform_index_ = 6;
 //            player.platform_index_offset_ = 6;
-//          }
+
 
 
 
