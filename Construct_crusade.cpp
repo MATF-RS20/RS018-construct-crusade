@@ -1,5 +1,8 @@
 #include <iostream>
 #include "BigHeader.hpp"
+#include "CleopatraEnemyClass.hpp"
+#include "DinoEnemyClass.hpp"
+#include "Menu.hpp"
 
 using namespace sf;
 double window_height = 600;
@@ -7,13 +10,19 @@ double window_width = 1200;
 bool RIP_construct = false;
 bool shooting = false;
 int level = 1;
-//Clock random_clock;
+bool shaking = true;
+
+Clock random_clock;
+Clock shaking_clock;
 Clock witch_uniform_clock;
 
+
 int main(){
+
     //create the main window
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Construct Crusade!");
 
+    Menu menu(window.getSize().x, window.getSize().y);
     //define a view
     sf::View view(sf::FloatRect(0.0, 0.0, window_width, window_height));
 
@@ -47,6 +56,8 @@ int main(){
 
     //making a player object
     PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, 0, 400);
+
+    //PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, -4800, 500);
 
     //health and mana bars
     Texture hp_tex;
@@ -111,6 +122,16 @@ int main(){
 
     EnemyClass enemy{};
 
+    Texture cleo;
+    cleo.loadFromFile("assets/images/cleopatra.png");
+
+    Sprite cleo_sprite(cleo, IntRect(0,0,25,25));
+    Sprite heart_sprite(cleo, IntRect(75, 0, 75, 75));
+
+    //CleopatraEnemyClass cleopatra(cleo_sprite, heart_sprite, 200, -500, 200, 500);
+
+     std::vector<CleopatraEnemyClass> cleopatras;
+
     //these threads do all the animation calculations - yes i said THREADS... IM A REAL PROGRAMMER!
     //create a thread asign a function and an object to the thread
     sf::Thread enemy_thread(&EnemyClass::Animation, &enemy);
@@ -118,6 +139,7 @@ int main(){
     enemy_thread.launch();
 
     //a little audio for our little game
+
     sf::Music music;
     if (!music.openFromFile("assets/music/bg_fa.ogg")){
         std::cout << "we have failed at music" << std::endl;
@@ -135,10 +157,12 @@ int main(){
 
     //Dinoo bambinooo
     Texture dino_tex;
-    dino_tex.loadFromFile("assets/images/dinoWalk.png");
+    dino_tex.loadFromFile("assets/images/dinoWalkKljokRock.png");
     Sprite dino_sprite(dino_tex, IntRect(0,0,30,25));
 
-    RealEnemyClass dino(dino_sprite, 400, -575, 200, 200);
+    DinoEnemyClass dino(dino_sprite, 400, -575, 0, 400);
+
+    std::vector<DinoEnemyClass> dinos;
 
     //start the main loop
     while (window.isOpen())
@@ -175,6 +199,9 @@ int main(){
                             }
                             for(auto &imp : imps){
                                 imp.first_hit_laser_ = true;
+                            }
+                            for(auto &cleopatra : cleopatras){
+                                cleopatra.first_hit_laser_ = true;
                             }
 
                             player.construct_mp_ = 0;
@@ -236,8 +263,9 @@ int main(){
             uniform_move_clock.restart();
 
             //here we center the view on the player - when we animate the raptor we might add the sin when he slams the ground
-            view.setCenter(Vector2f(player.sprite_.getPosition().x, player.sprite_.getPosition().y /*+ 4*sin(random_clock.getElapsedTime().asMilliseconds())*/));
+            view.setCenter(Vector2f(player.sprite_.getPosition().x, player.sprite_.getPosition().y + 4*sin(random_clock.getElapsedTime().asMilliseconds()) * shaking));
             window.setView(view);
+
 
             //jumping animation
             if(!player.on_ground_ && (construct_move & 1) && !shooting){
@@ -310,6 +338,14 @@ int main(){
                             imp.first_hit_shooting_ = false;
                     }
                 }
+
+                for(auto cleopatra : cleopatras){
+                    //check for collision with the cleopatra
+                    if(cleopatra.first_hit_shooting_ && shooting_sprite.getGlobalBounds().intersects(cleopatra.sprite_.getGlobalBounds())){
+                            cleopatra.enemy_hp_ -= 10;
+                            cleopatra.first_hit_shooting_ = false;
+                    }
+                }
             }
 
             window.draw(player.sprite_);
@@ -331,29 +367,46 @@ int main(){
         level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches, minotaur_sprite);
 
 
+            //prelaz iz nivoa 1 u nivo 2
+            level = 2;
+			
+			if (!music.openFromFile("assets/music/end.ogg")){
+                std::cout << "we have failed at music" << std::endl; // error
+            }
+            music.setVolume(30);
+            music.setPlayingOffset(sf::seconds(2.f));
+            music.setLoop(true);
+            music.play();
+			
+            player.sprite_.setPosition(0, -500);
+            big_platforms.clear();
 
+            player.num_of_platforms_ = 0;
+            init_platforms_level_2(big_platforms, player, platform_sprite, cleopatras, cleo_sprite, heart_sprite, dinos, dino_sprite);
 
-//            //prelaz iz nivoa 1 u nivo 2
-//            level = 2;
-//            player.sprite_.setPosition(0, -500);
-//            big_platforms.clear();
-//
-//            player.num_of_platforms_ = 0;
-//            init_platforms_level_2(big_platforms, player, platform_sprite);
-//
-//            player.platform_index_ = 6;
-//            player.platform_index_offset_ = 6;
-
-
-
+            player.platform_index_ = 6;
+            player.platform_index_offset_ = 6;
 
     }
     else if(level == 2){
 
-        level_two(window, big_platforms, player, enemy, cleopatra, dino);
+        level_two(window, big_platforms, player, enemy, shooting_sprite, hp_sprite, cleopatras, dinos);
+
+        //cleopatra.heart_sprite_.move(-1, 0);
+        //cleopatra.heart_sprite_.setTextureRect(enemy.rectangles_cleo_attack_[4 + enemy.rectangles_index_cleo_attack_]);
+        //window.draw(cleopatra.heart_sprite_);
+        //cleopatra.sprite_.setTextureRect(enemy.rectangles_cleo_attack_[2 + enemy.rectangles_index_cleo_attack_]);
+        //window.draw(cleopatra.sprite_);
+
+        //level_two(window, big_platforms, player, enemy, cleopatra, dinos, dino);
 
     }
 
+
+//    window.clear(Color(255, 179, 179));
+//
+//    menu.draw(window);
+//
     window.display();
 
     }//while loop
