@@ -39,12 +39,12 @@ void level_two(sf::RenderWindow &window,
 //    dino.sprite_.setPosition(400, -575);
 //    window.draw(dino.sprite_);
 
-    handle_dino(dino, enemy, player, window);
-    if(shaking_clock.getElapsedTime().asMilliseconds() > 3000)
-    {
-        shaking_clock.restart();
-        shaking = !shaking;
-    }
+//    handle_dino(dino, enemy, player, window);
+//    if(shaking_clock.getElapsedTime().asMilliseconds() > 3000)
+//    {
+//        shaking_clock.restart();
+//        shaking = !shaking;
+//    }
 
         for(DinoEnemyClass &dino : dinos){
 
@@ -55,8 +55,8 @@ void level_two(sf::RenderWindow &window,
 
 
 
-    dino.sprite_.setScale(7,7);
-    window.draw(dino.sprite_);
+//    dino.sprite_.setScale(7,7);
+//    window.draw(dino.sprite_);
 
     for(CleopatraEnemyClass &cleopatra : cleopatras){
 
@@ -84,11 +84,10 @@ void level_two(sf::RenderWindow &window,
                     }
                 }
             handle_cleo(cleopatra, enemy, player, window);
+            draw_cleopatra_hp(window, cleopatra, hp_sprite);
+            window.draw(cleopatra.sprite_);
         }
 
-
-        //draw_cleo_hp(window, cleopatra, hp_sprite);
-        window.draw(cleopatra.sprite_);
     }
 
 

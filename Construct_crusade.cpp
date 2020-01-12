@@ -95,6 +95,10 @@ int main(){
     platform_tex.loadFromFile("assets/images/tileset.png");
     Sprite platform_sprite(platform_tex);
 
+    Texture platform_tex_cupcake;
+    platform_tex_cupcake.loadFromFile("assets/images/cupcake.png");
+    Sprite platform_sprite_cupcake(platform_tex_cupcake);
+
     std::vector<BigPlatform> big_platforms;
 
     //imp initialization
@@ -375,24 +379,24 @@ int main(){
 
 
             //prelaz iz nivoa 1 u nivo 2
-//            level = 2;
-//
-//			if (!music.openFromFile("assets/music/end.ogg")){
-//                std::cout << "we have failed at music" << std::endl; // error
-//            }
-//            music.setVolume(30);
-//            music.setPlayingOffset(sf::seconds(2.f));
-//            music.setLoop(true);
-//            music.play();
-//
-//            player.sprite_.setPosition(0, -500);
-//            big_platforms.clear();
-//
-//            player.num_of_platforms_ = 0;
-//            init_platforms_level_2(big_platforms, player, platform_sprite, cleopatras, cleo_sprite, heart_sprite, dinos, dino_sprite);
-//
-//            player.platform_index_ = 6;
-//            player.platform_index_offset_ = 6;
+            level = 2;
+
+			if (!music.openFromFile("assets/music/end.ogg")){
+                std::cout << "we have failed at music" << std::endl; // error
+            }
+            music.setVolume(30);
+            music.setPlayingOffset(sf::seconds(2.f));
+            music.setLoop(true);
+            music.play();
+
+            player.sprite_.setPosition(0, -500);
+            big_platforms.clear();
+
+            player.num_of_platforms_ = 0;
+            init_platforms_level_2(big_platforms, player, platform_sprite, platform_sprite_cupcake, cleopatras, cleo_sprite, heart_sprite, dinos, dino_sprite);
+
+            player.platform_index_ = 6;
+            player.platform_index_offset_ = 6;
 
     }
     else if(level == 2){

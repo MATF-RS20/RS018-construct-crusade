@@ -325,7 +325,7 @@ void handle_cleo(CleopatraEnemyClass &cleo, EnemyClass &enemy, PlayerClass &play
     if(!cleo.enemy_dead_ && cleo.enemy_hp_ <= 0){
             cleo.sprite_.setTextureRect(enemy.rectangles_cleo_death_[6*(cleo.facing_left_) + enemy.rectangles_index_cleo_death_]);
 
-        if(enemy.rectangles_index_cleo_death_ == 6){
+        if(enemy.rectangles_index_cleo_death_ == 5){
             cleo.enemy_dead_ = true;
         }
 
