@@ -20,6 +20,9 @@
 #include "src/init_platforms_level_2.hpp"
 #include "src/ImpEnemyClass.hpp"
 #include "src/WitchEnemyClass.hpp"
+#include "src/CleopatraEnemyClass.hpp"
+#include "src/DinoEnemyClass.hpp"
+#include "src/Menu.hpp"
 
 
 #endif // _BIG_HEADER_HPP

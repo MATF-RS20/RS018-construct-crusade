@@ -10,7 +10,8 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
                             Sprite &cleo_sprite,
                             Sprite &heart_sprite,
                             std::vector<DinoEnemyClass> &dinos,
-                            Sprite &dino_sprite
+                            Sprite &dino_sprite,
+                            Sprite &stone_sprite
                             ){
     int probability = 40;
 
@@ -46,7 +47,7 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
                                                      big_platforms[player.num_of_platforms_-1].platform_right_));
 
 
-        dinos.push_back(DinoEnemyClass(dino_sprite,
+        dinos.push_back(DinoEnemyClass(dino_sprite, stone_sprite,
                                            big_platforms[player.num_of_platforms_-1].platform_right_ - 150,
                                            big_platforms[player.num_of_platforms_-1].platform_top_ - 175,
                                            big_platforms[player.num_of_platforms_-1].platform_left_,
@@ -77,7 +78,7 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
                                                      big_platforms[player.num_of_platforms_-1].platform_right_));
 
         if(i % 2 == 0)
-            dinos.push_back(DinoEnemyClass(dino_sprite,
+            dinos.push_back(DinoEnemyClass(dino_sprite, stone_sprite,
                                     big_platforms[player.num_of_platforms_-1].platform_right_ - 150,
                                     big_platforms[player.num_of_platforms_-1].platform_top_ - 175,
                                     big_platforms[player.num_of_platforms_-1].platform_left_,
@@ -119,7 +120,7 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
 
 
     if(rand() % 101 < 30){
-            dinos.push_back(DinoEnemyClass(dino_sprite,
+            dinos.push_back(DinoEnemyClass(dino_sprite, stone_sprite,
                                            big_platforms[player.num_of_platforms_-1].platform_right_ - 150,
                                            big_platforms[player.num_of_platforms_-1].platform_top_ - 175,
                                            big_platforms[player.num_of_platforms_-1].platform_left_,
@@ -163,7 +164,7 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
 
 
         if(rand() % 101 < 30){
-            dinos.push_back(DinoEnemyClass(dino_sprite,
+            dinos.push_back(DinoEnemyClass(dino_sprite, stone_sprite,
                                            big_platforms[player.num_of_platforms_-1].platform_right_ - 150,
                                            big_platforms[player.num_of_platforms_-1].platform_top_ - 175,
                                            big_platforms[player.num_of_platforms_-1].platform_left_,
@@ -188,7 +189,7 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
 
 
         if(rand() % 101 < 30){
-            dinos.push_back(DinoEnemyClass(dino_sprite,
+            dinos.push_back(DinoEnemyClass(dino_sprite, stone_sprite,
                                            big_platforms[player.num_of_platforms_-1].platform_right_ - 150,
                                            big_platforms[player.num_of_platforms_-1].platform_top_ - 175,
                                            big_platforms[player.num_of_platforms_-1].platform_left_,
@@ -210,7 +211,7 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
 
 
 
-    dinos.push_back(DinoEnemyClass(dino_sprite,
+    dinos.push_back(DinoEnemyClass(dino_sprite, stone_sprite,
                                            big_platforms[player.num_of_platforms_-1].platform_right_ - 150,
                                            big_platforms[player.num_of_platforms_-1].platform_top_ - 175,
                                            big_platforms[player.num_of_platforms_-1].platform_left_,
@@ -251,7 +252,7 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
                                                      big_platforms[player.num_of_platforms_-1].platform_left_,
                                                      big_platforms[player.num_of_platforms_-1].platform_right_));
 
-    dinos.push_back(DinoEnemyClass(dino_sprite,
+    dinos.push_back(DinoEnemyClass(dino_sprite, stone_sprite,
                                     big_platforms[player.num_of_platforms_-1].platform_right_ - 150,
                                     big_platforms[player.num_of_platforms_-1].platform_top_ - 175,
                                     big_platforms[player.num_of_platforms_-1].platform_left_,
@@ -275,7 +276,7 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
 
 
         if(rand() % 101 < 20){
-            dinos.push_back(DinoEnemyClass(dino_sprite,
+            dinos.push_back(DinoEnemyClass(dino_sprite, stone_sprite,
                                            big_platforms[player.num_of_platforms_-1].platform_right_ - 150,
                                            big_platforms[player.num_of_platforms_-1].platform_top_ - 175,
                                            big_platforms[player.num_of_platforms_-1].platform_left_,
@@ -300,7 +301,7 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
 
 
         if(rand() % 101 < 20){
-            dinos.push_back(DinoEnemyClass(dino_sprite,
+            dinos.push_back(DinoEnemyClass(dino_sprite, stone_sprite,
                                            big_platforms[player.num_of_platforms_-1].platform_right_ - 150,
                                            big_platforms[player.num_of_platforms_-1].platform_top_ - 175,
                                            big_platforms[player.num_of_platforms_-1].platform_left_,
@@ -340,7 +341,7 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
 
 
         if(rand() % 101 < 30){
-            dinos.push_back(DinoEnemyClass(dino_sprite,
+            dinos.push_back(DinoEnemyClass(dino_sprite, stone_sprite,
                                            big_platforms[player.num_of_platforms_-1].platform_right_ - 150,
                                            big_platforms[player.num_of_platforms_-1].platform_top_ - 175,
                                            big_platforms[player.num_of_platforms_-1].platform_left_,
@@ -362,7 +363,7 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
 
 
 
-    dinos.push_back(DinoEnemyClass(dino_sprite,
+    dinos.push_back(DinoEnemyClass(dino_sprite, stone_sprite,
                                            big_platforms[player.num_of_platforms_-1].platform_right_ - 150,
                                            big_platforms[player.num_of_platforms_-1].platform_top_ - 175,
                                            big_platforms[player.num_of_platforms_-1].platform_left_,

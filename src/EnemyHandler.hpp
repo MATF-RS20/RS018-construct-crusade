@@ -27,6 +27,8 @@ int offset_y_6 = 0;
 int offset_y_7 = 0;
 int offset_y_8 = 0;
 
+extern bool shaking;
+
 void poison_drop(WitchEnemyClass &witch, PlayerClass &player, sf::RenderWindow &window, int scale, int offset_x, int offset_y, bool &first_hit){
 
         witch.poison_sprite_.setScale(scale, scale);
@@ -335,9 +337,51 @@ void handle_cleo(CleopatraEnemyClass &cleo, EnemyClass &enemy, PlayerClass &play
 //DINO BAMBINO
 void handle_dino(DinoEnemyClass &dino, EnemyClass &enemy, PlayerClass &player, sf::RenderWindow &window){
 
+    if(dino.enemy_hp_ > 0 && player.sprite_.getPosition().x > dino.sprite_.getPosition().x - 400 && player.sprite_.getPosition().x < dino.sprite_.getPosition().x + 400){
+        //facing left can only be updated on te first frame of the animation
+        if(enemy.rectangles_index_dino_slam_ == 0)
+            dino.facing_left_ = player.sprite_.getPosition().x < dino.sprite_.getPosition().x;
+            //std::cout << dino.facing_left_ << std::endl;
+        dino.attacking_ = true;
 
-        patrolling(dino, enemy.rectangles_dino_slam_left, enemy.rectangles_dino_walk_left_, enemy.rectangles_dino_walk_right_,
+    }else{
+        dino.attacking_ = false;
+    }
+
+    if(dino.attacking_){
+            if(enemy.rectangles_index_dino_slam_ == 3){
+                shaking = true;
+                dino.stone_sprite_.setPosition(dino.sprite_.getPosition().x +(dino.facing_left_)*dino.sprite_.getGlobalBounds().width,
+                                                dino.sprite_.getPosition().y
+                                               + dino.sprite_.getGlobalBounds().height - 25 );
+            }
+            else{
+                shaking = false;
+            }
+            //std::cout << dino.facing_left_ << std::endl;
+            if(dino.facing_left_){
+                dino.stone_sprite_.move(Vector2f(-2.3, -0.8));
+                dino.sprite_.setTextureRect(enemy.rectangles_dino_slam_left[enemy.rectangles_index_dino_slam_]);
+
+            }else{
+                dino.stone_sprite_.move(Vector2f(2.3, -0.8));
+                dino.sprite_.setTextureRect(enemy.rectangles_dino_slam_right[enemy.rectangles_index_dino_slam_]);
+
+            }
+        dino.stone_sprite_.setScale(2,2);
+
+    }
+
+    if(!dino.attacking_ && dino.enemy_hp_ > 0)
+    {
+         patrolling(dino, enemy.rectangles_dino_slam_left, enemy.rectangles_dino_walk_left_, enemy.rectangles_dino_walk_right_,
                    enemy.rectangles_index_dino_slam_, enemy.rectangles_index_dino_walk_);
+    }
+
+//        stone_sprite.setPosition(20, -500);
+//        stone_sprite.move(0.5, 0);
+//        window.draw(stone_sprite);
+
 
 
 }
