@@ -4,6 +4,7 @@
 #include "WitchEnemyClass.hpp"
 #include "ImpEnemyClass.hpp"
 #include "CleopatraEnemyClass.hpp"
+#include "DinoEnemyClass.hpp"
 
 using namespace sf;
 
@@ -86,7 +87,7 @@ void patrolling(RealEnemyClass &deviant,
     }
 }
 //WITCH
-void handle_witch(WitchEnemyClass &witch, EnemyClass &enemy, PlayerClass &player, sf::RenderWindow &window){
+void handle_witch(WitchEnemyClass &witch, EnemyClass &enemy, PlayerClass &player, sf::RenderWindow &window, float witch_uniform_move){
     //detect if the construct is near
     if(witch.enemy_hp_ > 0 && player.sprite_.getPosition().x > witch.sprite_.getPosition().x - 400
                            && player.sprite_.getPosition().x < witch.sprite_.getPosition().x + 400){
@@ -136,12 +137,12 @@ void handle_witch(WitchEnemyClass &witch, EnemyClass &enemy, PlayerClass &player
         if(witch.brooming_phase_ == 0 || witch.brooming_phase_ == 2){
 
             witch.sprite_.setTextureRect(enemy.rectangles_witch_broom_[4 + enemy.rectangles_index_witch_broom_]);
-            witch.sprite_.setPosition(witch.sprite_.getPosition().x - 4.0f, witch.sprite_.getPosition().y);
+            witch.sprite_.setPosition(witch.sprite_.getPosition().x -witch_uniform_move*1200.0f, witch.sprite_.getPosition().y);
 
         }else if(witch.brooming_phase_ == 1){
 
             witch.sprite_.setTextureRect(enemy.rectangles_witch_broom_[enemy.rectangles_index_witch_broom_]);
-            witch.sprite_.setPosition(witch.sprite_.getPosition().x + 4.0f, witch.sprite_.getPosition().y);
+            witch.sprite_.setPosition(witch.sprite_.getPosition().x + witch_uniform_move*1200.0f, witch.sprite_.getPosition().y);
 
         }
 
@@ -189,7 +190,7 @@ void handle_witch(WitchEnemyClass &witch, EnemyClass &enemy, PlayerClass &player
 
             }
             witch.poison_sprite_.setScale(scale_1, scale_1);
-            witch.poison_sprite_.move(0, -1.1);
+            witch.poison_sprite_.move(0, -witch_uniform_move*500);
             window.draw(witch.poison_sprite_);
 
             if(witch.first_hit_hexing_1_ && player.sprite_.getGlobalBounds().intersects(witch.poison_sprite_.getGlobalBounds())){
@@ -330,6 +331,17 @@ void handle_cleo(CleopatraEnemyClass &cleo, EnemyClass &enemy, PlayerClass &play
 
     }
 }
+
+//DINO BAMBINO
+void handle_dino(DinoEnemyClass &dino, EnemyClass &enemy, PlayerClass &player, sf::RenderWindow &window){
+
+
+        patrolling(dino, enemy.rectangles_dino_slam_left, enemy.rectangles_dino_walk_left_, enemy.rectangles_dino_walk_right_,
+                   enemy.rectangles_index_dino_slam_, enemy.rectangles_index_dino_walk_);
+
+
+}
+
 
 
 #endif // _ENEMY_HANDLER_HPP

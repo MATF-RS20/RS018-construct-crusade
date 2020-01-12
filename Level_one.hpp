@@ -5,6 +5,8 @@
 extern bool RIP_construct;
 //so the fireball hits only once
 extern bool shooting;
+float witch_uniform_move;
+extern sf::Clock witch_uniform_clock;
 
 void level_one(sf::RenderWindow &window,
                std::vector<BigPlatform> &big_platforms,
@@ -66,7 +68,7 @@ void level_one(sf::RenderWindow &window,
             window.draw(imp.sprite_);
         }
     }//for imps
-
+    witch_uniform_move = witch_uniform_clock.getElapsedTime().asSeconds();
     for(WitchEnemyClass &witch : witches){
 
         if(!witch.enemy_dead_){
@@ -92,13 +94,17 @@ void level_one(sf::RenderWindow &window,
                             witch.first_hit_shooting_ = false;
                     }
                 }
-            handle_witch(witch, enemy, player, window);
+
+            handle_witch(witch, enemy, player, window, witch_uniform_move);
+
         }
 
 
         draw_imp_hp(window, witch, hp_sprite);
         window.draw(witch.sprite_);
     }
+
+    witch_uniform_clock.restart();
 
 }
 #endif // _LEVEL_ONE_HPP

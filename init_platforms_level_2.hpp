@@ -7,7 +7,9 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
                             Sprite &platform_sprite,
                             std::vector<CleopatraEnemyClass> &cleopatras,
                             Sprite &cleo_sprite,
-                            Sprite &heart_sprite
+                            Sprite &heart_sprite,
+                            std::vector<DinoEnemyClass> &dinos,
+                            Sprite &dino_sprite
                             ){
     int probability = 40;
 
@@ -41,6 +43,15 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
                                                      big_platforms[player.num_of_platforms_-1].platform_top_ - 100,
                                                      big_platforms[player.num_of_platforms_-1].platform_left_,
                                                      big_platforms[player.num_of_platforms_-1].platform_right_));
+
+
+        dinos.push_back(DinoEnemyClass(dino_sprite,
+                                           big_platforms[player.num_of_platforms_-1].platform_right_ - 150,
+                                           big_platforms[player.num_of_platforms_-1].platform_top_ - 175,
+                                           big_platforms[player.num_of_platforms_-1].platform_left_,
+                                           big_platforms[player.num_of_platforms_-1].platform_right_));
+
+
     }
 
     //heights -400, -800, .. , -1600
@@ -55,6 +66,7 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
             player.num_of_platforms_++;
         }
 
+
         if(rand() % 101 < probability && i > 1)
             cleopatras.push_back(CleopatraEnemyClass(cleo_sprite,
                                                      heart_sprite,
@@ -62,6 +74,13 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
                                                      big_platforms[player.num_of_platforms_-1].platform_top_ - 100,
                                                      big_platforms[player.num_of_platforms_-1].platform_left_,
                                                      big_platforms[player.num_of_platforms_-1].platform_right_));
+
+        if(i % 2 == 0)
+            dinos.push_back(DinoEnemyClass(dino_sprite,
+                                    big_platforms[player.num_of_platforms_-1].platform_right_ - 150,
+                                    big_platforms[player.num_of_platforms_-1].platform_top_ - 175,
+                                    big_platforms[player.num_of_platforms_-1].platform_left_,
+                                    big_platforms[player.num_of_platforms_-1].platform_right_));
 
     }
 
@@ -98,6 +117,14 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
                                                      big_platforms[player.num_of_platforms_-1].platform_right_));
 
 
+    if(rand() % 101 < 30){
+            dinos.push_back(DinoEnemyClass(dino_sprite,
+                                           big_platforms[player.num_of_platforms_-1].platform_right_ - 150,
+                                           big_platforms[player.num_of_platforms_-1].platform_top_ - 175,
+                                           big_platforms[player.num_of_platforms_-1].platform_left_,
+                                           big_platforms[player.num_of_platforms_-1].platform_right_));
+        }
+
     platform_height = -2200;
     //width = 500, 1500
     for(int i = 0; i < 2; i++)
@@ -132,6 +159,15 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
                                                      big_platforms[player.num_of_platforms_-1].platform_left_,
                                                      big_platforms[player.num_of_platforms_-1].platform_right_));
 
+
+
+        if(rand() % 101 < 30){
+            dinos.push_back(DinoEnemyClass(dino_sprite,
+                                           big_platforms[player.num_of_platforms_-1].platform_right_ - 150,
+                                           big_platforms[player.num_of_platforms_-1].platform_top_ - 175,
+                                           big_platforms[player.num_of_platforms_-1].platform_left_,
+                                           big_platforms[player.num_of_platforms_-1].platform_right_));
+        }
     }
 
 
@@ -149,6 +185,15 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
                                                      big_platforms[player.num_of_platforms_-1].platform_left_,
                                                      big_platforms[player.num_of_platforms_-1].platform_right_));
 
+
+        if(rand() % 101 < 30){
+            dinos.push_back(DinoEnemyClass(dino_sprite,
+                                           big_platforms[player.num_of_platforms_-1].platform_right_ - 150,
+                                           big_platforms[player.num_of_platforms_-1].platform_top_ - 175,
+                                           big_platforms[player.num_of_platforms_-1].platform_left_,
+                                           big_platforms[player.num_of_platforms_-1].platform_right_));
+        }
+
     }
 
     big_platforms.push_back(BigPlatform(platform_distance*2.3, platform_height-130, 7, platform_sprite));
@@ -161,6 +206,15 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
                                                      big_platforms[player.num_of_platforms_-1].platform_top_ - 100,
                                                      big_platforms[player.num_of_platforms_-1].platform_left_,
                                                      big_platforms[player.num_of_platforms_-1].platform_right_));
+
+
+
+    dinos.push_back(DinoEnemyClass(dino_sprite,
+                                           big_platforms[player.num_of_platforms_-1].platform_right_ - 150,
+                                           big_platforms[player.num_of_platforms_-1].platform_top_ - 175,
+                                           big_platforms[player.num_of_platforms_-1].platform_left_,
+                                           big_platforms[player.num_of_platforms_-1].platform_right_));
+
 
     //Special path that leads to the gate
     big_platforms.push_back(BigPlatform(700, -3000 , 4, platform_sprite));
@@ -195,6 +249,13 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
                                                      big_platforms[player.num_of_platforms_-1].platform_top_ - 100,
                                                      big_platforms[player.num_of_platforms_-1].platform_left_,
                                                      big_platforms[player.num_of_platforms_-1].platform_right_));
+
+    dinos.push_back(DinoEnemyClass(dino_sprite,
+                                    big_platforms[player.num_of_platforms_-1].platform_right_ - 150,
+                                    big_platforms[player.num_of_platforms_-1].platform_top_ - 175,
+                                    big_platforms[player.num_of_platforms_-1].platform_left_,
+                                    big_platforms[player.num_of_platforms_-1].platform_right_));
+
     //Another part of level 2
 
     platform_height = -3300;
@@ -210,6 +271,15 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
                                                      big_platforms[player.num_of_platforms_-1].platform_top_ - 100,
                                                      big_platforms[player.num_of_platforms_-1].platform_left_,
                                                      big_platforms[player.num_of_platforms_-1].platform_right_));
+
+
+        if(rand() % 101 < 20){
+            dinos.push_back(DinoEnemyClass(dino_sprite,
+                                           big_platforms[player.num_of_platforms_-1].platform_right_ - 150,
+                                           big_platforms[player.num_of_platforms_-1].platform_top_ - 175,
+                                           big_platforms[player.num_of_platforms_-1].platform_left_,
+                                           big_platforms[player.num_of_platforms_-1].platform_right_));
+        }
 
     }
 
@@ -227,6 +297,14 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
                                                      big_platforms[player.num_of_platforms_-1].platform_left_,
                                                      big_platforms[player.num_of_platforms_-1].platform_right_));
 
+
+        if(rand() % 101 < 20){
+            dinos.push_back(DinoEnemyClass(dino_sprite,
+                                           big_platforms[player.num_of_platforms_-1].platform_right_ - 150,
+                                           big_platforms[player.num_of_platforms_-1].platform_top_ - 175,
+                                           big_platforms[player.num_of_platforms_-1].platform_left_,
+                                           big_platforms[player.num_of_platforms_-1].platform_right_));
+        }
     }
 
     platform_height = -3700;
@@ -259,6 +337,14 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
                                                      big_platforms[player.num_of_platforms_-1].platform_left_,
                                                      big_platforms[player.num_of_platforms_-1].platform_right_));
 
+
+        if(rand() % 101 < 30){
+            dinos.push_back(DinoEnemyClass(dino_sprite,
+                                           big_platforms[player.num_of_platforms_-1].platform_right_ - 150,
+                                           big_platforms[player.num_of_platforms_-1].platform_top_ - 175,
+                                           big_platforms[player.num_of_platforms_-1].platform_left_,
+                                           big_platforms[player.num_of_platforms_-1].platform_right_));
+        }
     }
 
     big_platforms.push_back(BigPlatform(920, -4300, 4, platform_sprite));
@@ -271,6 +357,15 @@ void init_platforms_level_2(std::vector<BigPlatform> &big_platforms,
                                                      big_platforms[player.num_of_platforms_-1].platform_top_ - 100,
                                                      big_platforms[player.num_of_platforms_-1].platform_left_,
                                                      big_platforms[player.num_of_platforms_-1].platform_right_));
+
+
+
+
+    dinos.push_back(DinoEnemyClass(dino_sprite,
+                                           big_platforms[player.num_of_platforms_-1].platform_right_ - 150,
+                                           big_platforms[player.num_of_platforms_-1].platform_top_ - 175,
+                                           big_platforms[player.num_of_platforms_-1].platform_left_,
+                                           big_platforms[player.num_of_platforms_-1].platform_right_));
 
 
 
