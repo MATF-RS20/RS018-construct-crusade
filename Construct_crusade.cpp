@@ -1,32 +1,14 @@
 #include <iostream>
-#include <SFML/Audio.hpp>
-#include <SFML/Graphics.hpp>
-#include <vector>
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include "PlayerClass.hpp"
-#include "EnemyClass.hpp"
-#include "RealEnemyClass.hpp"
-#include "BigPlatform.hpp"
-#include "DrawTrails.hpp"
-#include "Bars.hpp"
-#include "Level_one.hpp"
-#include "Level_two.hpp"
-#include "init_platforms.hpp"
-#include "init_platforms_level_2.hpp"
-#include "ImpEnemyClass.hpp"
-#include "WitchEnemyClass.hpp"
-#include "DinoEnemyClass.hpp"
+#include "BigHeader.hpp"
 
-#include "Menu.hpp"
 
 using namespace sf;
 double window_height = 600;
 double window_width = 1200;
+//this bools should be in player class
 bool RIP_construct = false;
 bool shooting = false;
+
 int level = 1;
 bool shaking = false;
 
@@ -40,7 +22,7 @@ int main(){
     //create the main window
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Construct Crusade!");
 
-    Menu menu(window.getSize().x, window.getSize().y);
+    //Menu menu(window.getSize().x, window.getSize().y);
     //define a view
     sf::View view(sf::FloatRect(0.0, 0.0, window_width, window_height));
 
@@ -73,7 +55,9 @@ int main(){
     Sprite shooting_sprite(construct_tex, IntRect(26, 152, 4, 4));
 
     //making a player object
-    PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, -4800, 500);
+    PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, 0, 400);
+
+    //PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, -4800, 500);
 
     //health and mana bars
     Texture hp_tex;
@@ -98,12 +82,6 @@ int main(){
 
     Sprite backgroundSprite_2(background_2);
     backgroundSprite_2.setScale(1, window_height/backgroundSprite.getLocalBounds().height);
-
-    Texture background_level_2;
-    background_level_2.loadFromFile("assets/images/mountain.png");
-
-    Sprite backgroundSprite_level_2(background_level_2);
-    backgroundSprite_level_2.setScale(1, window_height/backgroundSprite_level_2.getLocalBounds().height);
 
     //platform initialization
     Texture platform_tex;
@@ -134,6 +112,11 @@ int main(){
 
     std::vector<WitchEnemyClass> witches;
 
+    Texture minotaur_tex;
+    minotaur_tex.loadFromFile("assets/images/minotaur.png");
+
+    Sprite minotaur_sprite(minotaur_tex, IntRect(27, 22, 53, 42));
+
     //create the level
     init_platforms_and_enemies(big_platforms, player, platform_sprite, imps, witches, imp_sprite, fireball_sprite, witch_sprite, poison_sprite);
 
@@ -141,8 +124,11 @@ int main(){
 
     Texture cleo;
     cleo.loadFromFile("assets/images/cleopatra.png");
+
     Sprite cleo_sprite(cleo, IntRect(0,0,25,25));
-    RealEnemyClass cleopatra(cleo_sprite, 200, -500, 200, 500);
+    Sprite heart_sprite(cleo, IntRect(75, 0, 75, 75));
+
+    std::vector<CleopatraEnemyClass> cleopatras;
 
     //these threads do all the animation calculations - yes i said THREADS... IM A REAL PROGRAMMER!
     //create a thread asign a function and an object to the thread
@@ -154,14 +140,13 @@ int main(){
 
     sf::Music music;
     if (!music.openFromFile("assets/music/bg_fa.ogg")){
-        std::cout << "we have failed at music" << std::endl; // error
+        std::cout << "we have failed at music" << std::endl;
     }
     music.setVolume(0.3f);
     music.setLoop(true);
     music.play();
 
     //inicijalizacije za NIVO 2
-
 
     //Dinoo bambinooo
     Texture dino_tex;
@@ -208,6 +193,9 @@ int main(){
                             for(auto &imp : imps){
                                 imp.first_hit_laser_ = true;
                             }
+                            for(auto &cleopatra : cleopatras){
+                                cleopatra.first_hit_laser_ = true;
+                            }
 
                             player.construct_mp_ = 0;
                             mana_thread.launch();
@@ -246,24 +234,15 @@ int main(){
         window.clear(Color(161, 242, 236));
 
         //drawing the background - if follows the player
-        if(level == 1){
-            for(int i = 0; i < window_width/backgroundSprite.getGlobalBounds().width; i++){
-                    backgroundSprite.setPosition(i*backgroundSprite.getGlobalBounds().width + (player.sprite_.getPosition().x - window_width/2), player.sprite_.getPosition().y - window_height/2);
-                    window.draw(backgroundSprite);
-            }
-            for(int i = 0; i < window_width/backgroundSprite.getGlobalBounds().width; i++){
-                    backgroundSprite_2.setPosition(i*backgroundSprite_2.getGlobalBounds().width + (player.sprite_.getPosition().x - window_width/2), player.sprite_.getPosition().y + window_height/2);
-                    window.draw(backgroundSprite_2);
-            }
+        for(int i = 0; i < window_width/backgroundSprite.getGlobalBounds().width; i++){
+                backgroundSprite.setPosition(i*backgroundSprite.getGlobalBounds().width + (player.sprite_.getPosition().x - window_width/2), player.sprite_.getPosition().y - window_height/2);
+                window.draw(backgroundSprite);
         }
-        else if(level == 2){
-
-            for(int i = 0; i < window_width/backgroundSprite_level_2.getGlobalBounds().width; i++){
-                    backgroundSprite_level_2.setPosition(i*backgroundSprite_level_2.getGlobalBounds().width + (player.sprite_.getPosition().x - window_width/2), player.sprite_.getPosition().y - window_height/2);
-                    window.draw(backgroundSprite_level_2);
-            }
-
+        for(int i = 0; i < window_width/backgroundSprite.getGlobalBounds().width; i++){
+                backgroundSprite_2.setPosition(i*backgroundSprite_2.getGlobalBounds().width + (player.sprite_.getPosition().x - window_width/2), player.sprite_.getPosition().y + window_height/2);
+                window.draw(backgroundSprite_2);
         }
+
 
 
         //draw construct based on the keys pressed - draw the corresponding animation
@@ -277,13 +256,12 @@ int main(){
             uniform_move_clock.restart();
 
             //here we center the view on the player - when we animate the raptor we might add the sin when he slams the ground
-
             view.setCenter(Vector2f(player.sprite_.getPosition().x, player.sprite_.getPosition().y + 4*sin(random_clock.getElapsedTime().asMilliseconds()) * shaking));
             window.setView(view);
 
 
             //jumping animation
-            if(!player.on_ground_ && (construct_move & 1) && !shooting){
+            if(!player.on_ground_ && (construct_move & 1) && !shooting && !player.laser_){
 
                 player.sprite_.setTextureRect(IntRect(433, 0, 9, 25));
                 //this functions draws the little animated trail when the robot is jumping
@@ -291,13 +269,13 @@ int main(){
                 draw_left_trail(player, window);
 
             }
-            else if(!player.on_ground_ && (construct_move & 2) && !shooting){
+            else if(!player.on_ground_ && (construct_move & 2) && !shooting && !player.laser_){
 
                 player.sprite_.setTextureRect(IntRect(483, 0, 9, 25));
                 draw_right_trail(player, window);
 
             }
-            else if(!player.on_ground_ && !((construct_move & 1) || (construct_move & 2)) && !shooting){
+            else if(!player.on_ground_ && !((construct_move & 1) || (construct_move & 2)) && !shooting && !player.laser_){
 
                 player.sprite_.setTextureRect(IntRect(477, 50, 21, 25));
                 draw_middle_trail(player, window);
@@ -323,7 +301,7 @@ int main(){
             }
 
             //death animation
-            if(player.construct_hp_ <= 0){
+            /*if(player.construct_hp_ <= 0){
 
                 player.sprite_.setTextureRect(player.rectangles_death_[13*(player.facing_left_) + player.rectangles_index_death_]);
              //after the animation is done stop everything
@@ -331,7 +309,7 @@ int main(){
                     RIP_construct = true;
                     player.construct_mp_ = 0.0;
                 }
-            }
+            }*/
 
             if(shooting && player.construct_hp_ > 0){
                 //draw the cunstruct while shooting - specail case left or right
@@ -353,8 +331,18 @@ int main(){
                             imp.first_hit_shooting_ = false;
                     }
                 }
-            }
 
+                for(auto cleopatra : cleopatras){
+                    //check for collision with the cleopatra
+                    if(cleopatra.first_hit_shooting_ && shooting_sprite.getGlobalBounds().intersects(cleopatra.sprite_.getGlobalBounds())){
+                            cleopatra.enemy_hp_ -= 10;
+                            cleopatra.first_hit_shooting_ = false;
+                    }
+                }
+            }
+            if(player.construct_hp_ <= 0){
+                player.construct_hp_ = 5;
+            }
             window.draw(player.sprite_);
         }
 
@@ -371,39 +359,41 @@ int main(){
     //deo specifican za svaki nivo
     if(level == 1){
 
-
-        level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches);
-
+        level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches, minotaur_sprite);
 
 
-        //if(player.sprite_.getPosition().y < -500){
             //prelaz iz nivoa 1 u nivo 2
-            level = 2;
-            shaking = true;
+//            level = 2;
+//
+//			if (!music.openFromFile("assets/music/end.ogg")){
+//                std::cout << "we have failed at music" << std::endl; // error
+//            }
+//            music.setVolume(30);
+//            music.setPlayingOffset(sf::seconds(2.f));
+//            music.setLoop(true);
+//            music.play();
+//
+//            player.sprite_.setPosition(0, -500);
+//            big_platforms.clear();
+//
+//            player.num_of_platforms_ = 0;
+//            init_platforms_level_2(big_platforms, player, platform_sprite, cleopatras, cleo_sprite, heart_sprite, dinos, dino_sprite);
+//
+//            player.platform_index_ = 6;
+//            player.platform_index_offset_ = 6;
 
-            if (!music.openFromFile("assets/music/end.ogg")){
-                std::cout << "we have failed at music" << std::endl; // error
-            }
-            music.setVolume(30);
-            music.setPlayingOffset(sf::seconds(2.f));
-            music.setLoop(true);
-            music.play();
-
-            player.sprite_.setPosition(0, -500);
-            big_platforms.clear();
-
-            player.num_of_platforms_ = 0;
-            init_platforms_level_2(big_platforms, player, platform_sprite, dinos, dino_sprite);
-
-            player.platform_index_ = 6;
-            player.platform_index_offset_ = 6;
-          //}
     }
-
-
     else if(level == 2){
 
-        level_two(window, big_platforms, player, enemy, cleopatra, dinos, dino);
+        level_two(window, big_platforms, player, enemy, shooting_sprite, hp_sprite, cleopatras, dinos);
+
+        //cleopatra.heart_sprite_.move(-1, 0);
+        //cleopatra.heart_sprite_.setTextureRect(enemy.rectangles_cleo_attack_[4 + enemy.rectangles_index_cleo_attack_]);
+        //window.draw(cleopatra.heart_sprite_);
+        //cleopatra.sprite_.setTextureRect(enemy.rectangles_cleo_attack_[2 + enemy.rectangles_index_cleo_attack_]);
+        //window.draw(cleopatra.sprite_);
+
+        //level_two(window, big_platforms, player, enemy, cleopatra, dinos, dino);
 
     }
 
