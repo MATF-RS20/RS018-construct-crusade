@@ -1,4 +1,4 @@
-#include "Menu.hpp"
+#include "src/Menu.hpp"
 
 Menu::Menu(float width, float height)
 {

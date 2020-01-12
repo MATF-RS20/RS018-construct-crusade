@@ -39,24 +39,64 @@ void level_two(sf::RenderWindow &window,
 //    dino.sprite_.setPosition(400, -575);
 //    window.draw(dino.sprite_);
 
-    handle_dino(dino, enemy, player, window);
-    if(shaking_clock.getElapsedTime().asMilliseconds() > 3000)
-    {
-        shaking_clock.restart();
-        shaking = !shaking;
-    }
+//    handle_dino(dino, enemy, player, window);
+//    if(shaking_clock.getElapsedTime().asMilliseconds() > 3000)
+//    {
+//        shaking_clock.restart();
+//        //dshaking = !shaking;
+//    }
 
         for(DinoEnemyClass &dino : dinos){
 
+            if(!dino.enemy_dead_){
+            //laser collision
+                if(player.laser_){
+
+                    if(dino.first_hit_laser_ && player.laser_sprite_.getGlobalBounds().intersects(dino.sprite_.getGlobalBounds())){
+                            //if we hit the dino reduce his hp
+                            dino.enemy_hp_ -= 30;
+                            dino.first_hit_laser_ = false;
+                    }
+                }
+
+                if(shooting){
+                    if(player.rectangles_index_shooting_ == 1){
+                            dino.first_hit_shooting_ = true;
+                    }
+
+                    //check for collision with the dino
+                    if(dino.first_hit_shooting_ && shooting_sprite.getGlobalBounds().intersects(dino.sprite_.getGlobalBounds())){
+                            dino.enemy_hp_ -= 10*!(player.rectangles_index_shooting_ == 1);
+                            dino.first_hit_shooting_ = false;
+                    }
+                }
+
+            handle_dino(dino, enemy, player, window);
             dino.sprite_.setScale(7,7);
             handle_dino(dino, enemy, player, window);
             window.draw(dino.sprite_);
+            if(dino.attacking_)
+            {
+                window.draw(dino.stone_sprite_);
+            }
+
+
+            if(dino.enemy_hp_ <= 0)
+            {
+                dino.enemy_dead_ = true;
+            }
+        }
+        else
+        {
+            dino.sprite_.setTextureRect(IntRect(100,  0, 27, 25));
+            window.draw(dino.sprite_);
+        }
     }
 
 
 
-    dino.sprite_.setScale(7,7);
-    window.draw(dino.sprite_);
+    //dino.sprite_.setScale(7,7);
+    //swindow.draw(dino.sprite_);
 
     for(CleopatraEnemyClass &cleopatra : cleopatras){
 

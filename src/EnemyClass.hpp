@@ -70,7 +70,7 @@ public:
 
 
             //dino
-            index_update(140, dino_slam_clock, 4, rectangles_index_dino_slam_);
+            index_update(delta_time, dino_slam_clock, 4, rectangles_index_dino_slam_);
             index_update(delta_time, dino_walk_clock, 6, rectangles_index_dino_walk_);
 
             //witch

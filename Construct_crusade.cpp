@@ -160,9 +160,16 @@ int main(){
     dino_tex.loadFromFile("assets/images/dinoWalkKljokRock.png");
     Sprite dino_sprite(dino_tex, IntRect(0,0,30,25));
 
-    DinoEnemyClass dino(dino_sprite, 400, -575, 0, 400);
+    Texture stone;
+    stone.loadFromFile("assets/images/stone.png");
+
+    Sprite stone_sprite(stone, IntRect(0,100,25,25));
+
+    DinoEnemyClass dino(dino_sprite, stone_sprite, 400, -575, 0, 400);
 
     std::vector<DinoEnemyClass> dinos;
+
+
 
     //start the main loop
     while (window.isOpen())
@@ -202,6 +209,9 @@ int main(){
                             }
                             for(auto &cleopatra : cleopatras){
                                 cleopatra.first_hit_laser_ = true;
+                            }
+                            for(auto &dino : dinos){
+                                dino.first_hit_laser_ = true;
                             }
 
                             player.construct_mp_ = 0;
@@ -351,6 +361,8 @@ int main(){
                             cleopatra.first_hit_shooting_ = false;
                     }
                 }
+
+
             }
             if(player.construct_hp_ <= 0){
                 player.construct_hp_ = 5;
@@ -375,29 +387,32 @@ int main(){
 
 
             //prelaz iz nivoa 1 u nivo 2
-//            level = 2;
-//
-//			if (!music.openFromFile("assets/music/end.ogg")){
-//                std::cout << "we have failed at music" << std::endl; // error
-//            }
-//            music.setVolume(30);
-//            music.setPlayingOffset(sf::seconds(2.f));
-//            music.setLoop(true);
-//            music.play();
-//
-//            player.sprite_.setPosition(0, -500);
-//            big_platforms.clear();
-//
-//            player.num_of_platforms_ = 0;
-//            init_platforms_level_2(big_platforms, player, platform_sprite, cleopatras, cleo_sprite, heart_sprite, dinos, dino_sprite);
-//
-//            player.platform_index_ = 6;
-//            player.platform_index_offset_ = 6;
+            level = 2;
+
+			if (!music.openFromFile("assets/music/end.ogg")){
+                std::cout << "we have failed at music" << std::endl; // error
+            }
+            music.setVolume(30);
+            music.setPlayingOffset(sf::seconds(2.f));
+            music.setLoop(true);
+            music.play();
+
+            player.sprite_.setPosition(0, -500);
+            big_platforms.clear();
+
+            player.num_of_platforms_ = 0;
+
+            init_platforms_level_2(big_platforms, player, platform_sprite, cleopatras, cleo_sprite, heart_sprite, dinos, dino_sprite, stone_sprite);
+
+            player.platform_index_ = 6;
+            player.platform_index_offset_ = 6;
 
     }
     else if(level == 2){
 
         level_two(window, big_platforms, player, enemy, shooting_sprite, hp_sprite, cleopatras, dinos);
+
+
 
         //cleopatra.heart_sprite_.move(-1, 0);
         //cleopatra.heart_sprite_.setTextureRect(enemy.rectangles_cleo_attack_[4 + enemy.rectangles_index_cleo_attack_]);
