@@ -18,8 +18,7 @@ void level_one(sf::RenderWindow &window,
                Sprite &shooting_sprite,
                std::vector<WitchEnemyClass> &witches,
                std::vector<BatsyEnemyClass> &bats,
-               MinotaurEnemyClass &minos
-               Sprite &minotaur_sprite,
+               MinotaurEnemyClass &minos,
                Sprite &gold_sprite
                  ){
 
@@ -70,7 +69,7 @@ void level_one(sf::RenderWindow &window,
             if(imp.enemy_hp_ <= 0){
                 imp.first_hit_fireball_ = false;
                 imp.attacking_ = false;
-                gold_collected = false;
+                imp.gold_collected_ = false;
                 player.first_hit_gold = true;
             }
 
@@ -88,14 +87,14 @@ void level_one(sf::RenderWindow &window,
             imp.gold_sprite_.setScale(3,3);
             drop_gold(imp.gold_sprite_, imp);
 
-            if(!gold_collected){
+            if(!imp.gold_collected_){
                 window.draw(imp.gold_sprite_);
 
             }
 
             if(player.first_hit_gold && player.sprite_.getGlobalBounds().intersects(imp.gold_sprite_.getGlobalBounds()))
             {
-                gold_collected = true;
+                imp.gold_collected_ = true;
                 player.first_hit_gold = false;
                 player.player_gold += 100;
                 std::cout << player.player_gold << std::endl;
@@ -132,7 +131,7 @@ void level_one(sf::RenderWindow &window,
                 }
 
                 if(witch.enemy_hp_ <= 0){
-                    gold_collected = false;
+                    witch.gold_collected_ = false;
                     player.first_hit_gold = true;
                 }
 
@@ -145,14 +144,14 @@ void level_one(sf::RenderWindow &window,
             witch.gold_sprite_.setScale(3,3);
             drop_gold(witch.gold_sprite_, witch);
 
-            if(!gold_collected){
+            if(!witch.gold_collected_){
                 window.draw(witch.gold_sprite_);
 
             }
 
             if(player.first_hit_gold && player.sprite_.getGlobalBounds().intersects(witch.gold_sprite_.getGlobalBounds()))
             {
-                gold_collected = true;
+                witch.gold_collected_ = true;
                 player.first_hit_gold = false;
                 player.player_gold += 300;
                 std::cout << player.player_gold << std::endl;

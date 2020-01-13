@@ -29,31 +29,6 @@ void level_two(sf::RenderWindow &window,
 
     draw_player_hp_mp(window, player, hp_sprite);
 
-    //cleopatra.sprite_.setTextureRect(enemy.rectangles_cleo_death_[enemy.rectangles_index_cleo_death_]);
-//    handle_cleo(cleopatra, enemy, player, window);
-//    window.draw(cleopatra.sprite_);
-//    cleopatra.heart_sprite_.move(-1, 0);
-//    cleopatra.heart_sprite_.setTextureRect(enemy.rectangles_cleo_attack_[4 + enemy.rectangles_index_cleo_attack_]);
-//    window.draw(cleopatra.heart_sprite_);
-//    cleopatra.sprite_.setTextureRect(enemy.rectangles_cleo_attack_[2 + enemy.rectangles_index_cleo_attack_]);
-//    window.draw(cleopatra.sprite_);
-
-
-    //draw dino
-//    dino.sprite_.setTextureRect(enemy.rectangles_dino_walk_left_[enemy.rectangles_index_dino_walk_]);
-//    dino.sprite_.setScale(7,7);
-//    dino.sprite_.setPosition(400, -575);
-//    window.draw(dino.sprite_);
-
-//    handle_dino(dino, enemy, player, window);
-//    if(shaking_clock.getElapsedTime().asMilliseconds() > 3000)
-//    {
-//        shaking_clock.restart();
-
-//        shaking = !shaking;
-
-//    }
-
         for(DinoEnemyClass &dino : dinos){
 
             if(!dino.enemy_dead_){
@@ -93,7 +68,7 @@ void level_two(sf::RenderWindow &window,
             if(dino.enemy_hp_ <= 0)
             {
                 dino.enemy_dead_ = true;
-                gold_collected = false;
+                dino.gold_collected_ = false;
                 player.first_hit_gold = true;
                 dino.phase_clock_.restart();
             }
@@ -163,7 +138,7 @@ void level_two(sf::RenderWindow &window,
 
             if(cleopatra.enemy_hp_ <= 0)
             {
-                gold_collected = false;
+                cleopatra.gold_collected_ = false;
                 player.first_hit_gold = true;
             }
         }

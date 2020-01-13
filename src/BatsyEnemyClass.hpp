@@ -5,8 +5,8 @@ using namespace sf;
 
 class BatsyEnemyClass : public RealEnemyClass{
 public:
-    BatsyEnemyClass(Sprite sprite, Sprite sonic_sprite, double x_pos, double y_pos, int plat_left, int plat_right)
-     : RealEnemyClass(sprite, x_pos, y_pos, plat_left, plat_right), sonic_sprite_(sonic_sprite){
+    BatsyEnemyClass(Sprite sprite, Sprite sonic_sprite, Sprite gold_sprite, double x_pos, double y_pos, int plat_left, int plat_right)
+     : RealEnemyClass(sprite, gold_sprite, x_pos, y_pos, plat_left, plat_right), sonic_sprite_(sonic_sprite){
 
         sonic_sprite_.setPosition(x_pos_, y_pos_);
         sonic_damage_ = 10;

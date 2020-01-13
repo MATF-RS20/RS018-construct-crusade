@@ -17,6 +17,8 @@ Clock witch_uniform_clock;
 
 int main(){
 
+
+
     //create the main window
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Construct Crusade!");
 
@@ -52,7 +54,7 @@ int main(){
     Sprite shooting_sprite(construct_tex, IntRect(26, 152, 4, 4));
 
     //making a player object
-    PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, 0, -2300);
+    PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, 0, 400);
 
     //PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, -4800, 500);
 
@@ -134,29 +136,27 @@ int main(){
 
     std::vector<BatsyEnemyClass> bats;
 
-    //create the level
-    init_platforms_and_enemies(big_platforms, player, platform_sprite, imps, witches, bats, imp_sprite, fireball_sprite, witch_sprite, poison_sprite, batsy_sprite, sonic_sprite, platform_sprite_level_1);
-
-    Texture minotaur_tex;
-    minotaur_tex.loadFromFile("assets/images/minotaur.png");
-
-    Sprite minotaur_sprite(minotaur_tex, IntRect(27, 22, 53, 42));
-
-    MinotaurEnemyClass minos(minotaur_sprite,
-                             big_platforms[player.num_of_platforms_ - 1].platform_right_ - 300,
-                             big_platforms[player.num_of_platforms_ - 1].platform_top_ - 236, //176
-                             big_platforms[player.num_of_platforms_ - 1].platform_left_,
-                             big_platforms[player.num_of_platforms_ - 1].platform_right_);
-    minos.phase_delta_ = 10000;
-
     Texture gold;
     gold.loadFromFile("assets/images/money.png");
 
     Sprite gold_sprite(gold, IntRect(75,125,25,25));
 
-    //create the level
-    init_platforms_and_enemies(big_platforms, player, platform_sprite, imps, witches, imp_sprite, fireball_sprite, witch_sprite, poison_sprite, gold_sprite);
 
+
+
+    //create the level
+    init_platforms_and_enemies(big_platforms, player, platform_sprite, imps, witches, bats, imp_sprite, fireball_sprite, witch_sprite, poison_sprite, batsy_sprite, sonic_sprite, platform_sprite_level_1, gold_sprite);
+    Texture minotaur_tex;
+    minotaur_tex.loadFromFile("assets/images/minotaur.png");
+
+    Sprite minotaur_sprite(minotaur_tex, IntRect(27, 22, 53, 42));
+
+    MinotaurEnemyClass minos(minotaur_sprite, gold_sprite,
+                             big_platforms[player.num_of_platforms_ - 1].platform_right_ - 300,
+                             big_platforms[player.num_of_platforms_ - 1].platform_top_ - 236, //176
+                             big_platforms[player.num_of_platforms_ - 1].platform_left_,
+                             big_platforms[player.num_of_platforms_ - 1].platform_right_);
+    minos.phase_delta_ = 10000;
     EnemyClass enemy{};
 
     Texture cleo;
@@ -441,26 +441,10 @@ int main(){
     if(level == 1){
 
 			level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches, bats, minos, gold_sprite);
-			
-            //prelaz iz nivoa 1 u nivo 2
-            level = 2;
-
-
-			if (!music.openFromFile("assets/music/end.ogg")){
-                std::cout << "we have failed at music" << std::endl; // error
-            }
-            music.setVolume(30);
-            music.setPlayingOffset(sf::seconds(2.f));
-            music.setLoop(true);
-            music.play();
-
-            player.num_of_platforms_ = 0;
-            init_platforms_level_2(big_platforms, player, platform_sprite, platform_sprite_cupcake, cleopatras, cleo_sprite, heart_sprite, dinos, dino_sprite, stone_sprite, gold_sprite);
-
-
 
             //prelaz iz nivoa 1 u nivo 2
 //            level = 2;
+//
 //
 //			if (!music.openFromFile("assets/music/end.ogg")){
 //                std::cout << "we have failed at music" << std::endl; // error
@@ -470,15 +454,31 @@ int main(){
 //            music.setLoop(true);
 //            music.play();
 //
-//            player.sprite_.setPosition(0, -500);
-//            big_platforms.clear();
-//
 //            player.num_of_platforms_ = 0;
-//            init_platforms_level_2(big_platforms, player, platform_sprite, platform_sprite_cupcake, cleopatras, cleo_sprite, heart_sprite, dinos, dino_sprite, stone_sprite);
+//            init_platforms_level_2(big_platforms, player, platform_sprite, platform_sprite_cupcake, cleopatras, cleo_sprite, heart_sprite, dinos, dino_sprite, stone_sprite, gold_sprite);
 //
-//
-//            player.platform_index_ = 6;
-//            player.platform_index_offset_ = 6;
+
+
+            //prelaz iz nivoa 1 u nivo 2
+            level = 2;
+
+			if (!music.openFromFile("assets/music/end.ogg")){
+                std::cout << "we have failed at music" << std::endl; // error
+            }
+            music.setVolume(30);
+            music.setPlayingOffset(sf::seconds(2.f));
+            music.setLoop(true);
+            music.play();
+
+            player.sprite_.setPosition(0, -500);
+            big_platforms.clear();
+
+            player.num_of_platforms_ = 0;
+            init_platforms_level_2(big_platforms, player, platform_sprite, platform_sprite_cupcake, cleopatras, cleo_sprite, heart_sprite, dinos, dino_sprite, stone_sprite, gold_sprite);
+
+
+            player.platform_index_ = 6;
+            player.platform_index_offset_ = 6;
 
     }
     else if(level == 2){

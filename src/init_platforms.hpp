@@ -36,11 +36,12 @@ void init_platforms_and_enemies(std::vector<BigPlatform> &big_platforms,
                                               big_platforms[player.num_of_platforms_-1].platform_right_));
         else if(rand() % 101 < 35 && j > 1)
             bats.push_back(BatsyEnemyClass(batsy_sprite,
-                                          sonic_sprite,
-                                           big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
-                                            big_platforms[player.num_of_platforms_-1].platform_top_ - 76,
-                                             big_platforms[player.num_of_platforms_-1].platform_left_,
-                                              big_platforms[player.num_of_platforms_-1].platform_right_));
+                                            sonic_sprite,
+                                             gold_sprite,
+                                              big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
+                                               big_platforms[player.num_of_platforms_-1].platform_top_ - 76,
+                                                big_platforms[player.num_of_platforms_-1].platform_left_,
+                                                 big_platforms[player.num_of_platforms_-1].platform_right_));
 
     }
 
@@ -51,14 +52,15 @@ void init_platforms_and_enemies(std::vector<BigPlatform> &big_platforms,
         player.num_of_platforms_++;
 
         if(rand() % 101 < 25)
-            imps.push_back(ImpEnemyClass(fireball_sprite, imp_sprite, big_platforms[player.num_of_platforms_-1].platform_right_ - 100, big_platforms[player.num_of_platforms_-1].platform_top_ - 60, big_platforms[player.num_of_platforms_-1].platform_left_, big_platforms[player.num_of_platforms_-1].platform_right_));
+            imps.push_back(ImpEnemyClass(fireball_sprite, imp_sprite, gold_sprite, big_platforms[player.num_of_platforms_-1].platform_right_ - 100, big_platforms[player.num_of_platforms_-1].platform_top_ - 60, big_platforms[player.num_of_platforms_-1].platform_left_, big_platforms[player.num_of_platforms_-1].platform_right_));
         else if(rand() % 101 < 25 && j > 1)
             bats.push_back(BatsyEnemyClass(batsy_sprite,
-                                          sonic_sprite,
-                                           big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
-                                            big_platforms[player.num_of_platforms_-1].platform_top_ - 76,
-                                             big_platforms[player.num_of_platforms_-1].platform_left_,
-                                              big_platforms[player.num_of_platforms_-1].platform_right_));
+                                            sonic_sprite,
+                                             gold_sprite,
+                                              big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
+                                               big_platforms[player.num_of_platforms_-1].platform_top_ - 76,
+                                                big_platforms[player.num_of_platforms_-1].platform_left_,
+                                                 big_platforms[player.num_of_platforms_-1].platform_right_));
     }
 
     //level 1 - height -200 - width from 4000 to 0
@@ -67,14 +69,15 @@ void init_platforms_and_enemies(std::vector<BigPlatform> &big_platforms,
         big_platforms.push_back(BigPlatform(platform_distance*j, level_1_height, 8 + rand() % 3, platform_sprite_level_1, 3));
         player.num_of_platforms_++;
         if(rand() % 101 < 25)
-            imps.push_back(ImpEnemyClass(fireball_sprite, imp_sprite, big_platforms[player.num_of_platforms_-1].platform_right_ - 100, big_platforms[player.num_of_platforms_-1].platform_top_ - 60, big_platforms[player.num_of_platforms_-1].platform_left_, big_platforms[player.num_of_platforms_-1].platform_right_));
+            imps.push_back(ImpEnemyClass(fireball_sprite, imp_sprite, gold_sprite, big_platforms[player.num_of_platforms_-1].platform_right_ - 100, big_platforms[player.num_of_platforms_-1].platform_top_ - 60, big_platforms[player.num_of_platforms_-1].platform_left_, big_platforms[player.num_of_platforms_-1].platform_right_));
         else if(rand() % 101 < 25 && j > 1)
             bats.push_back(BatsyEnemyClass(batsy_sprite,
-                                          sonic_sprite,
-                                           big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
-                                            big_platforms[player.num_of_platforms_-1].platform_top_ - 76,
-                                             big_platforms[player.num_of_platforms_-1].platform_left_,
-                                              big_platforms[player.num_of_platforms_-1].platform_right_));
+                                            sonic_sprite,
+                                             gold_sprite,
+                                              big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
+                                               big_platforms[player.num_of_platforms_-1].platform_top_ - 76,
+                                                big_platforms[player.num_of_platforms_-1].platform_left_,
+                                                 big_platforms[player.num_of_platforms_-1].platform_right_));
     }
 
     //stairs to level 0

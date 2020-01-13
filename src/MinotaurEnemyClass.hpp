@@ -6,8 +6,8 @@ using namespace sf;
 
 class MinotaurEnemyClass : public RealEnemyClass{
 public:
-    MinotaurEnemyClass(Sprite sprite, double x_pos, double y_pos, int plat_left, int plat_right)
-     : RealEnemyClass(sprite, x_pos, y_pos, plat_left, plat_right){
+    MinotaurEnemyClass(Sprite sprite, Sprite gold_sprite, double x_pos, double y_pos, int plat_left, int plat_right)
+     : RealEnemyClass(sprite, gold_sprite, x_pos, y_pos, plat_left, plat_right){
 
         attack_mode_ = 3;
         choose_attack_ = true;

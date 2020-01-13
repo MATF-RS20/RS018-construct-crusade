@@ -318,20 +318,20 @@ void handle_cleo(CleopatraEnemyClass &cleo, EnemyClass &enemy, PlayerClass &play
             }
             //std::cout << cleo.facing_left_ << std::endl;
             if(cleo.facing_left_){
-                cleo.heart_sprite_.move(Vector2f(-1, 0.0));
+                cleo.heart_sprite_.move(Vector2f(-2, 0.0));
 
 
                 cleo.sprite_.setTextureRect(enemy.rectangles_cleo_attack_[2 + enemy.rectangles_index_cleo_attack_]);
                 cleo.heart_sprite_.setTextureRect(enemy.rectangles_cleo_attack_[4 + enemy.rectangles_index_cleo_attack_]);
             }else{
-                cleo.heart_sprite_.move(Vector2f(1, 0.0));
+                cleo.heart_sprite_.move(Vector2f(2, 0.0));
 
 
                 cleo.sprite_.setTextureRect(enemy.rectangles_cleo_attack_[enemy.rectangles_index_cleo_attack_]);
                 cleo.heart_sprite_.setTextureRect(enemy.rectangles_cleo_attack_[4 + enemy.rectangles_index_cleo_attack_]);
             }
             if(cleo.first_hit_pulsing_ && player.sprite_.getGlobalBounds().intersects(cleo.heart_sprite_.getGlobalBounds())){
-                player.construct_hp_ -= 10;
+                player.construct_hp_ -= 10*(enemy.rectangles_index_cleo_attack_ != 0);
                 cleo.first_hit_pulsing_ = false;
             }
         window.draw(cleo.heart_sprite_);
@@ -341,7 +341,7 @@ void handle_cleo(CleopatraEnemyClass &cleo, EnemyClass &enemy, PlayerClass &play
             cleo.sprite_.setTextureRect(enemy.rectangles_cleo_death_[6*(cleo.facing_left_) + enemy.rectangles_index_cleo_death_]);
 
         if(enemy.rectangles_index_cleo_death_ == 0 && ind_dead_sound_cleo){
-            //cleo_sound.stop();
+            cleo_sound.stop();
             cleo_sound.play();
             ind_dead_sound_cleo = false;
         }
