@@ -6,6 +6,7 @@
 using namespace sf;
 
 extern bool shaking;
+extern bool gold_collected;
 extern Clock shaking_clock;
 
 void level_two(sf::RenderWindow &window,
@@ -18,10 +19,14 @@ void level_two(sf::RenderWindow &window,
                std::vector<DinoEnemyClass> &dinos)
 {
 
-    //iscrtaj platforme za nivo 2
-    for(auto bp : big_platforms_2)
-        for(auto plat : bp.platforms_)
-            window.draw(plat.sprite_);
+
+    //draw platforms that are in the constructs area
+    for(auto bp : big_platforms_2){
+            for(const PlatformClass &plat : bp.platforms_)
+                window.draw(plat.sprite_);
+    }
+
+    draw_player_hp_mp(window, player, hp_sprite);
 
     //cleopatra.sprite_.setTextureRect(enemy.rectangles_cleo_death_[enemy.rectangles_index_cleo_death_]);
 //    handle_cleo(cleopatra, enemy, player, window);
@@ -76,6 +81,7 @@ void level_two(sf::RenderWindow &window,
             handle_dino(dino, enemy, player, window);
             dino.sprite_.setScale(7,7);
             handle_dino(dino, enemy, player, window);
+            draw_dino_hp(window, dino, hp_sprite);
             window.draw(dino.sprite_);
             if(dino.attacking_)
             {
@@ -86,10 +92,14 @@ void level_two(sf::RenderWindow &window,
             if(dino.enemy_hp_ <= 0)
             {
                 dino.enemy_dead_ = true;
+                gold_collected = false;
+                player.first_hit_gold = true;
+                dino.phase_clock_.restart();
             }
         }
         else
         {
+            if(dino.phase_clock_.getElapsedTime().asMilliseconds() < dino.phase_delta_){
             if(dino.facing_left_)
             {
                 dino.sprite_.setTextureRect(IntRect(100,  0, 27, 25));
@@ -97,8 +107,24 @@ void level_two(sf::RenderWindow &window,
             }
             else
             {
+
                 dino.sprite_.setTextureRect(IntRect(100, 25, 27, 25));
                 window.draw(dino.sprite_);
+            }
+            }
+
+            dino.gold_sprite_.setScale(3,3);
+            drop_gold(dino.gold_sprite_, dino);
+            if(!dino.gold_collected_)
+                window.draw(dino.gold_sprite_);
+
+            if(player.first_hit_gold && player.sprite_.getGlobalBounds().intersects(dino.gold_sprite_.getGlobalBounds()))
+            {
+                dino.gold_collected_ = true;
+                player.first_hit_gold = false;
+                player.player_gold += 300;
+                std::cout << player.player_gold << std::endl;
+
             }
 
         }
@@ -133,7 +159,35 @@ void level_two(sf::RenderWindow &window,
             handle_cleo(cleopatra, enemy, player, window);
             draw_cleopatra_hp(window, cleopatra, hp_sprite);
             window.draw(cleopatra.sprite_);
+
+            if(cleopatra.enemy_hp_ <= 0)
+            {
+                gold_collected = false;
+                player.first_hit_gold = true;
+            }
         }
+        else
+        {
+
+            cleopatra.gold_sprite_.setScale(3,3);
+            drop_gold(cleopatra.gold_sprite_, cleopatra);
+
+            if(!cleopatra.gold_collected_){
+                window.draw(cleopatra.gold_sprite_);
+            }
+
+            if(player.first_hit_gold && player.sprite_.getGlobalBounds().intersects(cleopatra.gold_sprite_.getGlobalBounds()))
+            {
+                cleopatra.gold_collected_ = true;
+                player.first_hit_gold = false;
+                player.player_gold += 100;
+                std::cout << player.player_gold << std::endl;
+
+            }
+
+        }
+
+
 
     }
 

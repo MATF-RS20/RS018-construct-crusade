@@ -354,6 +354,7 @@ void handle_dino(DinoEnemyClass &dino, EnemyClass &enemy, PlayerClass &player, s
                 dino.stone_sprite_.setPosition(dino.sprite_.getPosition().x +(dino.facing_left_)*dino.sprite_.getGlobalBounds().width,
                                                 dino.sprite_.getPosition().y
                                                + dino.sprite_.getGlobalBounds().height - 25 );
+                dino.first_hit_stoning_ = true;
             }
             else{
                 shaking = false;
@@ -369,6 +370,10 @@ void handle_dino(DinoEnemyClass &dino, EnemyClass &enemy, PlayerClass &player, s
 
             }
         dino.stone_sprite_.setScale(2,2);
+        if(dino.first_hit_stoning_ && dino.stone_sprite_.getGlobalBounds().intersects(player.sprite_.getGlobalBounds())){
+            dino.first_hit_stoning_ = false;
+            player.construct_hp_ -= 20;
+        }
 
     }
 
@@ -383,6 +388,13 @@ void handle_dino(DinoEnemyClass &dino, EnemyClass &enemy, PlayerClass &player, s
 //        window.draw(stone_sprite);
 
 
+
+}
+
+void drop_gold(Sprite &gold_sprite, RealEnemyClass &enemy){
+
+    enemy.gold_sprite_.setPosition(enemy.sprite_.getPosition().x,
+                                                enemy.sprite_.getPosition().y);
 
 }
 

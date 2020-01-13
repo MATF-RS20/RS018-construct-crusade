@@ -7,8 +7,8 @@ using namespace sf;
 
 class WitchEnemyClass : public RealEnemyClass{
 public:
-    WitchEnemyClass(Sprite sprite, Sprite poison_sprite, double x_pos, double y_pos, int plat_left, int plat_right)
-     : RealEnemyClass(sprite, x_pos, y_pos, plat_left, plat_right), poison_sprite_(poison_sprite){
+    WitchEnemyClass(Sprite sprite, Sprite poison_sprite, Sprite gold_sprite, double x_pos, double y_pos, int plat_left, int plat_right)
+     : RealEnemyClass(sprite, gold_sprite, x_pos, y_pos, plat_left, plat_right), poison_sprite_(poison_sprite){
 
         brooming_ = false;
         hexing_ = false;

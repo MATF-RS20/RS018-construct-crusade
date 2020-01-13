@@ -25,6 +25,8 @@ public:
         plasma_sprite.setScale(scale_, scale_);
         laser_sprite.setScale(scale_, scale_);
         on_ground_ = true;
+        player_gold = 0;
+
 
         //these help us keep track of platforms that are closest to our construct
         platform_index_ = 3;
@@ -222,12 +224,15 @@ public:
     bool laser_;
     bool left_collide_ = false;
     bool facing_left_;
+    bool first_hit_gold;
     double construct_hp_;
     double construct_mp_;
     int platform_index_;
     int num_of_platforms_;
     int platform_index_offset_;
     Clock big_time_;
+    int player_gold;
+
 private:
     void index_update(int delta_time, Clock &clock, int iters, int &index, int start_index){
 

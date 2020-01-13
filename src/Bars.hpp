@@ -1,6 +1,7 @@
 #ifndef BARS_HPP
 #define BARS_HPP
 #include "CleopatraEnemyClass.hpp"
+#include "DinoEnemyClass.hpp"
 extern double window_height;
 extern double window_width;
 
@@ -58,6 +59,22 @@ void draw_cleopatra_hp(RenderWindow &window, CleopatraEnemyClass &cleopatra, Spr
         hp_sprite.setTextureRect(IntRect(0, 42, 80, 9));
         hp_sprite.setScale(2, 2);
         hp_sprite.setPosition(cleopatra.sprite_.getPosition().x - 32, cleopatra.sprite_.getPosition().y - 20);
+        window.draw(hp_sprite);
+
+}
+
+void draw_dino_hp(RenderWindow &window, DinoEnemyClass &dino, Sprite hp_sprite){
+
+        if(dino.enemy_hp_ > 0){
+            hp_sprite.setTextureRect(IntRect(8, 143, 64*dino.enemy_hp_/100.0, 9));
+            hp_sprite.setScale(2, 2);
+            hp_sprite.setPosition(dino.sprite_.getPosition().x - 16, dino.sprite_.getPosition().y - 16);
+            window.draw(hp_sprite);
+        }
+
+        hp_sprite.setTextureRect(IntRect(0, 42, 80, 9));
+        hp_sprite.setScale(2, 2);
+        hp_sprite.setPosition(dino.sprite_.getPosition().x - 32, dino.sprite_.getPosition().y - 20);
         window.draw(hp_sprite);
 
 }

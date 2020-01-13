@@ -8,12 +8,14 @@ using namespace sf;
 //Real Enemy class where we store all the relevant information on enemies
 class RealEnemyClass : public GameObject{
 public:
-    RealEnemyClass(Sprite sprite, double x_pos, double y_pos, int plat_left, int plat_right)
-     : GameObject(x_pos, y_pos), sprite_(sprite), platform_left_(plat_left), platform_right_(plat_right){
+    RealEnemyClass(Sprite sprite, Sprite gold_sprite, double x_pos, double y_pos, int plat_left, int plat_right)
+     : GameObject(x_pos, y_pos), sprite_(sprite), gold_sprite_(gold_sprite), platform_left_(plat_left), platform_right_(plat_right){
 
         sprite_.setPosition(x_pos_, y_pos_);
         scale_ = 4;
         sprite_.setScale(scale_, scale_);
+
+        gold_collected_ = false;
 
         enemy_hp_ = 100;
         facing_left_ = true;
@@ -32,6 +34,8 @@ public:
      }
 
     Sprite sprite_;
+    Sprite gold_sprite_;
+    bool gold_collected_;
     double scale_;
     double x_vel_;
     double y_vel_;

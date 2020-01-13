@@ -8,6 +8,7 @@ double window_width = 1200;
 //this bools should be in player class
 bool RIP_construct = false;
 bool shooting = false;
+bool gold_collected = false;
 
 int level = 1;
 bool shaking = false;
@@ -128,8 +129,13 @@ int main(){
 
     Sprite minotaur_sprite(minotaur_tex, IntRect(27, 22, 53, 42));
 
+    Texture gold;
+    gold.loadFromFile("assets/images/money.png");
+
+    Sprite gold_sprite(gold, IntRect(75,125,25,25));
+
     //create the level
-    init_platforms_and_enemies(big_platforms, player, platform_sprite, imps, witches, imp_sprite, fireball_sprite, witch_sprite, poison_sprite);
+    init_platforms_and_enemies(big_platforms, player, platform_sprite, imps, witches, imp_sprite, fireball_sprite, witch_sprite, poison_sprite, gold_sprite);
 
     EnemyClass enemy{};
 
@@ -169,10 +175,9 @@ int main(){
 
     Sprite stone_sprite(stone, IntRect(0,100,25,25));
 
-    DinoEnemyClass dino(dino_sprite, stone_sprite, 400, -575, 0, 400);
+    DinoEnemyClass dino(dino_sprite, stone_sprite, gold_sprite, 400, -575, 0, 400);
 
     std::vector<DinoEnemyClass> dinos;
-
 
 
     //start the main loop
@@ -387,11 +392,12 @@ int main(){
     //deo specifican za svaki nivo
     if(level == 1){
 
-        level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches, minotaur_sprite);
+        level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches, minotaur_sprite, gold_sprite);
 
 
             //prelaz iz nivoa 1 u nivo 2
             level = 2;
+
 
 			if (!music.openFromFile("assets/music/end.ogg")){
                 std::cout << "we have failed at music" << std::endl; // error
@@ -405,7 +411,7 @@ int main(){
             big_platforms.clear();
 
             player.num_of_platforms_ = 0;
-            init_platforms_level_2(big_platforms, player, platform_sprite, platform_sprite_cupcake, cleopatras, cleo_sprite, heart_sprite, dinos, dino_sprite, stone_sprite);
+            init_platforms_level_2(big_platforms, player, platform_sprite, platform_sprite_cupcake, cleopatras, cleo_sprite, heart_sprite, dinos, dino_sprite, stone_sprite, gold_sprite);
 
 
             player.platform_index_ = 6;
@@ -433,6 +439,10 @@ int main(){
 //
 //    menu.draw(window);
 //
+    if(player.player_gold >= 1000){
+        player.construct_hp_ = 100;
+        player.player_gold -= 1000;
+    }
     window.display();
 
     }//while loop

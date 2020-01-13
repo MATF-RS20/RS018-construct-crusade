@@ -5,6 +5,7 @@
 extern bool RIP_construct;
 //so the fireball hits only once
 extern bool shooting;
+extern bool gold_collected;
 float witch_uniform_move;
 extern sf::Clock witch_uniform_clock;
 
@@ -16,7 +17,8 @@ void level_one(sf::RenderWindow &window,
                std::vector<ImpEnemyClass> &imps,
                Sprite &shooting_sprite,
                std::vector<WitchEnemyClass> &witches,
-               Sprite &minotaur_sprite
+               Sprite &minotaur_sprite,
+               Sprite &gold_sprite
                  ){
 
     minotaur_sprite.setScale(4, 4);
@@ -65,6 +67,8 @@ void level_one(sf::RenderWindow &window,
             if(imp.enemy_hp_ <= 0){
                 imp.first_hit_fireball_ = false;
                 imp.attacking_ = false;
+                gold_collected = false;
+                player.first_hit_gold = true;
             }
 
             if(imp.first_hit_fireball_ && imp.fireball_sprite_.getGlobalBounds().intersects(player.sprite_.getGlobalBounds())){
@@ -74,6 +78,27 @@ void level_one(sf::RenderWindow &window,
 
             draw_imp_hp(window, imp, hp_sprite);
             window.draw(imp.sprite_);
+        }
+        else
+        {
+
+            imp.gold_sprite_.setScale(3,3);
+            drop_gold(imp.gold_sprite_, imp);
+
+            if(!gold_collected){
+                window.draw(imp.gold_sprite_);
+
+            }
+
+            if(player.first_hit_gold && player.sprite_.getGlobalBounds().intersects(imp.gold_sprite_.getGlobalBounds()))
+            {
+                gold_collected = true;
+                player.first_hit_gold = false;
+                player.player_gold += 100;
+                std::cout << player.player_gold << std::endl;
+
+            }
+
         }
     }//for imps
     witch_uniform_move = witch_uniform_clock.getElapsedTime().asSeconds();
@@ -103,7 +128,33 @@ void level_one(sf::RenderWindow &window,
                     }
                 }
 
+                if(witch.enemy_hp_ <= 0){
+                    gold_collected = false;
+                    player.first_hit_gold = true;
+                }
+
             handle_witch(witch, enemy, player, window, witch_uniform_move);
+
+        }
+        else
+        {
+
+            witch.gold_sprite_.setScale(3,3);
+            drop_gold(witch.gold_sprite_, witch);
+
+            if(!gold_collected){
+                window.draw(witch.gold_sprite_);
+
+            }
+
+            if(player.first_hit_gold && player.sprite_.getGlobalBounds().intersects(witch.gold_sprite_.getGlobalBounds()))
+            {
+                gold_collected = true;
+                player.first_hit_gold = false;
+                player.player_gold += 300;
+                std::cout << player.player_gold << std::endl;
+
+            }
 
         }
 
