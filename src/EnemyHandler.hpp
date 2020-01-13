@@ -5,6 +5,7 @@
 #include "ImpEnemyClass.hpp"
 #include "CleopatraEnemyClass.hpp"
 #include "DinoEnemyClass.hpp"
+#include "MinotaurEnemyClass.hpp"
 
 using namespace sf;
 
@@ -232,7 +233,11 @@ void handle_witch(WitchEnemyClass &witch, EnemyClass &enemy, PlayerClass &player
 void handle_imp(EnemyClass &enemy, ImpEnemyClass &imp, PlayerClass &player, sf::RenderWindow &window){
 
     //attack phase checker - if the construct is near enough we switch to attack phase
-    if(imp.enemy_hp_ > 0 && player.sprite_.getPosition().x > imp.sprite_.getPosition().x - 400 && player.sprite_.getPosition().x < imp.sprite_.getPosition().x + 400){
+    if(imp.enemy_hp_ > 0
+        && player.sprite_.getPosition().x > imp.sprite_.getPosition().x - 400
+        && player.sprite_.getPosition().x < imp.sprite_.getPosition().x + 400
+        && player.sprite_.getPosition().y < imp.sprite_.getPosition().y + imp.sprite_.getGlobalBounds().height
+        && player.sprite_.getPosition().y > imp.sprite_.getPosition().y - 200){
         //facing left can only be updated on te first frame of the animation
         if(enemy.rectangles_index_attack_ == 0)
             imp.facing_left_ = player.sprite_.getPosition().x < imp.sprite_.getPosition().x;
@@ -337,7 +342,11 @@ void handle_cleo(CleopatraEnemyClass &cleo, EnemyClass &enemy, PlayerClass &play
 //DINO BAMBINO
 void handle_dino(DinoEnemyClass &dino, EnemyClass &enemy, PlayerClass &player, sf::RenderWindow &window){
 
-    if(dino.enemy_hp_ > 0 && player.sprite_.getPosition().x > dino.sprite_.getPosition().x - 400 && player.sprite_.getPosition().x < dino.sprite_.getPosition().x + 400){
+    if(dino.enemy_hp_ > 0
+       && player.sprite_.getPosition().x > dino.sprite_.getPosition().x - 400
+       && player.sprite_.getPosition().x < dino.sprite_.getPosition().x + 400
+       && player.sprite_.getPosition().y < dino.sprite_.getPosition().y + dino.sprite_.getGlobalBounds().height
+       && player.sprite_.getPosition().y > dino.sprite_.getPosition().y - 200){
         //facing left can only be updated on te first frame of the animation
         if(enemy.rectangles_index_dino_slam_ == 0)
             dino.facing_left_ = player.sprite_.getPosition().x < dino.sprite_.getPosition().x;
@@ -378,9 +387,109 @@ void handle_dino(DinoEnemyClass &dino, EnemyClass &enemy, PlayerClass &player, s
                    enemy.rectangles_index_dino_slam_, enemy.rectangles_index_dino_walk_);
     }
 
-//        stone_sprite.setPosition(20, -500);
-//        stone_sprite.move(0.5, 0);
-//        window.draw(stone_sprite);
+}
+
+//MINOTAUR
+void handle_minos(MinotaurEnemyClass &minos, EnemyClass &enemy, PlayerClass &player, sf::RenderWindow &window){
+
+    if(!minos.enemy_dead_ && minos.enemy_hp_ > 0){
+    if(player.sprite_.getPosition().x > minos.sprite_.getPosition().x - 400
+       && player.sprite_.getPosition().x < minos.sprite_.getPosition().x + 400
+       && player.sprite_.getPosition().y < minos.sprite_.getPosition().y + minos.sprite_.getGlobalBounds().height
+       && player.sprite_.getPosition().y > minos.sprite_.getPosition().y - 200){
+
+        if(enemy.rectangles_index_dino_slam_ == 0)
+            minos.facing_left_ = player.sprite_.getPosition().x < minos.sprite_.getPosition().x;
+
+        minos.attacking_ = true;
+
+    }else{
+        minos.attacking_ = false;
+    }
+
+    if(!minos.attacking_ && minos.enemy_hp_ > 0){
+        patrolling(minos, enemy.rectangles_minotaur_idle_,
+                    enemy.rectangles_minotaur_walk_left_,
+                     enemy.rectangles_minotaur_walk_right_,
+                     enemy.rectangles_index_minotaur_idle_,
+                      enemy.rectangles_index_minotaur_walk_);
+    }
+    }
+    if(minos.attacking_){
+        if(player.sprite_.getPosition().x + 50 < minos.sprite_.getPosition().x){
+            minos.facing_left_ = true;
+            minos.sprite_.setTextureRect(enemy.rectangles_minotaur_walk_left_[enemy.rectangles_index_minotaur_walk_]);
+            minos.sprite_.move(-1, 0);
+            minos.choose_attack_ = true;
+        }
+        else{
+            /*if(minos.choose_attack_){
+                minos.attack_mode_ = rand() % 4;
+                minos.choose_attack_ = false;
+            }*/
+
+            if(minos.attack_mode_ == 0){
+                minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_1_[9 + enemy.rectangles_index_minotaur_attack_1_]);
+            }
+            if(minos.attack_mode_ == 1){
+                minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_2_[5 + enemy.rectangles_index_minotaur_attack_2_]);
+            }
+            if(minos.attack_mode_ == 2){
+                minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_3_[6 + enemy.rectangles_index_minotaur_attack_3_]);
+            }
+            if(minos.attack_mode_ == 3){
+                minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_4_[9 + enemy.rectangles_index_minotaur_attack_4_]);
+            }
+
+            //minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_1_[9 + enemy.rectangles_index_minotaur_attack_1_]);
+            //minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_2_[5 + enemy.rectangles_index_minotaur_attack_2_]);
+            //minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_3_[6 + enemy.rectangles_index_minotaur_attack_3_]);
+            //minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_4_[9 + enemy.rectangles_index_minotaur_attack_4_]);
+
+
+            //minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_1_[enemy.rectangles_index_minotaur_attack_1_]);
+            //minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_2_[enemy.rectangles_index_minotaur_attack_2_]);
+            //minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_3_[enemy.rectangles_index_minotaur_attack_3_]);
+            //minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_4_[enemy.rectangles_index_minotaur_attack_4_]);
+
+        }
+
+
+    }
+
+
+
+    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_death_[enemy.rectangles_index_minotaur_death_]);
+    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_attack_4_[enemy.rectangles_index_minotaur_attack_4_]);
+
+    //minotaur_sprite.setPosition(minotaur_sprite.getPosition().x, minotaur_sprite.getPosition().y - 40);
+    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_attack_3_[enemy.rectangles_index_minotaur_attack_3_]);
+
+    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_attack_2_[enemy.rectangles_index_minotaur_attack_2_]);
+
+    //minotaur_sprite.setPosition(minotaur_sprite.getPosition().x, minotaur_sprite.getPosition().y - 60);
+    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_attack_1_[enemy.rectangles_index_minotaur_attack_1_]);
+
+    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_taunt_[enemy.rectangles_index_minotaur_taunt_]);
+    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_idle_[enemy.rectangles_index_minotaur_idle_]);
+    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_walk_right_[enemy.rectangles_index_minotaur_walk_]);
+
+
+    //LEFT
+    //minos.sprite_.setTextureRect(enemy.rectangles_minotaur_death_[6 + enemy.rectangles_index_minotaur_death_]);
+    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_attack_4_[9 + enemy.rectangles_index_minotaur_attack_4_]);
+
+    //minotaur_sprite.setPosition(minotaur_sprite.getPosition().x, minotaur_sprite.getPosition().y - 40);
+    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_attack_3_[6 + enemy.rectangles_index_minotaur_attack_3_]);
+
+    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_attack_2_[5 + enemy.rectangles_index_minotaur_attack_2_]);
+
+    //minotaur_sprite.setPosition(minotaur_sprite.getPosition().x, minotaur_sprite.getPosition().y - 60);
+    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_attack_1_[9 + enemy.rectangles_index_minotaur_attack_1_]);
+
+    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_taunt_[5 + enemy.rectangles_index_minotaur_taunt_]);
+    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_idle_[enemy.rectangles_index_minotaur_idle_]);
+    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_walk_left_[enemy.rectangles_index_minotaur_walk_]);
 
 
 

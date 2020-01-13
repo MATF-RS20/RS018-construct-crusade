@@ -61,7 +61,7 @@ void level_two(sf::RenderWindow &window,
                     }
                 }
 
-                if(shooting){
+                if(player.shooting_){
                     if(player.rectangles_index_shooting_ == 1){
                             dino.first_hit_shooting_ = true;
                     }
@@ -118,7 +118,7 @@ void level_two(sf::RenderWindow &window,
                             cleopatra.first_hit_laser_ = false;
                     }
                 }
-                if(shooting){
+                if(player.shooting_){
                     if(player.rectangles_index_shooting_ == 1){
                             cleopatra.first_hit_shooting_ = true;
                     }

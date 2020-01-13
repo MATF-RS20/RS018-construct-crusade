@@ -16,6 +16,9 @@ public:
 
         sprite_.setPosition(GameObject::x_pos_, GameObject::y_pos_);
 
+        RIP_construct_ = false;
+        shooting_ = false;
+
         construct_hp_ = 100.0;
         construct_mp_ = 100.0;
         laser_ = false;
@@ -27,7 +30,7 @@ public:
         on_ground_ = true;
 
         //these help us keep track of platforms that are closest to our construct
-        platform_index_ = 3;
+        platform_index_ = 37;
         platform_index_offset_ = 8;
         num_of_platforms_ = 0;
 
@@ -35,7 +38,7 @@ public:
         y_vel_ = 0;
 
         init_rectangles();
-    }
+     }
 
     //gain velocity if a button is pressed
     void update(int construct_move, std::vector<BigPlatform>& platforms, float uniform_time){
@@ -70,7 +73,7 @@ public:
         else if(on_ground_){
             rectangles_index_jump_ = 3;
         }
-        if(shooting){
+        if(shooting_){
             x_vel_ = 0;
             on_ground_ = true;
         }
@@ -222,12 +225,15 @@ public:
     bool laser_;
     bool left_collide_ = false;
     bool facing_left_;
+    bool RIP_construct_;
+    bool shooting_;
     double construct_hp_;
     double construct_mp_;
     int platform_index_;
     int num_of_platforms_;
     int platform_index_offset_;
     Clock big_time_;
+
 private:
     void index_update(int delta_time, Clock &clock, int iters, int &index, int start_index){
 
@@ -291,9 +297,9 @@ private:
         //energy ball after trace scatter index 6
         rectangles_laser_.push_back(IntRect(559, 0, 9, 9));
         //robot sprite while lasering index 7
-        rectangles_laser_.push_back(IntRect(534, 0, 14, 25));
+        rectangles_laser_.push_back(IntRect(533, 0, 15, 25));
         //robot sprite while lasering #2 index 8
-        rectangles_laser_.push_back(IntRect(534, 25, 14, 25));
+        rectangles_laser_.push_back(IntRect(533, 25, 15, 25));
 
         //laser trails white
         for(int i = 0; i < 9; i++)

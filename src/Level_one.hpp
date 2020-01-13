@@ -1,10 +1,11 @@
 #ifndef _LEVEL_ONE_HPP
 #define _LEVEL_ONE_HPP
 #include "EnemyHandler.hpp"
+#include "BatsyEnemyClass.hpp"
+#include "MinotaurEnemyClass.hpp"
 
-extern bool RIP_construct;
-//so the fireball hits only once
-extern bool shooting;
+using namespace sf;
+
 float witch_uniform_move;
 extern sf::Clock witch_uniform_clock;
 
@@ -16,21 +17,23 @@ void level_one(sf::RenderWindow &window,
                std::vector<ImpEnemyClass> &imps,
                Sprite &shooting_sprite,
                std::vector<WitchEnemyClass> &witches,
-               Sprite &minotaur_sprite
+               std::vector<BatsyEnemyClass> &bats,
+               MinotaurEnemyClass &minos
                  ){
 
-    minotaur_sprite.setScale(4, 4);
 
-    minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_idle_[enemy.rectangles_index_minotaur_idle_]);
-    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_walk_right_[enemy.rectangles_index_minotaur_walk_]);
-    minotaur_sprite.setPosition(0, 500 - 176);
-    window.draw(minotaur_sprite);
 
     //draw platforms that are in the constructs area
     for(int i = player.platform_index_ - player.platform_index_offset_; i <= player.platform_index_ + player.platform_index_offset_; i++){
             for(const PlatformClass &plat : big_platforms[i].platforms_)
                 window.draw(plat.sprite_);
     }
+
+    handle_minos(minos, enemy, player, window);
+    minos.sprite_.setScale(4, 4);
+    window.draw(minos.sprite_);
+
+
 
     for(ImpEnemyClass &imp : imps){
         if(!imp.enemy_dead_){
@@ -43,7 +46,7 @@ void level_one(sf::RenderWindow &window,
                         imp.first_hit_laser_ = false;
                 }
             }
-            if(shooting){
+            if(player.shooting_){
                 if(player.rectangles_index_shooting_ == 1){
                         imp.first_hit_shooting_ = true;
                 }
@@ -90,7 +93,7 @@ void level_one(sf::RenderWindow &window,
                             witch.first_hit_laser_ = false;
                     }
                 }
-                if(shooting){
+                if(player.shooting_){
                     if(player.rectangles_index_shooting_ == 1){
                             witch.first_hit_shooting_ = true;
                     }
@@ -113,6 +116,99 @@ void level_one(sf::RenderWindow &window,
     }
 
     witch_uniform_clock.restart();
+
+    //BATS
+    for(BatsyEnemyClass &batsy : bats){
+
+    if(!batsy.enemy_dead_ && batsy.enemy_hp_ > 0){
+
+        if(player.laser_){
+
+            if(batsy.first_hit_laser_ && player.laser_sprite_.getGlobalBounds().intersects(batsy.sprite_.getGlobalBounds())){
+                    batsy.enemy_hp_ -= 30;
+                    enemy.rectangles_index_batsy_death_ = 0;
+                    batsy.first_hit_laser_ = false;
+            }
+        }
+        if(player.shooting_){
+            if(player.rectangles_index_shooting_ == 1){
+                    batsy.first_hit_shooting_ = true;
+            }
+
+        //check for collision with the batsy
+        if(batsy.first_hit_shooting_ && shooting_sprite.getGlobalBounds().intersects(batsy.sprite_.getGlobalBounds())){
+                batsy.enemy_hp_ -= 10*!(player.rectangles_index_shooting_ == 1);
+                enemy.rectangles_index_batsy_death_ = 0;
+                batsy.first_hit_shooting_ = false;
+        }
+        }
+
+
+        //PATROLLING
+        if(batsy.sprite_.getPosition().x < batsy.platform_left_){
+                batsy.move_phase_++;
+        }
+
+        if(batsy.move_phase_ == 1 && batsy.sprite_.getPosition().x > batsy.platform_right_){
+                batsy.move_phase_++;
+        }
+
+        if(batsy.move_phase_ == 2){
+            batsy.move_phase_ = 0;
+        }
+
+        else if(batsy.move_phase_ == 0){
+            batsy.facing_left_ = true;
+            batsy.sprite_.setPosition(Vector2f(batsy.sprite_.getPosition().x-0.6f, batsy.sprite_.getPosition().y));
+            batsy.sprite_.setTextureRect(enemy.rectangles_batsy_fly_[5 + enemy.rectangles_index_batsy_fly_]);
+
+            batsy.sonic_sprite_.setPosition(Vector2f(batsy.sprite_.getPosition().x-0.6f - 140, batsy.sprite_.getPosition().y - 68));
+            batsy.sonic_sprite_.setTextureRect(enemy.rectangles_sonic_attack_[3 + enemy.rectangles_index_batsy_attack_]);
+
+        }else if(batsy.move_phase_ == 1){
+            batsy.facing_left_ = false;
+            batsy.sprite_.setPosition(Vector2f(batsy.sprite_.getPosition().x+0.6f, batsy.sprite_.getPosition().y));
+            batsy.sprite_.setTextureRect(enemy.rectangles_batsy_fly_[enemy.rectangles_index_batsy_fly_]);
+
+            batsy.sonic_sprite_.setPosition(Vector2f(batsy.sprite_.getPosition().x+0.6f + 56, batsy.sprite_.getPosition().y - 68));
+            batsy.sonic_sprite_.setTextureRect(enemy.rectangles_sonic_attack_[enemy.rectangles_index_batsy_attack_]);
+
+        }
+
+        if(!batsy.first_hit_sonic_ && batsy.phase_clock_.getElapsedTime().asMilliseconds() > batsy.phase_delta_){
+                batsy.first_hit_sonic_ = true;
+        }
+
+
+        if(batsy.first_hit_sonic_ && batsy.sonic_sprite_.getGlobalBounds().intersects(player.sprite_.getGlobalBounds())){
+                player.construct_hp_ -= batsy.sonic_damage_;
+                batsy.first_hit_sonic_ = false;
+                batsy.phase_clock_.restart();
+
+        }
+
+        draw_batsy_hp(window, batsy, hp_sprite);
+
+        batsy.sprite_.setScale(4, 4);
+        window.draw(batsy.sprite_);
+
+        batsy.sonic_sprite_.setScale(4, 4);
+        window.draw(batsy.sonic_sprite_);
+
+
+    }else if(!batsy.enemy_dead_ && batsy.enemy_hp_ <= 0){
+
+        batsy.sprite_.setTextureRect(enemy.rectangles_batsy_death_[6*(batsy.facing_left_) + enemy.rectangles_index_batsy_death_]);
+        batsy.sprite_.setScale(4, 4);
+        window.draw(batsy.sprite_);
+
+        if(enemy.rectangles_index_batsy_death_ == 5){
+            batsy.enemy_dead_ = true;
+        }
+
+    }
+
+    }
 
 }
 #endif // _LEVEL_ONE_HPP

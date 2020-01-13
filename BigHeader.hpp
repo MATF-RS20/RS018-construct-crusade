@@ -22,7 +22,10 @@
 #include "src/WitchEnemyClass.hpp"
 #include "src/CleopatraEnemyClass.hpp"
 #include "src/DinoEnemyClass.hpp"
+#include "src/BatsyEnemyClass.hpp"
+#include "src/MinotaurEnemyClass.hpp"
 #include "src/Menu.hpp"
+
 
 
 #endif // _BIG_HEADER_HPP

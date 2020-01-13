@@ -1,10 +1,11 @@
 #ifndef BARS_HPP
 #define BARS_HPP
 #include "CleopatraEnemyClass.hpp"
+#include "BatsyEnemyClass.hpp"
+
 extern double window_height;
 extern double window_width;
 
-//TODO maybe seporate this into a hpp file
 void draw_player_hp_mp(RenderWindow &window, PlayerClass &player, Sprite hp_sprite){
 
         //we draw the hp bar propartionally to the amount of hp left
@@ -62,5 +63,20 @@ void draw_cleopatra_hp(RenderWindow &window, CleopatraEnemyClass &cleopatra, Spr
 
 }
 
+void draw_batsy_hp(RenderWindow &window, BatsyEnemyClass &batsy, Sprite hp_sprite){
+
+        if(batsy.enemy_hp_ > 0){
+            hp_sprite.setTextureRect(IntRect(8, 29, 64*batsy.enemy_hp_/100.0, 9));
+            hp_sprite.setScale(1, 1);
+            hp_sprite.setPosition(batsy.sprite_.getPosition().x - 2, batsy.sprite_.getPosition().y - 10);
+            window.draw(hp_sprite);
+        }
+
+        hp_sprite.setTextureRect(IntRect(0, 42, 80, 9));
+        hp_sprite.setScale(1, 1);
+        hp_sprite.setPosition(batsy.sprite_.getPosition().x - 10, batsy.sprite_.getPosition().y - 11);
+        window.draw(hp_sprite);
+
+}
 
 #endif // BARS_HPP

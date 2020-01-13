@@ -5,9 +5,6 @@
 using namespace sf;
 double window_height = 600;
 double window_width = 1200;
-//this bools should be in player class
-bool RIP_construct = false;
-bool shooting = false;
 
 int level = 1;
 bool shaking = false;
@@ -55,7 +52,7 @@ int main(){
     Sprite shooting_sprite(construct_tex, IntRect(26, 152, 4, 4));
 
     //making a player object
-    PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, 0, 400);
+    PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, 0, -2300);
 
     //PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, -4800, 500);
 
@@ -77,11 +74,11 @@ int main(){
     Texture background_2;
     background_2.loadFromFile("assets/images/skyReverse.png");
 
-    Sprite backgroundSprite(background);
-    backgroundSprite.setScale(1, window_height/backgroundSprite.getLocalBounds().height);
+    Sprite backgroundSprite_2(background);
+    backgroundSprite_2.setScale(1, window_height/backgroundSprite_2.getLocalBounds().height);
 
-    Sprite backgroundSprite_2(background_2);
-    backgroundSprite_2.setScale(1, window_height/backgroundSprite.getLocalBounds().height);
+    Sprite backgroundSprite(background_2);
+    backgroundSprite.setScale(1, window_height/backgroundSprite.getLocalBounds().height);
 
     Texture background_level_2;
     background_level_2.loadFromFile("assets/images/mountain.png");
@@ -98,6 +95,10 @@ int main(){
     Texture platform_tex_cupcake;
     platform_tex_cupcake.loadFromFile("assets/images/cupcake.png");
     Sprite platform_sprite_cupcake(platform_tex_cupcake);
+
+    Texture platform_tex_level_1;
+    platform_tex_level_1.loadFromFile("assets/images/platforms_level_1.png");
+    Sprite platform_sprite_level_1(platform_tex_level_1);
 
     std::vector<BigPlatform> big_platforms;
 
@@ -123,13 +124,35 @@ int main(){
 
     std::vector<WitchEnemyClass> witches;
 
+    Texture batsy_tex;
+    batsy_tex.loadFromFile("assets/images/batsy.png");
+
+    Sprite batsy_sprite(batsy_tex, IntRect(1, 27, 13, 11));
+
+    Sprite sonic_sprite(batsy_tex, IntRect(32, 73, 26, 24));
+
+    std::vector<BatsyEnemyClass> bats;
+
+    //create the level
+    init_platforms_and_enemies(big_platforms, player, platform_sprite, imps, witches, bats, imp_sprite, fireball_sprite, witch_sprite, poison_sprite, batsy_sprite, sonic_sprite, platform_sprite_level_1);
+
     Texture minotaur_tex;
     minotaur_tex.loadFromFile("assets/images/minotaur.png");
 
     Sprite minotaur_sprite(minotaur_tex, IntRect(27, 22, 53, 42));
 
-    //create the level
-    init_platforms_and_enemies(big_platforms, player, platform_sprite, imps, witches, imp_sprite, fireball_sprite, witch_sprite, poison_sprite);
+
+    std::cout << big_platforms[player.num_of_platforms_ - 1].platform_right_ - 300 << std::endl;
+    std::cout << big_platforms[player.num_of_platforms_ - 1].platform_top_ - 176 << std::endl;
+    std::cout << big_platforms[player.num_of_platforms_ - 1].platform_right_ << std::endl;
+    std::cout << big_platforms[player.num_of_platforms_ - 1].platform_left_ << std::endl;
+
+    MinotaurEnemyClass minos(minotaur_sprite,
+                             big_platforms[player.num_of_platforms_ - 1].platform_right_ - 300,
+                             big_platforms[player.num_of_platforms_ - 1].platform_top_ - 236, //176
+                             big_platforms[player.num_of_platforms_ - 1].platform_left_,
+                             big_platforms[player.num_of_platforms_ - 1].platform_right_);
+    minos.phase_delta_ = 10000;
 
     EnemyClass enemy{};
 
@@ -211,6 +234,9 @@ int main(){
                             for(auto &imp : imps){
                                 imp.first_hit_laser_ = true;
                             }
+                            for(auto &batsy : bats){
+                                batsy.first_hit_laser_ = true;
+                            }
                             for(auto &cleopatra : cleopatras){
                                 cleopatra.first_hit_laser_ = true;
                             }
@@ -218,12 +244,13 @@ int main(){
                                 dino.first_hit_laser_ = true;
                             }
 
+
                             player.construct_mp_ = 0;
                             mana_thread.launch();
                         }
 
                     }if(event.key.code == sf::Keyboard::Q){
-                        shooting = true;
+                        player.shooting_ = true;
                     }
             }//key pressed
             if (event.type == sf::Event::KeyReleased){
@@ -240,7 +267,7 @@ int main(){
                     if(event.key.code == sf::Keyboard::S){
                         construct_move ^= 8;
                     }if(event.key.code == sf::Keyboard::Q){
-                        shooting = false;
+                        player.shooting_ = false;
                     }
             }//key released
 
@@ -272,7 +299,7 @@ int main(){
 
         }
         //draw construct based on the keys pressed - draw the corresponding animation
-        if(!RIP_construct){
+        if(!player.RIP_construct_){
 
             //if we needed more time to call update function the unifomr time is bigger and so we walk faster
             //slow computers benefit the most from this, but fast computers slow down a bit - so its uniform
@@ -287,7 +314,7 @@ int main(){
 
 
             //jumping animation
-            if(!player.on_ground_ && (construct_move & 1) && !shooting && !player.laser_){
+            if(!player.on_ground_ && (construct_move & 1) && !player.shooting_ && !player.laser_){
 
                 player.sprite_.setTextureRect(IntRect(433, 0, 9, 25));
                 //this functions draws the little animated trail when the robot is jumping
@@ -295,13 +322,13 @@ int main(){
                 draw_left_trail(player, window);
 
             }
-            else if(!player.on_ground_ && (construct_move & 2) && !shooting && !player.laser_){
+            else if(!player.on_ground_ && (construct_move & 2) && !player.shooting_ && !player.laser_){
 
                 player.sprite_.setTextureRect(IntRect(483, 0, 9, 25));
                 draw_right_trail(player, window);
 
             }
-            else if(!player.on_ground_ && !((construct_move & 1) || (construct_move & 2)) && !shooting && !player.laser_){
+            else if(!player.on_ground_ && !((construct_move & 1) || (construct_move & 2)) && !player.shooting_ && !player.laser_){
 
                 player.sprite_.setTextureRect(IntRect(477, 50, 21, 25));
                 draw_middle_trail(player, window);
@@ -332,12 +359,12 @@ int main(){
                 player.sprite_.setTextureRect(player.rectangles_death_[13*(player.facing_left_) + player.rectangles_index_death_]);
              //after the animation is done stop everything
                 if(player.rectangles_index_death_ == 13){
-                    RIP_construct = true;
+                    player.RIP_construct_ = true;
                     player.construct_mp_ = 0.0;
                 }
             }*/
 
-            if(shooting && player.construct_hp_ > 0){
+            if(player.shooting_ && player.construct_hp_ > 0){
                 //draw the cunstruct while shooting - specail case left or right
                 player.sprite_.setTextureRect(player.rectangles_shooting_[4*(player.facing_left_) + player.rectangles_index_shooting_]);
                 //draw and move the plasma bullet
@@ -387,29 +414,32 @@ int main(){
     //deo specifican za svaki nivo
     if(level == 1){
 
-        level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches, minotaur_sprite);
+
+
+        level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches, bats, minos);
+
 
 
             //prelaz iz nivoa 1 u nivo 2
-            level = 2;
-
-			if (!music.openFromFile("assets/music/end.ogg")){
-                std::cout << "we have failed at music" << std::endl; // error
-            }
-            music.setVolume(30);
-            music.setPlayingOffset(sf::seconds(2.f));
-            music.setLoop(true);
-            music.play();
-
-            player.sprite_.setPosition(0, -500);
-            big_platforms.clear();
-
-            player.num_of_platforms_ = 0;
-            init_platforms_level_2(big_platforms, player, platform_sprite, platform_sprite_cupcake, cleopatras, cleo_sprite, heart_sprite, dinos, dino_sprite, stone_sprite);
-
-
-            player.platform_index_ = 6;
-            player.platform_index_offset_ = 6;
+//            level = 2;
+//
+//			if (!music.openFromFile("assets/music/end.ogg")){
+//                std::cout << "we have failed at music" << std::endl; // error
+//            }
+//            music.setVolume(30);
+//            music.setPlayingOffset(sf::seconds(2.f));
+//            music.setLoop(true);
+//            music.play();
+//
+//            player.sprite_.setPosition(0, -500);
+//            big_platforms.clear();
+//
+//            player.num_of_platforms_ = 0;
+//            init_platforms_level_2(big_platforms, player, platform_sprite, platform_sprite_cupcake, cleopatras, cleo_sprite, heart_sprite, dinos, dino_sprite, stone_sprite);
+//
+//
+//            player.platform_index_ = 6;
+//            player.platform_index_offset_ = 6;
 
     }
     else if(level == 2){

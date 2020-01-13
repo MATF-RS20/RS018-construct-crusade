@@ -1,8 +1,6 @@
 #ifndef _CLEOPATRA_ENEMY_CLASS_HPP
 #define _CLEOPATRA_ENEMY_CLASS_HPP
 
-#include "RealEnemyClass.hpp"
-
 using namespace sf;
 
 class CleopatraEnemyClass : public RealEnemyClass{

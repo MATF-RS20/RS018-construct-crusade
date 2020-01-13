@@ -42,9 +42,19 @@ public:
 
         //minotaur
         Clock minotaur_idle_clock;
+        Clock minotaur_taunt_clock;
         Clock minotaur_walk_clock;
-        Clock minotaur_attack_clock;
+        Clock minotaur_attack_1_clock;
+        Clock minotaur_attack_2_clock;
+        Clock minotaur_attack_3_clock;
+        Clock minotaur_attack_4_clock;
         Clock minotaur_death_clock;
+
+        //batsy
+        Clock batsy_fly_clock;
+        Clock batsy_attack_clock;
+        Clock batsy_death_clock;
+
 
         while(true){
 
@@ -83,6 +93,17 @@ public:
             //minotaur
             index_update(delta_time, minotaur_idle_clock, 5, rectangles_index_minotaur_idle_);
             index_update(delta_time, minotaur_walk_clock, 8, rectangles_index_minotaur_walk_);
+            index_update(delta_time, minotaur_taunt_clock, 5, rectangles_index_minotaur_taunt_);
+            index_update(delta_time, minotaur_attack_1_clock, 9, rectangles_index_minotaur_attack_1_);
+            index_update(delta_time, minotaur_attack_2_clock, 5, rectangles_index_minotaur_attack_2_);
+            index_update(delta_time, minotaur_attack_3_clock, 6, rectangles_index_minotaur_attack_3_);
+            index_update(delta_time, minotaur_attack_4_clock, 9, rectangles_index_minotaur_attack_4_);
+            index_update(delta_time, minotaur_death_clock, 6, rectangles_index_minotaur_death_);
+
+            //batsy
+            index_update(delta_time, batsy_fly_clock, 5, rectangles_index_batsy_fly_);
+            index_update(25, batsy_attack_clock, 3, rectangles_index_batsy_attack_);
+            index_update(delta_time, batsy_death_clock, 6, rectangles_index_batsy_death_);
 
         }//while
 
@@ -161,6 +182,16 @@ public:
     int rectangles_index_minotaur_attack_4_;
     int rectangles_index_minotaur_death_;
 
+    //batsy parameters
+    std::vector<IntRect> rectangles_batsy_fly_;
+    std::vector<IntRect> rectangles_sonic_attack_;
+    std::vector<IntRect> rectangles_batsy_death_;
+
+    int rectangles_index_batsy_fly_;
+    int rectangles_index_batsy_attack_;
+    int rectangles_index_batsy_death_;
+
+
 private:
     void index_update(int delta_time, Clock &clock, int iters, int &index){
 
@@ -206,6 +237,11 @@ private:
         rectangles_index_minotaur_attack_3_ = 0;
         rectangles_index_minotaur_attack_4_ = 0;
         rectangles_index_minotaur_death_ = 0;
+
+        //batsy indices
+        rectangles_index_batsy_fly_ = 0;
+        rectangles_index_batsy_attack_ = 0;
+        rectangles_index_batsy_death_ = 0;
 
         for (int i = 0; i < 4; i++){
             rectangles_dino_slam_left.push_back(IntRect(150 , 25*i, 33, 25));
@@ -348,15 +384,114 @@ private:
             rectangles_witch_broom_.push_back(IntRect(291 - i*32, 354, 28, 27));
         }
 
+        //MINOTAUR
+
         //Minotaur idle
         for (int i = 0; i < 5; i++){
-            rectangles_minotaur_idle_.push_back(IntRect(27 + i*96, 20, 53, 44));
+            rectangles_minotaur_idle_.push_back(IntRect(27 + i*96, 5, 53, 59));
         }
 
         //Minotaur walk right
         for (int i = 0; i < 8; i++){
-            rectangles_minotaur_walk_right_.push_back(IntRect(25 + i*96, 116, 56, 44));
+            rectangles_minotaur_walk_right_.push_back(IntRect(25 + i*96, 101, 56, 59));
         }
+
+        //Minotaur walk left
+        for (int i = 0; i < 8; i++){
+            rectangles_minotaur_walk_left_.push_back(IntRect(14 + i*96, 1061, 60, 59)); //1076
+        }
+
+        //Minotaur taunt right
+        for (int i = 0; i < 5; i++){
+            rectangles_minotaur_taunt_.push_back(IntRect(28 + i*96, 197, 56, 59));
+        }
+
+        //Minotaur taunt left
+        for (int i = 0; i < 5; i++){
+            rectangles_minotaur_taunt_.push_back(IntRect(16 + i*96, 1157, 60, 59));
+        }
+
+        //Minotaur attack 1 right
+        for (int i = 0; i < 9; i++){
+            rectangles_minotaur_attack_1_.push_back(IntRect(5 + i*96, 293, 83, 65));
+        }
+
+        //Minotaur attack 1 left
+        for (int i = 0; i < 9; i++){
+            rectangles_minotaur_attack_1_.push_back(IntRect(8 + i*96, 1253, 83, 65));
+        }
+
+        //Minotaur attack 2 right
+        for (int i = 0; i < 5; i++){
+            rectangles_minotaur_attack_2_.push_back(IntRect(28 + i*96, 389, 65, 61));
+        }
+
+        //Minotaur attack 2 left
+        for (int i = 0; i < 5; i++){
+            rectangles_minotaur_attack_2_.push_back(IntRect(6 + i*96, 1349, 65, 67));
+        }
+
+        //Minotaur attack 3 right
+        for (int i = 0; i < 6; i++){
+            rectangles_minotaur_attack_3_.push_back(IntRect(23 + i*96, 485, 38, 66));
+        }
+
+        //Minotaur attack 3 left
+        for (int i = 0; i < 6; i++){
+            rectangles_minotaur_attack_3_.push_back(IntRect(34 + i*96, 1445, 38, 62));
+        }
+
+        //Minotaur attack 4 right
+        for (int i = 0; i < 9; i++){
+            rectangles_minotaur_attack_4_.push_back(IntRect(2 + i*96, 581, 94, 63));
+        }
+
+        //Minotaur attack 4 left
+        for (int i = 0; i < 9; i++){
+            rectangles_minotaur_attack_4_.push_back(IntRect(6 + i*96, 1541, 90, 63));
+        }
+
+        //Minotaur death right
+        for (int i = 0; i < 6; i++){
+            rectangles_minotaur_death_.push_back(IntRect(28 + i*96, 869, 60, 67));
+        }
+
+        //Minotaur death left
+        for (int i = 0; i < 6; i++){
+            rectangles_minotaur_death_.push_back(IntRect(8 + i*96, 1844, 60, 54));
+        }
+
+
+
+        //batsy
+
+        //right
+        for(int i = 0; i < 5; i++)
+            rectangles_batsy_fly_.push_back(IntRect(1 + i*16, 27, 15, 11));
+
+        //left
+        for(int i = 0; i < 5; i++)
+            rectangles_batsy_fly_.push_back(IntRect(64 - i*16, 244, 16, 11));
+
+        //right
+        for(int i = 0; i < 5; i++)
+            rectangles_batsy_death_.push_back(IntRect(0 + i*16, 53, 15, 19));
+        rectangles_batsy_death_.push_back(IntRect(0 + 4*16, 53, 15, 19));
+        //left
+        for(int i = 0; i < 5; i++)
+            rectangles_batsy_death_.push_back(IntRect(64 - i*16, 269, 15, 19));
+        rectangles_batsy_death_.push_back(IntRect(64 - 4*16, 53, 15, 19));
+
+        //sonic attack
+        //right
+        rectangles_sonic_attack_.push_back(IntRect(45, 91, 35, 43));
+        rectangles_sonic_attack_.push_back(IntRect(45, 135, 35, 43));
+        rectangles_sonic_attack_.push_back(IntRect(45, 177, 35, 43));
+
+        //left
+        rectangles_sonic_attack_.push_back(IntRect(0, 91, 35, 43));
+        rectangles_sonic_attack_.push_back(IntRect(0, 135, 35, 43));
+        rectangles_sonic_attack_.push_back(IntRect(0, 177, 35, 43));
 
 
     }
