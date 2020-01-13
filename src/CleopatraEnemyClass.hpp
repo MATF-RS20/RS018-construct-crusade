@@ -17,7 +17,7 @@ public:
 
         pulsing_ = false;
         pulsing_phase_ = 0;
-        pulsing_phase_delta_ = 5000;
+        //pulsing_phase_delta_ = 5000;
 
         pulsing_damage_ = 20;
 
