@@ -63,10 +63,36 @@ void level_one(sf::RenderWindow &window,
     }else if(!minos.enemy_dead_ && minos.enemy_hp_ <= 0){
         minos.sprite_.setTextureRect(enemy.rectangles_minotaur_death_[6*minos.facing_left_ + enemy.rectangles_index_minotaur_death_]);
         window.draw(minos.sprite_);
+
+        if(minos.enemy_hp_ <= 0){
+                    minos.gold_collected_ = false;
+                    player.first_hit_gold = true;
+        }
+
         if(enemy.rectangles_index_minotaur_death_ == 5){
             minos.enemy_dead_ = true;
         }
     }
+    else if(minos.enemy_dead_)
+    {
+            minos.gold_sprite_.setScale(3,3);
+            drop_gold(minos.gold_sprite_, minos);
+
+            if(!minos.gold_collected_){
+                window.draw(minos.gold_sprite_);
+
+            }
+
+            if(player.first_hit_gold && player.sprite_.getGlobalBounds().intersects(minos.gold_sprite_.getGlobalBounds()))
+            {
+                minos.gold_collected_ = true;
+                player.first_hit_gold = false;
+                player.player_gold += 300;
+                std::cout << player.player_gold << std::endl;
+
+            }
+    }
+
 
 
     for(ImpEnemyClass &imp : imps){
