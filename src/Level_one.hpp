@@ -19,8 +19,9 @@ void level_one(sf::RenderWindow &window,
                std::vector<WitchEnemyClass> &witches,
                std::vector<BatsyEnemyClass> &bats,
                MinotaurEnemyClass &minos,
-               Sprite &gold_sprite
-                 ){
+               Sprite &gold_sprite,
+               sf::Sound &coin_sound
+               ){
 
 
 
@@ -97,6 +98,7 @@ void level_one(sf::RenderWindow &window,
                 imp.gold_collected_ = true;
                 player.first_hit_gold = false;
                 player.player_gold += 100;
+                coin_sound.play();
                 std::cout << player.player_gold << std::endl;
 
             }
@@ -154,6 +156,7 @@ void level_one(sf::RenderWindow &window,
                 witch.gold_collected_ = true;
                 player.first_hit_gold = false;
                 player.player_gold += 300;
+                coin_sound.play();
                 std::cout << player.player_gold << std::endl;
 
             }

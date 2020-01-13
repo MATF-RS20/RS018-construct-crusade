@@ -17,7 +17,9 @@ void level_two(sf::RenderWindow &window,
                Sprite &hp_sprite,
                std::vector<CleopatraEnemyClass> &cleopatras,
                std::vector<DinoEnemyClass> &dinos,
-               sf::Sound &cleo_sound)
+               sf::Sound &cleo_sound,
+               sf::Sound &dino_sound,
+               sf::Sound &coin_sound)
 {
 
 
@@ -68,6 +70,7 @@ void level_two(sf::RenderWindow &window,
             if(dino.enemy_hp_ <= 0)
             {
                 dino.enemy_dead_ = true;
+                dino_sound.play();
                 dino.gold_collected_ = false;
                 player.first_hit_gold = true;
                 dino.phase_clock_.restart();
@@ -99,6 +102,7 @@ void level_two(sf::RenderWindow &window,
                 dino.gold_collected_ = true;
                 player.first_hit_gold = false;
                 player.player_gold += 300;
+                coin_sound.play();
                 std::cout << player.player_gold << std::endl;
 
             }
@@ -157,6 +161,7 @@ void level_two(sf::RenderWindow &window,
                 cleopatra.gold_collected_ = true;
                 player.first_hit_gold = false;
                 player.player_gold += 100;
+                coin_sound.play();
                 std::cout << player.player_gold << std::endl;
 
             }

@@ -183,7 +183,7 @@ int main(){
     music.setLoop(true);
     music.play();
 
-    //death sound
+    //death sound cleo
     sf::SoundBuffer buffer;
     if (!buffer.loadFromFile("assets/music/cleo_sound.wav"))
         std::cout << "we have failed at cleo music" << std::endl;
@@ -192,13 +192,42 @@ int main(){
     cleo_sound.setBuffer(buffer);
     cleo_sound.setVolume(100.0f);
 
+     //death sound dino
+    sf::SoundBuffer buffer1;
+    if (!buffer1.loadFromFile("assets/music/dino_sound.wav"))
+        std::cout << "we have failed at dino music" << std::endl;
+
+    sf::Sound dino_sound;
+    dino_sound.setBuffer(buffer1);
+    dino_sound.setVolume(100.0f);
+
+
     //laser sound
-    sf::Music laser_sound;
-    if (!laser_sound.openFromFile("assets/music/laser1.ogg")){
+    sf::SoundBuffer buffer2;
+    if (!buffer2.loadFromFile("assets/music/laser1.wav"))
         std::cout << "we have failed at laser music" << std::endl;
-    }
+
+    sf::Sound laser_sound;
+    laser_sound.setBuffer(buffer2);
     laser_sound.setVolume(100.0f);
-  //  laser_sound.play();
+
+    //shooting sound
+    sf::SoundBuffer buffer3;
+    if (!buffer3.loadFromFile("assets/music/lowRandom.wav"))
+        std::cout << "we have failed at shooting music" << std::endl;
+
+    sf::Sound shooting_sound;
+    shooting_sound.setBuffer(buffer3);
+    shooting_sound.setVolume(100.0f);
+
+    //money sound
+    sf::SoundBuffer buffer4;
+    if (!buffer4.loadFromFile("assets/music/coin_sound.wav"))
+        std::cout << "we have failed at coin music" << std::endl;
+
+    sf::Sound coin_sound;
+    coin_sound.setBuffer(buffer4);
+    coin_sound.setVolume(100.0f);
 
     //inicijalizacije za NIVO 2
 
@@ -271,6 +300,7 @@ int main(){
 
                     }if(event.key.code == sf::Keyboard::Q){
                         player.shooting_ = true;
+                        shooting_sound.play();
                     }
             }//key pressed
             if (event.type == sf::Event::KeyReleased){
@@ -440,7 +470,7 @@ int main(){
     //deo specifican za svaki nivo
     if(level == 1){
 
-			level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches, bats, minos, gold_sprite);
+			level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches, bats, minos, gold_sprite, coin_sound);
 
             //prelaz iz nivoa 1 u nivo 2
 //            level = 2;
@@ -483,7 +513,7 @@ int main(){
     }
     else if(level == 2){
 
-        level_two(window, big_platforms, player, enemy, shooting_sprite, hp_sprite, cleopatras, dinos, cleo_sound);
+        level_two(window, big_platforms, player, enemy, shooting_sprite, hp_sprite, cleopatras, dinos, cleo_sound, dino_sound, coin_sound);
 
 
 
