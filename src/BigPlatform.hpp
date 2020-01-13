@@ -43,18 +43,20 @@ public:
         else if(kind == 1){
             sprite_.setTextureRect(rectangles_[3]);
             platforms_.push_back(PlatformClass(sprite_, x_pos_, y_pos_));
+            platforms_[0].sprite_.setScale(2.7, 2.7);
             double platform_width = platforms_[0].sprite_.getGlobalBounds().width;
 
             //middle platforms
             sprite_.setTextureRect(rectangles_[4]);
             for(int i = 1; i < platform_length - 1; i++){
                 platforms_.push_back(PlatformClass(sprite_, x_pos_ + platform_width * i, y_pos_));
+                platforms_[i].sprite_.setScale(2.7, 2.7);
             }
 
             //right platform
             sprite_.setTextureRect(rectangles_[5]);
             platforms_.push_back(PlatformClass(sprite_, x_pos_ + (platform_length_ - 1)* platform_width, y_pos_));
-
+            platforms_[platform_length_ - 1].sprite_.setScale(2.7, 2.7);
             //set bounding parameters
             platform_top_ = y_pos_;
             platform_bot_ = y_pos_ + platforms_[0].sprite_.getGlobalBounds().height;

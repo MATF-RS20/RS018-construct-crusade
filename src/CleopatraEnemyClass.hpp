@@ -5,8 +5,8 @@ using namespace sf;
 
 class CleopatraEnemyClass : public RealEnemyClass{
 public:
-    CleopatraEnemyClass(Sprite sprite, Sprite heart_sprite, double x_pos, double y_pos, int plat_left, int plat_right)
-     : RealEnemyClass(sprite, x_pos, y_pos, plat_left, plat_right), heart_sprite_(heart_sprite){
+    CleopatraEnemyClass(Sprite sprite, Sprite heart_sprite, Sprite gold_sprite, double x_pos, double y_pos, int plat_left, int plat_right)
+     : RealEnemyClass(sprite, gold_sprite, x_pos, y_pos, plat_left, plat_right), heart_sprite_(heart_sprite){
         heart_sprite_.setPosition(x_pos_, y_pos_);
         scale_ = 4;
         //heart_sprite_.setScale(scale_, scale_);
@@ -15,7 +15,7 @@ public:
 
         pulsing_ = false;
         pulsing_phase_ = 0;
-        pulsing_phase_delta_ = 5000;
+        //pulsing_phase_delta_ = 5000;
 
         pulsing_damage_ = 20;
 
@@ -30,6 +30,7 @@ public:
     int pulsing_damage_;
 
     Sprite heart_sprite_;
+
 
 };
 #endif // _CLEOPATRA_ENEMY_CLASS_HPP

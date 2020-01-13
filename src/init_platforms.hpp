@@ -13,7 +13,8 @@ void init_platforms_and_enemies(std::vector<BigPlatform> &big_platforms,
                     Sprite &poison_sprite,
                     Sprite &batsy_sprite,
                     Sprite &sonic_sprite,
-                    Sprite &platform_sprite_level_1
+                    Sprite &platform_sprite_level_1,
+                    Sprite &gold_sprite
                     ){
 
     int platform_distance = 800;
@@ -28,6 +29,7 @@ void init_platforms_and_enemies(std::vector<BigPlatform> &big_platforms,
         if(rand() % 101 < 35 && j > 1)
             imps.push_back(ImpEnemyClass(fireball_sprite,
                                           imp_sprite,
+                                          gold_sprite,
                                            big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
                                             big_platforms[player.num_of_platforms_-1].platform_top_ - 60,
                                              big_platforms[player.num_of_platforms_-1].platform_left_,
@@ -47,6 +49,7 @@ void init_platforms_and_enemies(std::vector<BigPlatform> &big_platforms,
         big_platforms.push_back(BigPlatform(6.3*platform_distance + platform_distance/2.5*(pow((-1),j)),
                                             fixed_platform_height - j*platform_height_offset , 7 + rand() % 3, platform_sprite_level_1, 2));
         player.num_of_platforms_++;
+
         if(rand() % 101 < 25)
             imps.push_back(ImpEnemyClass(fireball_sprite, imp_sprite, big_platforms[player.num_of_platforms_-1].platform_right_ - 100, big_platforms[player.num_of_platforms_-1].platform_top_ - 60, big_platforms[player.num_of_platforms_-1].platform_left_, big_platforms[player.num_of_platforms_-1].platform_right_));
         else if(rand() % 101 < 25 && j > 1)
@@ -87,6 +90,7 @@ void init_platforms_and_enemies(std::vector<BigPlatform> &big_platforms,
 
     witches.push_back(WitchEnemyClass(witch_sprite,
                                       poison_sprite,
+                                      gold_sprite,
                                        big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
                                         big_platforms[player.num_of_platforms_-1].platform_top_ - 108,
                                          big_platforms[player.num_of_platforms_-1].platform_left_,
@@ -113,6 +117,7 @@ void init_platforms_and_enemies(std::vector<BigPlatform> &big_platforms,
 
     witches.push_back(WitchEnemyClass(witch_sprite,
                                       poison_sprite,
+                                      gold_sprite,
                                        big_platforms[player.num_of_platforms_-1].platform_right_ - 100,
                                         big_platforms[player.num_of_platforms_-1].platform_top_ - 108,
                                          big_platforms[player.num_of_platforms_-1].platform_left_,

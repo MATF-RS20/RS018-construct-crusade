@@ -6,13 +6,14 @@ using namespace sf;
 double window_height = 600;
 double window_width = 1200;
 
+bool ind_dead_sound_player = true;
+
 int level = 1;
 bool shaking = false;
 
 Clock random_clock;
 Clock shaking_clock;
 Clock witch_uniform_clock;
-
 
 int main(){
 
@@ -45,7 +46,6 @@ int main(){
 
     //laser sprite - for disintegrating
     Sprite laser_sprite(construct_tex);
-
     //construct shooting parameters
     Clock shooting_clock_main;
     float shooting_scaler = 0;
@@ -95,6 +95,7 @@ int main(){
     Texture platform_tex_cupcake;
     platform_tex_cupcake.loadFromFile("assets/images/cupcake.png");
     Sprite platform_sprite_cupcake(platform_tex_cupcake);
+    //platform_sprite_cupcake.setScale(50/21, 50/21);
 
     Texture platform_tex_level_1;
     platform_tex_level_1.loadFromFile("assets/images/platforms_level_1.png");
@@ -141,18 +142,20 @@ int main(){
 
     Sprite minotaur_sprite(minotaur_tex, IntRect(27, 22, 53, 42));
 
-
-    std::cout << big_platforms[player.num_of_platforms_ - 1].platform_right_ - 300 << std::endl;
-    std::cout << big_platforms[player.num_of_platforms_ - 1].platform_top_ - 176 << std::endl;
-    std::cout << big_platforms[player.num_of_platforms_ - 1].platform_right_ << std::endl;
-    std::cout << big_platforms[player.num_of_platforms_ - 1].platform_left_ << std::endl;
-
     MinotaurEnemyClass minos(minotaur_sprite,
                              big_platforms[player.num_of_platforms_ - 1].platform_right_ - 300,
                              big_platforms[player.num_of_platforms_ - 1].platform_top_ - 236, //176
                              big_platforms[player.num_of_platforms_ - 1].platform_left_,
                              big_platforms[player.num_of_platforms_ - 1].platform_right_);
     minos.phase_delta_ = 10000;
+
+    Texture gold;
+    gold.loadFromFile("assets/images/money.png");
+
+    Sprite gold_sprite(gold, IntRect(75,125,25,25));
+
+    //create the level
+    init_platforms_and_enemies(big_platforms, player, platform_sprite, imps, witches, imp_sprite, fireball_sprite, witch_sprite, poison_sprite, gold_sprite);
 
     EnemyClass enemy{};
 
@@ -180,6 +183,23 @@ int main(){
     music.setLoop(true);
     music.play();
 
+    //death sound
+    sf::SoundBuffer buffer;
+    if (!buffer.loadFromFile("assets/music/cleo_sound.wav"))
+        std::cout << "we have failed at cleo music" << std::endl;
+
+    sf::Sound cleo_sound;
+    cleo_sound.setBuffer(buffer);
+    cleo_sound.setVolume(100.0f);
+
+    //laser sound
+    sf::Music laser_sound;
+    if (!laser_sound.openFromFile("assets/music/laser1.ogg")){
+        std::cout << "we have failed at laser music" << std::endl;
+    }
+    laser_sound.setVolume(100.0f);
+  //  laser_sound.play();
+
     //inicijalizacije za NIVO 2
 
     //Dinoo bambinooo
@@ -192,10 +212,9 @@ int main(){
 
     Sprite stone_sprite(stone, IntRect(0,100,25,25));
 
-    DinoEnemyClass dino(dino_sprite, stone_sprite, 400, -575, 0, 400);
+    DinoEnemyClass dino(dino_sprite, stone_sprite, gold_sprite, 400, -575, 0, 400);
 
     std::vector<DinoEnemyClass> dinos;
-
 
 
     //start the main loop
@@ -226,6 +245,7 @@ int main(){
                     if(event.key.code == sf::Keyboard::S){
                         construct_move |= 8;
                     }if(event.key.code == sf::Keyboard::E){
+
                         if(player.construct_mp_ == 100 && player.on_ground_){
                             player.laser_ = true;
                             for(auto &witch : witches){
@@ -350,8 +370,14 @@ int main(){
             }
             //costruct animation while the laser is firing rectangles_laser_ index 7 and 8 represent the construct
             if(player.laser_){
+                if(player.rectangles_index_laser_ == 1 && ind_dead_sound_player){
+                    laser_sound.play();
+                    ind_dead_sound_player = false;
+                }
                 player.sprite_.setTextureRect(player.rectangles_laser_[9*(player.facing_left_) + 7 + player.rectangles_index_laser_ % 2]);
+
             }
+            ind_dead_sound_player = true;
 
             //death animation
             /*if(player.construct_hp_ <= 0){
@@ -414,9 +440,22 @@ int main(){
     //deo specifican za svaki nivo
     if(level == 1){
 
+			level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches, bats, minos, gold_sprite);
+			
+            //prelaz iz nivoa 1 u nivo 2
+            level = 2;
 
 
-        level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches, bats, minos);
+			if (!music.openFromFile("assets/music/end.ogg")){
+                std::cout << "we have failed at music" << std::endl; // error
+            }
+            music.setVolume(30);
+            music.setPlayingOffset(sf::seconds(2.f));
+            music.setLoop(true);
+            music.play();
+
+            player.num_of_platforms_ = 0;
+            init_platforms_level_2(big_platforms, player, platform_sprite, platform_sprite_cupcake, cleopatras, cleo_sprite, heart_sprite, dinos, dino_sprite, stone_sprite, gold_sprite);
 
 
 
@@ -444,7 +483,7 @@ int main(){
     }
     else if(level == 2){
 
-        level_two(window, big_platforms, player, enemy, shooting_sprite, hp_sprite, cleopatras, dinos);
+        level_two(window, big_platforms, player, enemy, shooting_sprite, hp_sprite, cleopatras, dinos, cleo_sound);
 
 
 
@@ -463,6 +502,10 @@ int main(){
 //
 //    menu.draw(window);
 //
+    if(player.player_gold >= 1000){
+        player.construct_hp_ = 100;
+        player.player_gold -= 1000;
+    }
     window.display();
 
     }//while loop
