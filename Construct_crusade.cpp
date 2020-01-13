@@ -183,7 +183,7 @@ int main(){
     music.setLoop(true);
     music.play();
 
-    //death sound
+    //death sound cleo
     sf::SoundBuffer buffer;
     if (!buffer.loadFromFile("assets/music/cleo_sound.wav"))
         std::cout << "we have failed at cleo music" << std::endl;
@@ -191,6 +191,16 @@ int main(){
     sf::Sound cleo_sound;
     cleo_sound.setBuffer(buffer);
     cleo_sound.setVolume(100.0f);
+
+     //death sound dino
+    sf::SoundBuffer buffer1;
+    if (!buffer1.loadFromFile("assets/music/dino_sound.wav"))
+        std::cout << "we have failed at cleo music" << std::endl;
+
+    sf::Sound dino_sound;
+    dino_sound.setBuffer(buffer1);
+    dino_sound.setVolume(100.0f);
+
 
     //laser sound
     sf::Music laser_sound;
@@ -483,7 +493,7 @@ int main(){
     }
     else if(level == 2){
 
-        level_two(window, big_platforms, player, enemy, shooting_sprite, hp_sprite, cleopatras, dinos, cleo_sound);
+        level_two(window, big_platforms, player, enemy, shooting_sprite, hp_sprite, cleopatras, dinos, cleo_sound, dino_sound);
 
 
 
