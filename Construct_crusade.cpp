@@ -54,7 +54,7 @@ int main(){
     Sprite shooting_sprite(construct_tex, IntRect(26, 152, 4, 4));
 
     //making a player object
-    PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, 0, 400);
+    PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, 0, -2300);
 
     //PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, -4800, 500);
 
@@ -183,7 +183,7 @@ int main(){
     music.setLoop(true);
     music.play();
 
-    //death sound
+    //death sound cleo
     sf::SoundBuffer buffer;
     if (!buffer.loadFromFile("assets/music/cleo_sound.wav"))
         std::cout << "we have failed at cleo music" << std::endl;
@@ -191,6 +191,16 @@ int main(){
     sf::Sound cleo_sound;
     cleo_sound.setBuffer(buffer);
     cleo_sound.setVolume(100.0f);
+
+     //death sound dino
+    sf::SoundBuffer buffer1;
+    if (!buffer1.loadFromFile("assets/music/dino_sound.wav"))
+        std::cout << "we have failed at cleo music" << std::endl;
+
+    sf::Sound dino_sound;
+    dino_sound.setBuffer(buffer1);
+    dino_sound.setVolume(100.0f);
+
 
     //laser sound
     sf::Music laser_sound;
@@ -445,7 +455,6 @@ int main(){
             //prelaz iz nivoa 1 u nivo 2
 //            level = 2;
 //
-//
 //			if (!music.openFromFile("assets/music/end.ogg")){
 //                std::cout << "we have failed at music" << std::endl; // error
 //            }
@@ -454,46 +463,20 @@ int main(){
 //            music.setLoop(true);
 //            music.play();
 //
+//            player.sprite_.setPosition(0, -500);
+//            big_platforms.clear();
+//
 //            player.num_of_platforms_ = 0;
 //            init_platforms_level_2(big_platforms, player, platform_sprite, platform_sprite_cupcake, cleopatras, cleo_sprite, heart_sprite, dinos, dino_sprite, stone_sprite, gold_sprite);
 //
-
-
-            //prelaz iz nivoa 1 u nivo 2
-            level = 2;
-
-			if (!music.openFromFile("assets/music/end.ogg")){
-                std::cout << "we have failed at music" << std::endl; // error
-            }
-            music.setVolume(30);
-            music.setPlayingOffset(sf::seconds(2.f));
-            music.setLoop(true);
-            music.play();
-
-            player.sprite_.setPosition(0, -500);
-            big_platforms.clear();
-
-            player.num_of_platforms_ = 0;
-            init_platforms_level_2(big_platforms, player, platform_sprite, platform_sprite_cupcake, cleopatras, cleo_sprite, heart_sprite, dinos, dino_sprite, stone_sprite, gold_sprite);
-
-
-            player.platform_index_ = 6;
-            player.platform_index_offset_ = 6;
+//
+//            player.platform_index_ = 6;
+//            player.platform_index_offset_ = 6;
 
     }
     else if(level == 2){
 
-        level_two(window, big_platforms, player, enemy, shooting_sprite, hp_sprite, cleopatras, dinos, cleo_sound);
-
-
-
-        //cleopatra.heart_sprite_.move(-1, 0);
-        //cleopatra.heart_sprite_.setTextureRect(enemy.rectangles_cleo_attack_[4 + enemy.rectangles_index_cleo_attack_]);
-        //window.draw(cleopatra.heart_sprite_);
-        //cleopatra.sprite_.setTextureRect(enemy.rectangles_cleo_attack_[2 + enemy.rectangles_index_cleo_attack_]);
-        //window.draw(cleopatra.sprite_);
-
-        //level_two(window, big_platforms, player, enemy, cleopatra, dinos, dino);
+        level_two(window, big_platforms, player, enemy, shooting_sprite, hp_sprite, cleopatras, dinos, cleo_sound, dino_sound);
 
     }
 
@@ -506,6 +489,7 @@ int main(){
         player.construct_hp_ = 100;
         player.player_gold -= 1000;
     }
+
     window.display();
 
     }//while loop
