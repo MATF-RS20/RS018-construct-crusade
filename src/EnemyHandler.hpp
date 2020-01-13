@@ -28,6 +28,9 @@ int offset_y_7 = 0;
 int offset_y_8 = 0;
 
 extern bool shaking;
+bool ind_dead_sound_cleo = true;
+extern sf::SoundBuffer buffer;
+
 
 void poison_drop(WitchEnemyClass &witch, PlayerClass &player, sf::RenderWindow &window, int scale, int offset_x, int offset_y, bool &first_hit){
 
@@ -284,7 +287,7 @@ void handle_imp(EnemyClass &enemy, ImpEnemyClass &imp, PlayerClass &player, sf::
     }
 }
 //MIMI MERCEDEZ
-void handle_cleo(CleopatraEnemyClass &cleo, EnemyClass &enemy, PlayerClass &player, sf::RenderWindow &window){
+void handle_cleo(CleopatraEnemyClass &cleo, EnemyClass &enemy, PlayerClass &player, sf::RenderWindow &window, sf::Sound &cleo_sound){
 
         //attack phase checker - if the construct is near enough we switch to attack phase
     if(cleo.enemy_hp_ > 0 && player.sprite_.getPosition().x > cleo.sprite_.getPosition().x - 400 && player.sprite_.getPosition().x < cleo.sprite_.getPosition().x + 400){
@@ -305,6 +308,7 @@ void handle_cleo(CleopatraEnemyClass &cleo, EnemyClass &enemy, PlayerClass &play
 
         if(cleo.attacking_){
             if(enemy.rectangles_index_cleo_attack_ == 0){
+                cleo.first_hit_pulsing_ = true;
                 cleo.heart_sprite_.setPosition(cleo.sprite_.getPosition().x, cleo.sprite_.getPosition().y);
             }
             //std::cout << cleo.facing_left_ << std::endl;
@@ -321,14 +325,25 @@ void handle_cleo(CleopatraEnemyClass &cleo, EnemyClass &enemy, PlayerClass &play
                 cleo.sprite_.setTextureRect(enemy.rectangles_cleo_attack_[enemy.rectangles_index_cleo_attack_]);
                 cleo.heart_sprite_.setTextureRect(enemy.rectangles_cleo_attack_[4 + enemy.rectangles_index_cleo_attack_]);
             }
+            if(cleo.first_hit_pulsing_ && player.sprite_.getGlobalBounds().intersects(cleo.heart_sprite_.getGlobalBounds())){
+                player.construct_hp_ -= 10;
+                cleo.first_hit_pulsing_ = false;
+            }
         window.draw(cleo.heart_sprite_);
     }
 
     if(!cleo.enemy_dead_ && cleo.enemy_hp_ <= 0){
             cleo.sprite_.setTextureRect(enemy.rectangles_cleo_death_[6*(cleo.facing_left_) + enemy.rectangles_index_cleo_death_]);
 
+        if(enemy.rectangles_index_cleo_death_ == 0 && ind_dead_sound_cleo){
+            //cleo_sound.stop();
+            cleo_sound.play();
+            ind_dead_sound_cleo = false;
+        }
+
         if(enemy.rectangles_index_cleo_death_ == 5){
             cleo.enemy_dead_ = true;
+            ind_dead_sound_cleo = true;
         }
 
     }

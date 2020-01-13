@@ -8,14 +8,13 @@ double window_width = 1200;
 //this bools should be in player class
 bool RIP_construct = false;
 bool shooting = false;
-
+bool ind_dead_sound_player = true;
 int level = 1;
 bool shaking = false;
 
 Clock random_clock;
 Clock shaking_clock;
 Clock witch_uniform_clock;
-
 
 int main(){
 
@@ -48,7 +47,6 @@ int main(){
 
     //laser sprite - for disintegrating
     Sprite laser_sprite(construct_tex);
-
     //construct shooting parameters
     Clock shooting_clock_main;
     float shooting_scaler = 0;
@@ -98,6 +96,7 @@ int main(){
     Texture platform_tex_cupcake;
     platform_tex_cupcake.loadFromFile("assets/images/cupcake.png");
     Sprite platform_sprite_cupcake(platform_tex_cupcake);
+    //platform_sprite_cupcake.setScale(50/21, 50/21);
 
     std::vector<BigPlatform> big_platforms;
 
@@ -157,6 +156,23 @@ int main(){
     music.setLoop(true);
     music.play();
 
+    //death sound
+    sf::SoundBuffer buffer;
+    if (!buffer.loadFromFile("assets/music/cleo_sound.wav"))
+        std::cout << "we have failed at cleo music" << std::endl;
+
+    sf::Sound cleo_sound;
+    cleo_sound.setBuffer(buffer);
+    cleo_sound.setVolume(100.0f);
+
+    //laser sound
+    sf::Music laser_sound;
+    if (!laser_sound.openFromFile("assets/music/laser1.ogg")){
+        std::cout << "we have failed at laser music" << std::endl;
+    }
+    laser_sound.setVolume(100.0f);
+  //  laser_sound.play();
+
     //inicijalizacije za NIVO 2
 
     //Dinoo bambinooo
@@ -203,6 +219,7 @@ int main(){
                     if(event.key.code == sf::Keyboard::S){
                         construct_move |= 8;
                     }if(event.key.code == sf::Keyboard::E){
+
                         if(player.construct_mp_ == 100 && player.on_ground_){
                             player.laser_ = true;
                             for(auto &witch : witches){
@@ -323,8 +340,14 @@ int main(){
             }
             //costruct animation while the laser is firing rectangles_laser_ index 7 and 8 represent the construct
             if(player.laser_){
+                if(player.rectangles_index_laser_ == 1 && ind_dead_sound_player){
+                    laser_sound.play();
+                    ind_dead_sound_player = false;
+                }
                 player.sprite_.setTextureRect(player.rectangles_laser_[9*(player.facing_left_) + 7 + player.rectangles_index_laser_ % 2]);
+
             }
+            ind_dead_sound_player = true;
 
             //death animation
             /*if(player.construct_hp_ <= 0){
@@ -414,7 +437,7 @@ int main(){
     }
     else if(level == 2){
 
-        level_two(window, big_platforms, player, enemy, shooting_sprite, hp_sprite, cleopatras, dinos);
+        level_two(window, big_platforms, player, enemy, shooting_sprite, hp_sprite, cleopatras, dinos, cleo_sound);
 
 
 

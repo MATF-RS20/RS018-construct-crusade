@@ -15,7 +15,8 @@ void level_two(sf::RenderWindow &window,
                Sprite &shooting_sprite,
                Sprite &hp_sprite,
                std::vector<CleopatraEnemyClass> &cleopatras,
-               std::vector<DinoEnemyClass> &dinos)
+               std::vector<DinoEnemyClass> &dinos,
+               sf::Sound &cleo_sound)
 {
 
     //iscrtaj platforme za nivo 2
@@ -130,7 +131,7 @@ void level_two(sf::RenderWindow &window,
                             cleopatra.first_hit_shooting_ = false;
                     }
                 }
-            handle_cleo(cleopatra, enemy, player, window);
+            handle_cleo(cleopatra, enemy, player, window, cleo_sound);
             draw_cleopatra_hp(window, cleopatra, hp_sprite);
             window.draw(cleopatra.sprite_);
         }
