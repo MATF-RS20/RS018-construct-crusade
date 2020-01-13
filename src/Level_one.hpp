@@ -30,10 +30,40 @@ void level_one(sf::RenderWindow &window,
                 window.draw(plat.sprite_);
     }
 
-    handle_minos(minos, enemy, player, window);
-    minos.sprite_.setScale(4, 4);
-    window.draw(minos.sprite_);
+    if(!minos.enemy_dead_ && minos.enemy_hp_ > 0){
+        //laser collision
+        if(player.laser_){
+                if(minos.first_hit_laser_ && player.laser_sprite_.getGlobalBounds().intersects(minos.sprite_.getGlobalBounds())){
+                        //if we hit the minos reduce his hp
+                        minos.enemy_hp_ -= 30;
+                        enemy.rectangles_index_death_ = 0;
+                        minos.first_hit_laser_ = false;
+                }
+            }
+            if(player.shooting_){
+                if(player.rectangles_index_shooting_ == 1){
+                        minos.first_hit_shooting_ = true;
+                }
 
+                //check for collision with the minos
+                if(minos.first_hit_shooting_ && shooting_sprite.getGlobalBounds().intersects(minos.sprite_.getGlobalBounds())){
+                        minos.enemy_hp_ -= 10*!(player.rectangles_index_shooting_ == 1);
+                        enemy.rectangles_index_death_ = 0;
+                        minos.first_hit_shooting_ = false;
+                }
+            }
+
+
+        handle_minos(minos, enemy, player, window);
+        minos.sprite_.setScale(4, 4);
+        window.draw(minos.sprite_);
+    }else if(!minos.enemy_dead_ && minos.enemy_hp_ <= 0){
+        minos.sprite_.setTextureRect(enemy.rectangles_minotaur_death_[6*minos.facing_left_ + enemy.rectangles_index_minotaur_death_]);
+        window.draw(minos.sprite_);
+        if(enemy.rectangles_index_minotaur_death_ == 5){
+            minos.enemy_dead_ = true;
+        }
+    }
 
 
     for(ImpEnemyClass &imp : imps){

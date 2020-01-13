@@ -440,16 +440,6 @@ private:
         for (int i = 0; i < 6; i++){
             rectangles_minotaur_attack_3_.push_back(IntRect(34 + i*96, 1445, 38, 62));
         }
-/*
-        //Minotaur attack 4 right
-        for (int i = 0; i < 9; i++){
-            rectangles_minotaur_attack_4_.push_back(IntRect(2 + i*96, 581, 94, 63));
-        }
-
-        //Minotaur attack 4 left
-        for (int i = 0; i < 9; i++){
-            rectangles_minotaur_attack_4_.push_back(IntRect(6 + i*96, 1541, 90, 63));
-        }*/
 
          //Minotaur attack 4 right
         for (int i = 3; i < 9; i++){
@@ -463,12 +453,12 @@ private:
 
         //Minotaur death right
         for (int i = 0; i < 6; i++){
-            rectangles_minotaur_death_.push_back(IntRect(28 + i*96, 869, 60, 67));
+            rectangles_minotaur_death_.push_back(IntRect(28 + i*96, 854, 60, 82));
         }
 
         //Minotaur death left
         for (int i = 0; i < 6; i++){
-            rectangles_minotaur_death_.push_back(IntRect(8 + i*96, 1844, 60, 54));
+            rectangles_minotaur_death_.push_back(IntRect(8 + i*96, 1829, 60, 69));
         }
 
 

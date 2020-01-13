@@ -274,7 +274,7 @@ int main(){
                                 dino.first_hit_laser_ = true;
                             }
 
-
+                            minos.first_hit_laser_ = true;
                             player.construct_mp_ = 0;
                             mana_thread.launch();
                         }
