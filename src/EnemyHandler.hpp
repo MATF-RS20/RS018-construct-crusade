@@ -440,13 +440,15 @@ void handle_minos(MinotaurEnemyClass &minos, EnemyClass &enemy, PlayerClass &pla
             minos.facing_left_ = true;
             minos.sprite_.setTextureRect(enemy.rectangles_minotaur_walk_left_[enemy.rectangles_index_minotaur_walk_]);
             minos.sprite_.move(-1, 0);
-            minos.choose_attack_ = true;
+            minos.attack_clock_.restart();
+
         }
         else{
-            /*if(minos.choose_attack_){
-                minos.attack_mode_ = rand() % 4;
-                minos.choose_attack_ = false;
-            }*/
+
+            if(minos.attack_clock_.getElapsedTime().asMilliseconds() > minos.delta_attack_){
+                minos.attack_clock_.restart();
+                minos.attack_mode_ = (minos.attack_mode_ + 1) % 4;
+            }
 
             if(minos.attack_mode_ == 0){
                 minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_1_[9 + enemy.rectangles_index_minotaur_attack_1_]);
@@ -456,9 +458,11 @@ void handle_minos(MinotaurEnemyClass &minos, EnemyClass &enemy, PlayerClass &pla
             }
             if(minos.attack_mode_ == 2){
                 minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_3_[6 + enemy.rectangles_index_minotaur_attack_3_]);
+                    shaking = enemy.rectangles_index_minotaur_attack_3_ == 5;
             }
             if(minos.attack_mode_ == 3){
-                minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_4_[9 + enemy.rectangles_index_minotaur_attack_4_]);
+                minos.sprite_.move(-0.2, 0);
+                minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_4_[6 + enemy.rectangles_index_minotaur_attack_4_]);
             }
 
             //minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_1_[9 + enemy.rectangles_index_minotaur_attack_1_]);
@@ -468,7 +472,7 @@ void handle_minos(MinotaurEnemyClass &minos, EnemyClass &enemy, PlayerClass &pla
 
 
             //minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_1_[enemy.rectangles_index_minotaur_attack_1_]);
-            //minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_2_[enemy.rectangles_index_minotaur_attack_2_]);
+            //minohttps://www.youtube.com/watch?v=ifgCsFPo3jEs.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_2_[enemy.rectangles_index_minotaur_attack_2_]);
             //minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_3_[enemy.rectangles_index_minotaur_attack_3_]);
             //minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_4_[enemy.rectangles_index_minotaur_attack_4_]);
 
@@ -518,7 +522,7 @@ void handle_minos(MinotaurEnemyClass &minos, EnemyClass &enemy, PlayerClass &pla
 void drop_gold(Sprite &gold_sprite, RealEnemyClass &enemy){
 
     enemy.gold_sprite_.setPosition(enemy.sprite_.getPosition().x,
-                                                enemy.sprite_.getPosition().y);
+                                                enemy.sprite_.getPosition().y + enemy.sprite_.getGlobalBounds().height - gold_sprite.getGlobalBounds().height);
 
 }
 

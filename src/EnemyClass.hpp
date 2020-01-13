@@ -97,7 +97,7 @@ public:
             index_update(delta_time, minotaur_attack_1_clock, 9, rectangles_index_minotaur_attack_1_);
             index_update(delta_time, minotaur_attack_2_clock, 5, rectangles_index_minotaur_attack_2_);
             index_update(delta_time, minotaur_attack_3_clock, 6, rectangles_index_minotaur_attack_3_);
-            index_update(delta_time, minotaur_attack_4_clock, 9, rectangles_index_minotaur_attack_4_);
+            index_update(75, minotaur_attack_4_clock, 6, rectangles_index_minotaur_attack_4_);
             index_update(delta_time, minotaur_death_clock, 6, rectangles_index_minotaur_death_);
 
             //batsy
@@ -286,7 +286,7 @@ private:
         for (int i = 0; i < 6; i++){
             rectangles_cleo_death_.push_back(IntRect(i*25, 150, 25, 25));
         }
-        for (int i = 5; i >= 1; i--){
+        for (int i = 5; i >= 0; i--){
             rectangles_cleo_death_.push_back(IntRect(i*25, 175, 25, 25));
         }
 
@@ -441,24 +441,24 @@ private:
             rectangles_minotaur_attack_3_.push_back(IntRect(34 + i*96, 1445, 38, 62));
         }
 
-        //Minotaur attack 4 right
-        for (int i = 0; i < 9; i++){
+         //Minotaur attack 4 right
+        for (int i = 3; i < 9; i++){
             rectangles_minotaur_attack_4_.push_back(IntRect(2 + i*96, 581, 94, 63));
         }
 
         //Minotaur attack 4 left
-        for (int i = 0; i < 9; i++){
+        for (int i = 3; i < 9; i++){
             rectangles_minotaur_attack_4_.push_back(IntRect(6 + i*96, 1541, 90, 63));
         }
 
         //Minotaur death right
         for (int i = 0; i < 6; i++){
-            rectangles_minotaur_death_.push_back(IntRect(28 + i*96, 869, 60, 67));
+            rectangles_minotaur_death_.push_back(IntRect(28 + i*96, 854, 60, 82));
         }
 
         //Minotaur death left
         for (int i = 0; i < 6; i++){
-            rectangles_minotaur_death_.push_back(IntRect(8 + i*96, 1844, 60, 54));
+            rectangles_minotaur_death_.push_back(IntRect(8 + i*96, 1829, 60, 69));
         }
 
 

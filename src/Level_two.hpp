@@ -20,8 +20,8 @@ void level_two(sf::RenderWindow &window,
                sf::Sound &cleo_sound,
                sf::Sound &dino_sound,
                sf::Sound &coin_sound)
-{
 
+{
 
     //draw platforms that are in the constructs area
     for(auto bp : big_platforms_2){
