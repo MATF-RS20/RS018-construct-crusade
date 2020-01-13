@@ -90,8 +90,17 @@ void level_two(sf::RenderWindow &window,
         }
         else
         {
-            dino.sprite_.setTextureRect(IntRect(100,  0, 27, 25));
-            window.draw(dino.sprite_);
+            if(dino.facing_left_)
+            {
+                dino.sprite_.setTextureRect(IntRect(100,  0, 27, 25));
+                window.draw(dino.sprite_);
+            }
+            else
+            {
+                dino.sprite_.setTextureRect(IntRect(100, 25, 27, 25));
+                window.draw(dino.sprite_);
+            }
+
         }
     }
 
