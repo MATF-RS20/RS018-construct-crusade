@@ -59,6 +59,7 @@ void level_one(sf::RenderWindow &window,
         handle_minos(minos, enemy, player, window);
         minos.sprite_.setScale(4, 4);
         window.draw(minos.sprite_);
+        draw_minos_hp(window, minos, hp_sprite);
     }else if(!minos.enemy_dead_ && minos.enemy_hp_ <= 0){
         minos.sprite_.setTextureRect(enemy.rectangles_minotaur_death_[6*minos.facing_left_ + enemy.rectangles_index_minotaur_death_]);
         window.draw(minos.sprite_);
