@@ -81,7 +81,7 @@ void init_platforms_and_enemies(std::vector<BigPlatform> &big_platforms,
     }
 
     //stairs to level 0
-    for(int j = 0 ; j > -6; j--){
+    for(int j = -1 ; j > -6; j--){
         big_platforms.push_back(BigPlatform(platform_distance*j,level_1_height - j*platform_height_offset,
                                             8 + rand() % 3, platform_sprite_level_1, 2));
         player.num_of_platforms_++;
