@@ -142,6 +142,10 @@ int main(){
     Sprite gold_sprite(gold, IntRect(75,125,25,25));
 
 
+    Texture portal;
+    portal.loadFromFile("assets/images/portal.png");
+
+    Sprite portal_sprite(portal, IntRect(0,0,50,50));
 
 
     //create the level
@@ -186,29 +190,66 @@ int main(){
     //death sound cleo
     sf::SoundBuffer buffer;
     if (!buffer.loadFromFile("assets/music/cleo_sound.wav"))
-        std::cout << "we have failed at cleo music" << std::endl;
+        std::cout << "we have failed at cleo sound" << std::endl;
 
     sf::Sound cleo_sound;
     cleo_sound.setBuffer(buffer);
-    cleo_sound.setVolume(100.0f);
+    cleo_sound.setVolume(30.0f);
 
      //death sound dino
     sf::SoundBuffer buffer1;
     if (!buffer1.loadFromFile("assets/music/dino_sound.wav"))
-        std::cout << "we have failed at cleo music" << std::endl;
+        std::cout << "we have failed at dino sound" << std::endl;
 
     sf::Sound dino_sound;
     dino_sound.setBuffer(buffer1);
-    dino_sound.setVolume(100.0f);
+    dino_sound.setVolume(30.0f);
+
+     //death minotaur sound
+    sf::SoundBuffer mino_buffer;
+    if (!mino_buffer.loadFromFile("assets/music/minotaur.wav"))
+        std::cout << "we have failed at minotaur sound" << std::endl;
+
+    sf::Sound mino_sound;
+    mino_sound.setBuffer(mino_buffer);
+    mino_sound.setVolume(30.0f);
 
 
     //laser sound
-    sf::Music laser_sound;
-    if (!laser_sound.openFromFile("assets/music/laser1.ogg")){
-        std::cout << "we have failed at laser music" << std::endl;
-    }
-    laser_sound.setVolume(100.0f);
-  //  laser_sound.play();
+    sf::SoundBuffer buffer2;
+    if (!buffer2.loadFromFile("assets/music/laser1.wav"))
+        std::cout << "we have failed at laser sound" << std::endl;
+
+    sf::Sound laser_sound;
+    laser_sound.setBuffer(buffer2);
+    laser_sound.setVolume(30.0f);
+
+    //shooting sound
+    sf::SoundBuffer buffer3;
+    if (!buffer3.loadFromFile("assets/music/lowRandom.wav"))
+        std::cout << "we have failed at shooting sound" << std::endl;
+
+    sf::Sound shooting_sound;
+    shooting_sound.setBuffer(buffer3);
+    shooting_sound.setVolume(30.0f);
+
+    //money sound
+    sf::SoundBuffer buffer4;
+    if (!buffer4.loadFromFile("assets/music/coin_sound.wav"))
+        std::cout << "we have failed at coin sound" << std::endl;
+
+    sf::Sound coin_sound;
+    coin_sound.setBuffer(buffer4);
+    coin_sound.setVolume(30.0f);
+
+    //teleport sound
+    sf::SoundBuffer buffer5;
+    if (!buffer5.loadFromFile("assets/music/teleport.wav"))
+        std::cout << "we have failed at teleport sound" << std::endl;
+
+    sf::Sound teleport_sound;
+    teleport_sound.setBuffer(buffer5);
+    teleport_sound.setVolume(30.0f);
 
     //inicijalizacije za NIVO 2
 
@@ -281,6 +322,7 @@ int main(){
 
                     }if(event.key.code == sf::Keyboard::Q){
                         player.shooting_ = true;
+                        shooting_sound.play();
                     }
             }//key pressed
             if (event.type == sf::Event::KeyReleased){
@@ -298,6 +340,7 @@ int main(){
                         construct_move ^= 8;
                     }if(event.key.code == sf::Keyboard::Q){
                         player.shooting_ = false;
+                        shooting_sound.stop();
                     }
             }//key released
 
@@ -450,33 +493,45 @@ int main(){
     //deo specifican za svaki nivo
     if(level == 1){
 
-			level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches, bats, minos, gold_sprite);
+			level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches, bats, minos, gold_sprite, coin_sound, mino_sound);
 
-            //prelaz iz nivoa 1 u nivo 2
-//            level = 2;
-//
-//			if (!music.openFromFile("assets/music/end.ogg")){
-//                std::cout << "we have failed at music" << std::endl; // error
-//            }
-//            music.setVolume(30);
-//            music.setPlayingOffset(sf::seconds(2.f));
-//            music.setLoop(true);
-//            music.play();
-//
-//            player.sprite_.setPosition(0, -500);
-//            big_platforms.clear();
-//
-//            player.num_of_platforms_ = 0;
-//            init_platforms_level_2(big_platforms, player, platform_sprite, platform_sprite_cupcake, cleopatras, cleo_sprite, heart_sprite, dinos, dino_sprite, stone_sprite, gold_sprite);
-//
-//
-//            player.platform_index_ = 6;
-//            player.platform_index_offset_ = 6;
+            portal_sprite.setScale(4,4);
+            portal_sprite.setPosition(-800, -2490);
+            window.draw(portal_sprite);
+
+            if(player.sprite_.getGlobalBounds().intersects(portal_sprite.getGlobalBounds()))
+            {
+                //prelaz iz nivoa 1 u nivo 2
+                teleport_sound.play();
+                level = 2;
+
+                if (!music.openFromFile("assets/music/end.ogg")){
+                    std::cout << "we have failed at music" << std::endl; // error
+                }
+                music.setVolume(30);
+                music.setPlayingOffset(sf::seconds(2.f));
+                music.setLoop(true);
+                music.play();
+
+                player.sprite_.setPosition(200, -500);
+                big_platforms.clear();
+
+                player.num_of_platforms_ = 0;
+                init_platforms_level_2(big_platforms, player, platform_sprite, platform_sprite_cupcake, cleopatras, cleo_sprite, heart_sprite, dinos, dino_sprite, stone_sprite, gold_sprite);
+
+
+                player.platform_index_ = 6;
+                player.platform_index_offset_ = 6;
+
+                }
+
+
 
     }
     else if(level == 2){
 
-        level_two(window, big_platforms, player, enemy, shooting_sprite, hp_sprite, cleopatras, dinos, cleo_sound, dino_sound);
+
+        level_two(window, big_platforms, player, enemy, shooting_sprite, hp_sprite, cleopatras, dinos, cleo_sound, dino_sound, coin_sound);
 
     }
 

@@ -18,9 +18,10 @@ void level_two(sf::RenderWindow &window,
                std::vector<CleopatraEnemyClass> &cleopatras,
                std::vector<DinoEnemyClass> &dinos,
                sf::Sound &cleo_sound,
-               sf::Sound &dino_sound)
-{
+               sf::Sound &dino_sound,
+               sf::Sound &coin_sound)
 
+{
 
     //draw platforms that are in the constructs area
     for(auto bp : big_platforms_2){
@@ -101,6 +102,7 @@ void level_two(sf::RenderWindow &window,
                 dino.gold_collected_ = true;
                 player.first_hit_gold = false;
                 player.player_gold += 300;
+                coin_sound.play();
                 std::cout << player.player_gold << std::endl;
 
             }
@@ -159,6 +161,7 @@ void level_two(sf::RenderWindow &window,
                 cleopatra.gold_collected_ = true;
                 player.first_hit_gold = false;
                 player.player_gold += 100;
+                coin_sound.play();
                 std::cout << player.player_gold << std::endl;
 
             }
