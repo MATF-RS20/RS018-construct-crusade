@@ -186,48 +186,57 @@ int main(){
     //death sound cleo
     sf::SoundBuffer buffer;
     if (!buffer.loadFromFile("assets/music/cleo_sound.wav"))
-        std::cout << "we have failed at cleo music" << std::endl;
+        std::cout << "we have failed at cleo sound" << std::endl;
 
     sf::Sound cleo_sound;
     cleo_sound.setBuffer(buffer);
-    cleo_sound.setVolume(100.0f);
+    cleo_sound.setVolume(30.0f);
 
      //death sound dino
     sf::SoundBuffer buffer1;
     if (!buffer1.loadFromFile("assets/music/dino_sound.wav"))
-        std::cout << "we have failed at dino music" << std::endl;
+        std::cout << "we have failed at dino sound" << std::endl;
 
     sf::Sound dino_sound;
     dino_sound.setBuffer(buffer1);
-    dino_sound.setVolume(100.0f);
+    dino_sound.setVolume(30.0f);
+
+     //death minotaur sound
+    sf::SoundBuffer mino_buffer;
+    if (!mino_buffer.loadFromFile("assets/music/minotaur.wav"))
+        std::cout << "we have failed at minotaur sound" << std::endl;
+
+    sf::Sound mino_sound;
+    mino_sound.setBuffer(mino_buffer);
+    mino_sound.setVolume(30.0f);
 
 
     //laser sound
     sf::SoundBuffer buffer2;
     if (!buffer2.loadFromFile("assets/music/laser1.wav"))
-        std::cout << "we have failed at laser music" << std::endl;
+        std::cout << "we have failed at laser sound" << std::endl;
 
     sf::Sound laser_sound;
     laser_sound.setBuffer(buffer2);
-    laser_sound.setVolume(100.0f);
+    laser_sound.setVolume(30.0f);
 
     //shooting sound
     sf::SoundBuffer buffer3;
     if (!buffer3.loadFromFile("assets/music/lowRandom.wav"))
-        std::cout << "we have failed at shooting music" << std::endl;
+        std::cout << "we have failed at shooting sound" << std::endl;
 
     sf::Sound shooting_sound;
     shooting_sound.setBuffer(buffer3);
-    shooting_sound.setVolume(100.0f);
+    shooting_sound.setVolume(30.0f);
 
     //money sound
     sf::SoundBuffer buffer4;
     if (!buffer4.loadFromFile("assets/music/coin_sound.wav"))
-        std::cout << "we have failed at coin music" << std::endl;
+        std::cout << "we have failed at coin sound" << std::endl;
 
     sf::Sound coin_sound;
     coin_sound.setBuffer(buffer4);
-    coin_sound.setVolume(100.0f);
+    coin_sound.setVolume(30.0f);
 
     //inicijalizacije za NIVO 2
 
@@ -318,6 +327,7 @@ int main(){
                         construct_move ^= 8;
                     }if(event.key.code == sf::Keyboard::Q){
                         player.shooting_ = false;
+                        shooting_sound.stop();
                     }
             }//key released
 
@@ -470,7 +480,7 @@ int main(){
     //deo specifican za svaki nivo
     if(level == 1){
 
-			level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches, bats, minos, gold_sprite, coin_sound);
+			level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches, bats, minos, gold_sprite, coin_sound, mino_sound);
 
             //prelaz iz nivoa 1 u nivo 2
 //            level = 2;
@@ -499,15 +509,6 @@ int main(){
 
         level_two(window, big_platforms, player, enemy, shooting_sprite, hp_sprite, cleopatras, dinos, cleo_sound, dino_sound, coin_sound);
 
-
-
-        //cleopatra.heart_sprite_.move(-1, 0);
-        //cleopatra.heart_sprite_.setTextureRect(enemy.rectangles_cleo_attack_[4 + enemy.rectangles_index_cleo_attack_]);
-        //window.draw(cleopatra.heart_sprite_);
-        //cleopatra.sprite_.setTextureRect(enemy.rectangles_cleo_attack_[2 + enemy.rectangles_index_cleo_attack_]);
-        //window.draw(cleopatra.sprite_);
-
-        //level_two(window, big_platforms, player, enemy, cleopatra, dinos, dino);
     }
 
 

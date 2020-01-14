@@ -20,7 +20,8 @@ void level_one(sf::RenderWindow &window,
                std::vector<BatsyEnemyClass> &bats,
                MinotaurEnemyClass &minos,
                Sprite &gold_sprite,
-               sf::Sound &coin_sound
+               sf::Sound &coin_sound,
+               sf::Sound &mino_sound
                ){
 
 
@@ -64,6 +65,7 @@ void level_one(sf::RenderWindow &window,
         minos.sprite_.setTextureRect(enemy.rectangles_minotaur_death_[6*minos.facing_left_ + enemy.rectangles_index_minotaur_death_]);
         window.draw(minos.sprite_);
         if(enemy.rectangles_index_minotaur_death_ == 5){
+            mino_sound.play();
             minos.enemy_dead_ = true;
         }
     }
