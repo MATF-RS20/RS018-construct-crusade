@@ -147,6 +147,11 @@ int main(){
 
     Sprite portal_sprite(portal, IntRect(0,0,50,50));
 
+    Texture portal_2;
+    portal_2.loadFromFile("assets/images/end_portal.png");
+
+    Sprite portal_2_sprite(portal_2, IntRect(0,0,50,50));
+
 
     //create the level
     init_platforms_and_enemies(big_platforms, player, platform_sprite, imps, witches, bats, imp_sprite, fireball_sprite, witch_sprite, poison_sprite, batsy_sprite, sonic_sprite, platform_sprite_level_1, gold_sprite);
@@ -183,7 +188,7 @@ int main(){
     if (!music.openFromFile("assets/music/bg_fa.ogg")){
         std::cout << "we have failed at music" << std::endl;
     }
-    music.setVolume(0.3f);
+    music.setVolume(30);
     music.setLoop(true);
     music.play();
 
@@ -516,6 +521,7 @@ int main(){
                 player.sprite_.setPosition(200, -500);
                 big_platforms.clear();
 
+
                 player.num_of_platforms_ = 0;
                 init_platforms_level_2(big_platforms, player, platform_sprite, platform_sprite_cupcake, cleopatras, cleo_sprite, heart_sprite, dinos, dino_sprite, stone_sprite, gold_sprite);
 
@@ -523,15 +529,44 @@ int main(){
                 player.platform_index_ = 6;
                 player.platform_index_offset_ = 6;
 
-                }
 
-
+            }
 
     }
     else if(level == 2){
 
 
         level_two(window, big_platforms, player, enemy, shooting_sprite, hp_sprite, cleopatras, dinos, cleo_sound, dino_sound, coin_sound);
+
+         portal_2_sprite.setScale(4,4);
+                portal_2_sprite.setPosition(920, -4480);
+                window.draw(portal_2_sprite);
+
+        if(player.sprite_.getGlobalBounds().intersects(portal_2_sprite.getGlobalBounds()))
+        {
+            //prelaz iz nivoa 2 u nivo
+            teleport_sound.play();
+            level = 1;
+
+            if (!music.openFromFile("assets/music/bg_fa.ogg")){
+                std::cout << "we have failed at music" << std::endl;
+            }
+            music.setVolume(30);
+            music.setLoop(true);
+            music.play();
+
+            player.sprite_.setPosition(0, 400);
+            big_platforms.clear();
+
+
+            player.num_of_platforms_ = 0;
+            init_platforms_and_enemies(big_platforms, player, platform_sprite, imps, witches, bats, imp_sprite, fireball_sprite, witch_sprite, poison_sprite, batsy_sprite, sonic_sprite, platform_sprite_level_1, gold_sprite);
+
+
+            player.platform_index_ = 3;
+            player.platform_index_offset_ = 6;
+
+        }
 
     }
 

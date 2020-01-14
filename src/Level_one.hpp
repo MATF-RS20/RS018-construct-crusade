@@ -32,6 +32,8 @@ void level_one(sf::RenderWindow &window,
                 window.draw(plat.sprite_);
     }
 
+    draw_player_hp_mp(window, player, hp_sprite);
+
     if(!minos.enemy_dead_ && minos.enemy_hp_ > 0){
         //laser collision
         if(player.laser_){
@@ -313,10 +315,35 @@ void level_one(sf::RenderWindow &window,
         batsy.sprite_.setScale(4, 4);
         window.draw(batsy.sprite_);
 
+        if(batsy.enemy_hp_ <= 0){
+                    batsy.gold_collected_ = false;
+                    player.first_hit_gold = true;
+        }
+
         if(enemy.rectangles_index_batsy_death_ == 5){
             batsy.enemy_dead_ = true;
         }
 
+    }
+    else if(batsy.enemy_dead_)
+    {
+            batsy.gold_sprite_.setScale(3,3);
+            drop_gold(batsy.gold_sprite_, batsy);
+
+            if(!batsy.gold_collected_){
+                window.draw(batsy.gold_sprite_);
+
+            }
+
+            if(player.first_hit_gold && player.sprite_.getGlobalBounds().intersects(batsy.gold_sprite_.getGlobalBounds()))
+            {
+                batsy.gold_collected_ = true;
+                player.first_hit_gold = false;
+                player.player_gold += 50;
+                coin_sound.play();
+                std::cout << player.player_gold << std::endl;
+
+            }
     }
 
     }
