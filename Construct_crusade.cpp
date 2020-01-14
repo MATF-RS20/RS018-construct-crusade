@@ -242,6 +242,15 @@ int main(){
     coin_sound.setBuffer(buffer4);
     coin_sound.setVolume(30.0f);
 
+    //teleport sound
+    sf::SoundBuffer buffer5;
+    if (!buffer5.loadFromFile("assets/music/teleport.wav"))
+        std::cout << "we have failed at teleport sound" << std::endl;
+
+    sf::Sound teleport_sound;
+    teleport_sound.setBuffer(buffer5);
+    teleport_sound.setVolume(30.0f);
+
     //inicijalizacije za NIVO 2
 
     //Dinoo bambinooo
@@ -493,6 +502,7 @@ int main(){
             if(player.sprite_.getGlobalBounds().intersects(portal_sprite.getGlobalBounds()))
             {
                 //prelaz iz nivoa 1 u nivo 2
+                teleport_sound.play();
                 level = 2;
 
                 if (!music.openFromFile("assets/music/end.ogg")){
