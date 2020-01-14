@@ -33,14 +33,18 @@ Credits:
 background songs: 
 
 Lea je ubacila pesmu od Birri Ajris za drugi nivo - https://www.youtube.com/watch?v=ZdkhKkfNPZE
-A Beka je odabrala pesmu za prvi nivo - https://www.youtube.com/watch?v=JPOZQgvhinE
+
+Beka je odabrala pesmu za prvi nivo - https://www.youtube.com/watch?v=JPOZQgvhinE
 
 
 
 game sounds:
 
 -ovaj nam je najbolji za smrt kleopatre: https://www.youtube.com/watch?v=VDZnS_2D8O8
+
 -smrt dinosaurusa: https://www.youtube.com/watch?v=ifgCsFPo3jE
+
 -kes: https://www.youtube.com/watch?v=miZpDS2HWmA
+
 -vecina ostalih zvukova sa ovog sajta: https://www.kenney.nl/assets
 
