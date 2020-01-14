@@ -142,6 +142,10 @@ int main(){
     Sprite gold_sprite(gold, IntRect(75,125,25,25));
 
 
+    Texture portal;
+    portal.loadFromFile("assets/images/portal.png");
+
+    Sprite portal_sprite(portal, IntRect(0,0,50,50));
 
 
     //create the level
@@ -482,26 +486,36 @@ int main(){
 
 			level_one(window, big_platforms, enemy, player, hp_sprite, imps, shooting_sprite, witches, bats, minos, gold_sprite, coin_sound, mino_sound);
 
-            //prelaz iz nivoa 1 u nivo 2
-//            level = 2;
-//
-//			if (!music.openFromFile("assets/music/end.ogg")){
-//                std::cout << "we have failed at music" << std::endl; // error
-//            }
-//            music.setVolume(30);
-//            music.setPlayingOffset(sf::seconds(2.f));
-//            music.setLoop(true);
-//            music.play();
-//
-//            player.sprite_.setPosition(0, -500);
-//            big_platforms.clear();
-//
-//            player.num_of_platforms_ = 0;
-//            init_platforms_level_2(big_platforms, player, platform_sprite, platform_sprite_cupcake, cleopatras, cleo_sprite, heart_sprite, dinos, dino_sprite, stone_sprite, gold_sprite);
-//
-//
-//            player.platform_index_ = 6;
-//            player.platform_index_offset_ = 6;
+            portal_sprite.setScale(4,4);
+            portal_sprite.setPosition(-800, -2490);
+            window.draw(portal_sprite);
+
+            if(player.sprite_.getGlobalBounds().intersects(portal_sprite.getGlobalBounds()))
+            {
+                //prelaz iz nivoa 1 u nivo 2
+                level = 2;
+
+                if (!music.openFromFile("assets/music/end.ogg")){
+                    std::cout << "we have failed at music" << std::endl; // error
+                }
+                music.setVolume(30);
+                music.setPlayingOffset(sf::seconds(2.f));
+                music.setLoop(true);
+                music.play();
+
+                player.sprite_.setPosition(200, -500);
+                big_platforms.clear();
+
+                player.num_of_platforms_ = 0;
+                init_platforms_level_2(big_platforms, player, platform_sprite, platform_sprite_cupcake, cleopatras, cleo_sprite, heart_sprite, dinos, dino_sprite, stone_sprite, gold_sprite);
+
+
+                player.platform_index_ = 6;
+                player.platform_index_offset_ = 6;
+
+                }
+
+
 
     }
     else if(level == 2){
