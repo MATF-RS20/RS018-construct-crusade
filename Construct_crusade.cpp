@@ -54,7 +54,7 @@ int main(){
     Sprite shooting_sprite(construct_tex, IntRect(26, 152, 4, 4));
 
     //making a player object
-    PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, 0, -2300);
+    PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, 0, 400);
 
     //PlayerClass player(laser_sprite, plasma_booster_sprite, construct_sprite, -4800, 500);
 

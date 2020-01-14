@@ -12,11 +12,15 @@ public:
         attack_mode_ = 0;
         delta_attack_ = 3000;
         attack_in_progress_ = false;
+        first_hit_axe_ = true;
+        first_hit_shaking_ = true;
      }
 
      int attack_mode_;
      int delta_attack_;
      Clock attack_clock_;
      bool attack_in_progress_;
+     bool first_hit_axe_;
+     bool first_hit_shaking_;
 };
 #endif // _MINOTAUR_ENEMY_CLASS_HPP

@@ -436,85 +436,102 @@ void handle_minos(MinotaurEnemyClass &minos, EnemyClass &enemy, PlayerClass &pla
     }
     }
     if(minos.attacking_){
-        if(player.sprite_.getPosition().x + 50 < minos.sprite_.getPosition().x){
+        if(player.sprite_.getPosition().x < minos.sprite_.getPosition().x - 50){
             minos.facing_left_ = true;
             minos.sprite_.setTextureRect(enemy.rectangles_minotaur_walk_left_[enemy.rectangles_index_minotaur_walk_]);
             minos.sprite_.move(-1, 0);
             minos.attack_clock_.restart();
 
         }
-        else{
+        else if(player.sprite_.getPosition().x >= minos.sprite_.getPosition().x - 50
+                && player.sprite_.getPosition().x <= minos.sprite_.getPosition().x + 150){
 
             if(minos.attack_clock_.getElapsedTime().asMilliseconds() > minos.delta_attack_){
                 minos.attack_clock_.restart();
-                minos.attack_mode_ = (minos.attack_mode_ + 1) % 4;
+                minos.attack_mode_ = (minos.attack_mode_ + 1) % 5;
+                minos.first_hit_axe_ = true;
             }
-
+            if(enemy.rectangles_index_minotaur_attack_1_ == 0){ minos.first_hit_axe_ = true;}
             if(minos.attack_mode_ == 0){
                 minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_1_[9 + enemy.rectangles_index_minotaur_attack_1_]);
+                //if(enemy.rectangles_index_minotaur_attack_1_ == 0){ minos.first_hit_axe_ = true;}
             }
             if(minos.attack_mode_ == 1){
                 minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_2_[5 + enemy.rectangles_index_minotaur_attack_2_]);
+                //if(enemy.rectangles_index_minotaur_attack_2_ == 0){ minos.first_hit_axe_ = true;}
             }
             if(minos.attack_mode_ == 2){
                 minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_3_[6 + enemy.rectangles_index_minotaur_attack_3_]);
                     shaking = enemy.rectangles_index_minotaur_attack_3_ == 5;
             }
+
             if(minos.attack_mode_ == 3){
-                minos.sprite_.move(-0.2, 0);
-                minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_4_[6 + enemy.rectangles_index_minotaur_attack_4_]);
+                minos.sprite_.setTextureRect(enemy.rectangles_minotaur_taunt_[5 + enemy.rectangles_index_minotaur_taunt_]);
+                shaking = false;
+                //minos.first_hit_axe_ = true;
             }
 
-            //minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_1_[9 + enemy.rectangles_index_minotaur_attack_1_]);
-            //minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_2_[5 + enemy.rectangles_index_minotaur_attack_2_]);
-            //minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_3_[6 + enemy.rectangles_index_minotaur_attack_3_]);
-            //minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_4_[9 + enemy.rectangles_index_minotaur_attack_4_]);
+            if(minos.attack_mode_ == 4){
+                minos.sprite_.move(-0.2, 0);
+                minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_4_[6 + enemy.rectangles_index_minotaur_attack_4_]);
+                //if(enemy.rectangles_index_minotaur_attack_4_ == 0){ minos.first_hit_axe_ = true;}
+            }
 
 
-            //minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_1_[enemy.rectangles_index_minotaur_attack_1_]);
-            //minohttps://www.youtube.com/watch?v=ifgCsFPo3jEs.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_2_[enemy.rectangles_index_minotaur_attack_2_]);
-            //minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_3_[enemy.rectangles_index_minotaur_attack_3_]);
-            //minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_4_[enemy.rectangles_index_minotaur_attack_4_]);
+        }else if(player.sprite_.getPosition().x > minos.sprite_.getPosition().x + 150
+                && player.sprite_.getPosition().x <= minos.sprite_.getPosition().x + 250){
+
+            if(minos.attack_clock_.getElapsedTime().asMilliseconds() > minos.delta_attack_){
+                minos.attack_clock_.restart();
+                minos.attack_mode_ = (minos.attack_mode_ + 1) % 5;
+                minos.first_hit_axe_ = true;
+            }
+
+            if(enemy.rectangles_index_minotaur_attack_1_ == 0){ minos.first_hit_axe_ = true;}
+            if(minos.attack_mode_ == 0){
+                minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_1_[enemy.rectangles_index_minotaur_attack_1_]);
+                //if(enemy.rectangles_index_minotaur_attack_1_ == 0){ minos.first_hit_axe_ = true;}
+            }
+            if(minos.attack_mode_ == 1){
+                minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_2_[enemy.rectangles_index_minotaur_attack_2_]);
+                //if(enemy.rectangles_index_minotaur_attack_2_ == 0){ minos.first_hit_axe_ = true;}
+            }
+            if(minos.attack_mode_ == 2){
+                minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_3_[enemy.rectangles_index_minotaur_attack_3_]);
+                    shaking = enemy.rectangles_index_minotaur_attack_3_ == 5;
+            }
+            if(minos.attack_mode_ == 3){
+                minos.sprite_.setTextureRect(enemy.rectangles_minotaur_taunt_[enemy.rectangles_index_minotaur_taunt_]);
+                minos.first_hit_axe_ = true;
+                shaking = false;
+                //minos.first_hit_shaking_ = true;
+            }
+            if(minos.attack_mode_ == 4){
+                minos.sprite_.move(0.2, 0);
+                minos.sprite_.setTextureRect(enemy.rectangles_minotaur_attack_4_[enemy.rectangles_index_minotaur_attack_4_]);
+               // if(enemy.rectangles_index_minotaur_attack_4_ == 0){ minos.first_hit_axe_ = true;}
+
+            }
+
+        }
+        else if(player.sprite_.getPosition().x > minos.sprite_.getPosition().x + 250){
+            minos.facing_left_ = false;
+            minos.sprite_.setTextureRect(enemy.rectangles_minotaur_walk_right_[enemy.rectangles_index_minotaur_walk_]);
+            minos.sprite_.move(1, 0);
+            minos.attack_clock_.restart();
 
         }
 
+        if(minos.first_hit_axe_ && minos.sprite_.getGlobalBounds().intersects(player.sprite_.getGlobalBounds())){
+            player.construct_hp_ -= 10*(!enemy.rectangles_index_minotaur_attack_1_ == 0);
+            minos.first_hit_axe_ = false;
+        }
+        if(minos.first_hit_shaking_ && shaking && player.on_ground_){
+            player.construct_hp_ -= 10;
+            minos.first_hit_shaking_ = false;
+        }
 
     }
-
-
-
-    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_death_[enemy.rectangles_index_minotaur_death_]);
-    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_attack_4_[enemy.rectangles_index_minotaur_attack_4_]);
-
-    //minotaur_sprite.setPosition(minotaur_sprite.getPosition().x, minotaur_sprite.getPosition().y - 40);
-    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_attack_3_[enemy.rectangles_index_minotaur_attack_3_]);
-
-    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_attack_2_[enemy.rectangles_index_minotaur_attack_2_]);
-
-    //minotaur_sprite.setPosition(minotaur_sprite.getPosition().x, minotaur_sprite.getPosition().y - 60);
-    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_attack_1_[enemy.rectangles_index_minotaur_attack_1_]);
-
-    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_taunt_[enemy.rectangles_index_minotaur_taunt_]);
-    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_idle_[enemy.rectangles_index_minotaur_idle_]);
-    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_walk_right_[enemy.rectangles_index_minotaur_walk_]);
-
-
-    //LEFT
-    //minos.sprite_.setTextureRect(enemy.rectangles_minotaur_death_[6 + enemy.rectangles_index_minotaur_death_]);
-    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_attack_4_[9 + enemy.rectangles_index_minotaur_attack_4_]);
-
-    //minotaur_sprite.setPosition(minotaur_sprite.getPosition().x, minotaur_sprite.getPosition().y - 40);
-    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_attack_3_[6 + enemy.rectangles_index_minotaur_attack_3_]);
-
-    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_attack_2_[5 + enemy.rectangles_index_minotaur_attack_2_]);
-
-    //minotaur_sprite.setPosition(minotaur_sprite.getPosition().x, minotaur_sprite.getPosition().y - 60);
-    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_attack_1_[9 + enemy.rectangles_index_minotaur_attack_1_]);
-
-    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_taunt_[5 + enemy.rectangles_index_minotaur_taunt_]);
-    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_idle_[enemy.rectangles_index_minotaur_idle_]);
-    //minotaur_sprite.setTextureRect(enemy.rectangles_minotaur_walk_left_[enemy.rectangles_index_minotaur_walk_]);
-
 
 
 }

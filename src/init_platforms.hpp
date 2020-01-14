@@ -138,7 +138,6 @@ void init_platforms_and_enemies(std::vector<BigPlatform> &big_platforms,
     player.num_of_platforms_++;
 
     std::cout << "plat num: " << player.num_of_platforms_ << std::endl;
-    std::cout << "plat num: " << -1600 - 5*platform_height_offset << std::endl;
 
 }
 #endif // INIT_PLATFORMS_HPP

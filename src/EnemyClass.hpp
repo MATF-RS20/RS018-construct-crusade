@@ -453,7 +453,7 @@ private:
 
         //Minotaur death right
         for (int i = 0; i < 6; i++){
-            rectangles_minotaur_death_.push_back(IntRect(28 + i*96, 854, 60, 82));
+            rectangles_minotaur_death_.push_back(IntRect(28 + i*96, 869, 60, 69));
         }
 
         //Minotaur death left
