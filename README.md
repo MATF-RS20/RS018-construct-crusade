@@ -34,6 +34,8 @@ background songs:
 
 Lea je ubacila pesmu od Birri Ajris za drugi nivo - https://www.youtube.com/watch?v=ZdkhKkfNPZE
 
+Totalno smo pitali Bili da li smemo da koristimo njenu muziku rekla je: "Coa ti si mi toliko drag prepisacu ti prava na tu pesmu! Vidim da ti se dopala :)" - bio sam dirnut njenim recima, video sam joj u ocima da zaista to misli
+
 Beka je odabrala pesmu za prvi nivo - https://www.youtube.com/watch?v=JPOZQgvhinE
 
 
